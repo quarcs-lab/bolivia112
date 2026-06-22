@@ -1,0 +1,348 @@
+idx,varname,varlabel
+0,prov_id,Province code (first 3 digits of mun_id)
+1,prov,Province name
+2,dep,Department name
+3,dep_id,Department ID
+4,dep_prov,Department-Province label
+5,imds,Municipal Sustainable Development Index
+6,rank_imds,Bolivia Index Ranking
+7,population_2020,Population 2020
+8,urbano_2012,"Urbanization rate, 2012 (% of population)"
+9,sdg1_1_eepr,"Extreme energy poverty rate, 2016 (% of houses)"
+10,sdg1_1_ubn,"Unsatisfied basic needs, 2012 (% of population)"
+11,sdg1_2_mpi,"Multidimensional poverty index, 2012"
+12,sdg1_4_abs,"Access to the 3 basic services, 2012 (% of households)"
+13,sdg2_2_cmc,"Chronic malnutrition in children (< 5 years), 2016 (%)"
+14,sdg2_2_oww,"Obesity in women (15-49 years), 2016 (%)"
+15,sdg2_4_pual,"Average area per Production Unit Agriculture and Livestock, 2013 (ha)"
+16,sdg2_4_td,"Tractor density, 2013 (per 1,000 UPAs)"
+17,sdg3_1_idca,"Institutional childbirth coverage, average 2008-2012 (%)"
+18,sdg3_2_imr,"Infant mortality rate (< 1 year), 2016 (per. 1,000 live births)"
+19,sdg3_2_mrc,"Children mortality rate in (< 5 years), 2016 (per. 1,000 live births)"
+20,sdg3_3_cdir,"Chagas disease infestation rate, 2017 (% of households)"
+21,sdg3_3_di,"Dengue incidence, 2018 (per 10,000 population)"
+22,sdg3_3_imr,"Malaria incidence, average 2014-17 (per 1,000 population)"
+23,sdg3_3_ti,"Tuberculosis incidence, 2017 (per 100,000 population)"
+24,sdg3_3_hivi,"HIV incidence, average 2014-17 (per 1,000,00 population)"
+25,sdg3_7_afr,"Adolescent fertility rate (15-19 years), 2012 (births per 1,000 women)"
+26,sdg4_1_ssdrm,"Secondary school dropout rate, male, 2017 (% of enrolled)"
+27,sdg4_1_ssdrf,"Secondary school dropout rate, females, 2017 (% of enrolled)"
+28,sdg4_4_phe,"Population with higher education (>= 19 years), 2012 (%)"
+29,sdg4_6_lr,"Literacy rate for (>= 15 years), 2012 (%)"
+30,sdg4_c_qti,"Qualified teachers at the initial level, 2016 (%)"
+31,sdg4_c_qts,"Qualified teachers at the secondary level, 2016"
+32,sdg5_1_gpsd,"Gender parity in school dropouts in  secondary school, 2017"
+33,sdg5_1_gpyp,"Gender parity in years of education of young people (25-35 years old), 2012. (25"
+34,sdg5_1_gpmpi,"Gender Parity in the Multidimensional Poverty Index, 2012"
+35,sdg5_5_gpop,"Gender parity in the overall participation rate (>=10 years), 2012"
+36,sdg6_1_dwc,"Drinking water coverage, 2017 (% of population)"
+37,sdg6_2_sc,"Sanitation coverage, 2017 (% of population)"
+38,sdg6_3_wwt,"Wastewater treatment, 2017 (% of wastewater) wastewater)"
+39,sdg7_1_ec,"Electricity coverage, 2012 (% of population) population)"
+40,sdg7_1_rec,"Residential electricity consumption per capita, 2016 (kWh/person/year)"
+41,sdg7_1_cce,"Clean cooking energy, 2012 (% of households)"
+42,sdg7_3_co2epc,"CO2 emissions per capita by energy, 2016. (tCO2/person/year)"
+43,sdg8_4_rem,"Residential electric meters with zero consumption, 2016 (%)"
+44,sdg8_5_oprm,"Overall participation rate males (>= 10 years), 2012 (%)"
+45,sdg8_5_ofrm,"Overall female participation rate (>= 10 years), 2012 (%)"
+46,sdg8_6_mlm,"Men who do not study or participate in the labor market (15-24 years), 2012 (%)"
+47,sdg8_6_wlm,"Women who do not study or participate in the labor market (15-24 years),2012 (%)"
+48,sdg8_10_dbb,"Density of bank branches, 2018 (per 100,000 inhabitants)"
+49,sdg8_11_idi,"Index of the degree of intermediation in migration, 2012"
+50,sdg9_1_routes,"Number of railways/primary roads entering/leaving the municipality, 2019"
+51,sdg9_5_cd,"Kuaa computers delivered, 2016 (per 100 school-age population, 6-19 years)"
+52,sdg9_5_eutf,"Educational units with technological floors, 2016 (%)"
+53,sdg9_c_mnc,"Fixed and mobile network coverage, 2012 (% of households)"
+54,sdg9_c_drb,"Density of radio bases, 2016 (number of radio bases per 1000 inhabitants)"
+55,sdg10_2_gcye,"GINI coefficient of years of education, 2012"
+56,sdg10_2_iec,"Inequality in electricity consumption, 2016"
+57,sdg10_2_nssp,"Non-Spanish speaking population (>= 3 years), 2012 (%)"
+58,sdg11_1_hocr,"Overcrowding rate, 2012 (% of households)"
+59,sdg11_1_hno,"Households that do not have a toilet, bathroom or latrine, 2012 (%) latrine, 201"
+60,sdg11_2_samt,"Seats available for mass transit, 2017 (per 1,000 inhabitants)"
+61,sdg13_1_ccvi,"Climate change vulnerability Index, 2015"
+62,sdg13_2_tco2e,"Total CO2 emissions per capita, 2016 (tCO2/person/year)"
+63,sdg13_2_dra,"Deforestation rate, average 2016-2018 (% of forest area 2015)"
+64,sdg15_1_pa,"Protected areas, 2019 (% of the municipality's land area) municipality)"
+65,sdg15_5_blr,"Biodiversity loss rate due to deforestation deforestation, average 2016-2018"
+66,sdg16_1_rhr,"Registered homicide rate, average 2015-2017. (per 100,000 inhabitants)"
+67,sdg16_6_pbec,"Programmed budget execution capacity, 2017 (%)"
+68,sdg16_9_cr,"Children registered in the civil registry (< 5 years), 2012 (%)"
+69,sdg17_1_pmtax,"Proportion of municipal revenues that come from local taxes, 2017 (%)"
+70,sdg17_5_pipc,"Public investment per capita, 2017 (Bs./person)"
+71,index_sdg1,SDG1 Index
+72,index_sdg2,SDG2 Index
+73,index_sdg3,SDG3 Index
+74,index_sdg4,SDG4 Index
+75,index_sdg5,SDG5 Index
+76,index_sdg6,SDG6 Index
+77,index_sdg7,SDG7 Index
+78,index_sdg8,SDG8 Index
+79,index_sdg9,SDG9 Index
+80,index_sdg10,SDG10 Index
+81,index_sdg11,SDG11 Index
+82,index_sdg13,SDG13 Index
+83,index_sdg15,SDG15 Index
+84,index_sdg16,SDG16 Index
+85,index_sdg17,SDG17 Index
+86,pop2001,Estimated population in 2001
+87,pop2002,Estimated population in 2002
+88,pop2003,Estimated population in 2003
+89,pop2004,Estimated population in 2004
+90,pop2005,Estimated population in 2005
+91,pop2006,Estimated population in 2006
+92,pop2007,Estimated population in 2007
+93,pop2008,Estimated population in 2008
+94,pop2009,Estimated population in 2009
+95,pop2010,Estimated population in 2010
+96,pop2011,Estimated population in 2011
+97,pop2012,Estimated population in 2012
+98,pop2013,Estimated population in 2013
+99,pop2014,Estimated population in 2014
+100,pop2015,Estimated population in 2015
+101,pop2016,Estimated population in 2016
+102,pop2017,Estimated population in 2017
+103,pop2018,Estimated population in 2018
+104,pop2019,Estimated population in 2019
+105,pop2020,Estimated population in 2020
+106,ln_NTLpc2012,Log NTL per capita in 2012
+107,ln_NTLpc2013,Log NTL per capita in 2013
+108,ln_NTLpc2014,Log NTL per capita in 2014
+109,ln_NTLpc2015,Log NTL per capita in 2015
+110,ln_NTLpc2016,Log NTL per capita in 2016
+111,ln_NTLpc2017,Log NTL per capita in 2017
+112,ln_NTLpc2018,Log NTL per capita in 2018
+113,ln_NTLpc2019,Log NTL per capita in 2019
+114,ln_NTLpc2020,Log NTL per capita in 2020
+115,ln_t400NTLpc2012,Trend log NTL per capita in 2012
+116,ln_t400NTLpc2013,Trend log NTL per capita in 2013
+117,ln_t400NTLpc2014,Trend log NTL per capita in 2014
+118,ln_t400NTLpc2015,Trend log NTL per capita in 2015
+119,ln_t400NTLpc2016,Trend log NTL per capita in 2016
+120,ln_t400NTLpc2017,Trend log NTL per capita in 2017
+121,ln_t400NTLpc2018,Trend log NTL per capita in 2018
+122,ln_t400NTLpc2019,Trend log NTL per capita in 2019
+123,ln_t400NTLpc2020,Trend log NTL per capita in 2020
+124,co2015,Estimated carbon dioxide in 2015
+125,co2016,Estimated carbon dioxide in 2016
+126,co2017,Estimated carbon dioxide in 2017
+127,co2018,Estimated carbon dioxide in 2018
+128,co2019,Estimated carbon dioxide in 2019
+129,co2020,Estimated carbon dioxide in 2020
+130,tr400_co2015,Trend estimated carbon dioxide in 2015
+131,tr400_co2016,Trend estimated carbon dioxide in 2016
+132,tr400_co2017,Trend estimated carbon dioxide in 2017
+133,tr400_co2018,Trend estimated carbon dioxide in 2018
+134,tr400_co2019,Trend estimated carbon dioxide in 2019
+135,tr400_co2020,Trend estimated carbon dioxide in 2020
+136,airTemp2012.mean,Mean Air Temperature in Celcius in 2012
+137,airTemp2013.mean,Mean Air Temperature in Celcius in 2013
+138,airTemp2014.mean,Mean Air Temperature in Celcius in 2014
+139,airTemp2015.mean,Mean Air Temperature in Celcius in 2015
+140,airTemp2016.mean,Mean Air Temperature in Celcius in 2016
+141,airTemp2017.mean,Mean Air Temperature in Celcius in 2017
+142,airTemp2012.min,Minimum Air Temperature in Celcius in 2012
+143,airTemp2013.min,Minimum Air Temperature in Celcius in 2013
+144,airTemp2014.min,Minimum Air Temperature in Celcius in 2014
+145,airTemp2015.min,Minimum Air Temperature in Celcius in 2015
+146,airTemp2016.min,Minimum Air Temperature in Celcius in 2016
+147,airTemp2017.min,Minimum Air Temperature in Celcius in 2017
+148,airTemp2012.max,Maximum Air Temperature in Celcius in 2012
+149,airTemp2013.max,Maximum Air Temperature in Celcius in 2013
+150,airTemp2014.max,Maximum Air Temperature in Celcius in 2014
+151,airTemp2015.max,Maximum Air Temperature in Celcius in 2015
+152,airTemp2016.max,Maximum Air Temperature in Celcius in 2016
+153,airTemp2017.max,Maximum Air Temperature in Celcius in 2017
+154,distancedistanceCoast2017mean,Mean distance to coast in meters in 2017
+155,distancedistanceCoast2017max,Max distance to coast in meters in 2017
+156,distancedistanceCoast2017min,Min distance to coast in meters in 2017
+157,distanceDia2017min,Min distance to diamond deposits in meters in 2017
+158,distanceDia2017mean,Mean distance to diamond deposits in meters in 2017
+159,distanceDia2017max,Max distance to diamond deposits in meters in 2017
+160,drugCult_count2017,Total area in polygons in 2017
+161,drugCult_none2017,Area without drug cultivation in polygons in 2017
+162,drugCult_coca_bush2017,Area with coca bush cultivation in polygons in 2017
+163,distanceDrug2017mean,Mean distance to drug cultivation sites in meters in 2017
+164,distanceDrug2017max,Max distance to drug cultivation sites in meters in 2017
+165,distanceDrug2017min,Min distance to drug cultivation sites in meters in 2017
+166,esaLandCover2012_grassland,grassland ESA land cover classification in polygons in 2012
+167,esaLandCover2012_count,count ESA land cover classification in polygons in 2012
+168,esaLandCover2012_sparse_vegetation,sparse vegetation ESA land cover classification in polygons in 2012
+169,esaLandCover2012_bare_areas,bare areas ESA land cover classification in polygons in 2012
+170,esaLandCover2012_shrubland,shrubland ESA land cover classification in polygons in 2012
+171,esaLandCover2012_no_data,no data ESA land cover classification in polygons in 2012
+172,esaLandCover2012_rainfed_cropland,rainfed cropland ESA land cover classification in polygons in 2012
+173,esaLandCover2012_water_bodies,water bodies ESA land cover classification in polygons in 2012
+174,esaLandCover2012_forest,forest ESA land cover classification in polygons in 2012
+175,esaLandCover2012_wetland,wetland ESA land cover classification in polygons in 2012
+176,esaLandCover2012_mosaic_cropland,mosaic cropland ESA land cover classification in polygons in 2012
+177,esaLandCover2012_irrigated_cropland,irrigated cropland ESA land cover classification in polygons in 2012
+178,esaLandCover2012_snow_ice,snow ice ESA land cover classification in polygons in 2012
+179,esaLandCover2012_urban,urban ESA land cover classification in polygons in 2012
+180,esaLandCover2013_grassland,grassland ESA land cover classification in polygons in 2013
+181,esaLandCover2013_count,count ESA land cover classification in polygons in 2013
+182,esaLandCover2013_sparse_vegetation,sparse vegetation ESA land cover classification in polygons in 2013
+183,esaLandCover2013_bare_areas,bare areas ESA land cover classification in polygons in 2013
+184,esaLandCover2013_shrubland,shrubland ESA land cover classification in polygons in 2013
+185,esaLandCover2013_no_data,no data ESA land cover classification in polygons in 2013
+186,esaLandCover2013_rainfed_cropland,rainfed cropland ESA land cover classification in polygons in 2013
+187,esaLandCover2013_water_bodies,water bodies ESA land cover classification in polygons in 2013
+188,esaLandCover2013_forest,forest ESA land cover classification in polygons in 2013
+189,esaLandCover2013_wetland,wetland ESA land cover classification in polygons in 2013
+190,esaLandCover2013_mosaic_cropland,mosaic cropland ESA land cover classification in polygons in 2013
+191,esaLandCover2013_irrigated_cropland,irrigated cropland ESA land cover classification in polygons in 2013
+192,esaLandCover2013_snow_ice,snow ice ESA land cover classification in polygons in 2013
+193,esaLandCover2013_urban,urban ESA land cover classification in polygons in 2013
+194,esaLandCover2014_grassland,grassland ESA land cover classification in polygons in 2014
+195,esaLandCover2014_count,count ESA land cover classification in polygons in 2014
+196,esaLandCover2014_sparse_vegetation,sparse vegetation ESA land cover classification in polygons in 2014
+197,esaLandCover2014_bare_areas,bare areas ESA land cover classification in polygons in 2014
+198,esaLandCover2014_shrubland,shrubland ESA land cover classification in polygons in 2014
+199,esaLandCover2014_no_data,no data ESA land cover classification in polygons in 2014
+200,esaLandCover2014_rainfed_cropland,rainfed cropland ESA land cover classification in polygons in 2014
+201,esaLandCover2014_water_bodies,water bodies ESA land cover classification in polygons in 2014
+202,esaLandCover2014_forest,forest ESA land cover classification in polygons in 2014
+203,esaLandCover2014_wetland,wetland ESA land cover classification in polygons in 2014
+204,esaLandCover2014_mosaic_cropland,mosaic cropland ESA land cover classification in polygons in 2014
+205,esaLandCover2014_irrigated_cropland,irrigated cropland ESA land cover classification in polygons in 2014
+206,esaLandCover2014_snow_ice,snow ice ESA land cover classification in polygons in 2014
+207,esaLandCover2014_urban,urban ESA land cover classification in polygons in 2014
+208,esaLandCover2015_grassland,grassland ESA land cover classification in polygons in 2015
+209,esaLandCover2015_count,count ESA land cover classification in polygons in 2015
+210,esaLandCover2015_sparse_vegetation,sparse vegetation ESA land cover classification in polygons in 2015
+211,esaLandCover2015_bare_areas,bare areas ESA land cover classification in polygons in 2015
+212,esaLandCover2015_shrubland,shrubland ESA land cover classification in polygons in 2015
+213,esaLandCover2015_no_data,no data ESA land cover classification in polygons in 2015
+214,esaLandCover2015_rainfed_cropland,rainfed cropland ESA land cover classification in polygons in 2015
+215,esaLandCover2015_water_bodies,water bodies ESA land cover classification in polygons in 2015
+216,esaLandCover2015_forest,forest ESA land cover classification in polygons in 2015
+217,esaLandCover2015_wetland,wetland ESA land cover classification in polygons in 2015
+218,esaLandCover2015_mosaic_cropland,mosaic cropland ESA land cover classification in polygons in 2015
+219,esaLandCover2015_irrigated_cropland,irrigated cropland ESA land cover classification in polygons in 2015
+220,esaLandCover2015_snow_ice,snow ice ESA land cover classification in polygons in 2015
+221,esaLandCover2015_urban,urban ESA land cover classification in polygons in 2015
+222,esaLandCover2016_grassland,grassland ESA land cover classification in polygons in 2016
+223,esaLandCover2016_count,count ESA land cover classification in polygons in 2016
+224,esaLandCover2016_sparse_vegetation,sparse vegetation ESA land cover classification in polygons in 2016
+225,esaLandCover2016_bare_areas,bare areas ESA land cover classification in polygons in 2016
+226,esaLandCover2016_shrubland,shrubland ESA land cover classification in polygons in 2016
+227,esaLandCover2016_no_data,no data ESA land cover classification in polygons in 2016
+228,esaLandCover2016_rainfed_cropland,rainfed cropland ESA land cover classification in polygons in 2016
+229,esaLandCover2016_water_bodies,water bodies ESA land cover classification in polygons in 2016
+230,esaLandCover2016_forest,forest ESA land cover classification in polygons in 2016
+231,esaLandCover2016_wetland,wetland ESA land cover classification in polygons in 2016
+232,esaLandCover2016_mosaic_cropland,mosaic cropland ESA land cover classification in polygons in 2016
+233,esaLandCover2016_irrigated_cropland,irrigated cropland ESA land cover classification in polygons in 2016
+234,esaLandCover2016_snow_ice,snow ice ESA land cover classification in polygons in 2016
+235,esaLandCover2016_urban,urban ESA land cover classification in polygons in 2016
+236,modis_agriculture_2012,"agricultural land MODIS, total pixels divided by green Pixels in 2012"
+237,modis_total_area_2012,total pixels in 2012
+238,modis_urban_2012,"urban land MODIS, total pixels divided by gray Pixels in 2012"
+239,modis_agriculture_2013,"agricultural land MODIS, total pixels divided by green Pixels in 2013"
+240,modis_total_area_2013,total pixels in 2013
+241,modis_urban_2013,"urban land MODIS, total pixels divided by gray Pixels in 2013"
+242,modis_agriculture_2014,"agricultural land MODIS, total pixels divided by green Pixels in 2014"
+243,modis_total_area_2014,total pixels in 2014
+244,modis_urban_2014,"urban land MODIS, total pixels divided by gray Pixels in 2014"
+245,modis_agriculture_2015,"agricultural land MODIS, total pixels divided by green Pixels in 2015"
+246,modis_total_area_2015,total pixels in 2015
+247,modis_urban_2015,"urban land MODIS, total pixels divided by gray Pixels in 2015"
+248,modis_agriculture_2016,"agricultural land MODIS, total pixels divided by green Pixels in 2016"
+249,modis_total_area_2016,total pixels in 2016
+250,modis_urban_2016,"urban land MODIS, total pixels divided by gray Pixels in 2016"
+251,ghsl2015,pixel sum of the Global Human Settlement Layer population count in 2015
+252,gisa2012,Global Impervious Surface area by pixel in 2012
+253,gisa2013,Global Impervious Surface area by pixel in 2013
+254,gisa2014,Global Impervious Surface area by pixel in 2014
+255,gisa2015,Global Impervious Surface area by pixel in 2015
+256,gisa2016,Global Impervious Surface area by pixel in 2016
+257,gisa2017,Global Impervious Surface area by pixel in 2017
+258,gisa2018,Global Impervious Surface area by pixel in 2018
+259,gisa2019,Global Impervious Surface area by pixel in 2019
+260,travelTimeCity2016mean,mean distance to major city in minutes in 2016
+261,travelTimeCity2016max,max distance to major city in minutes in 2016
+262,travelTimeCity2016min,min distance to major city in minutes in 2016
+263,map_pf_incidence_rate.2012.max,max malaria rate per 1000 people in 2012
+264,map_pf_incidence_rate.2013.max,max malaria rate per 1000 people in 2013
+265,map_pf_incidence_rate.2014.max,max malaria rate per 1000 people in 2014
+266,map_pf_incidence_rate.2015.max,max malaria rate per 1000 people in 2015
+267,map_pf_incidence_rate.2016.max,max malaria rate per 1000 people in 2016
+268,map_pf_incidence_rate.2017.max,max malaria rate per 1000 people in 2017
+269,map_pf_incidence_rate.2018.max,max malaria rate per 1000 people in 2018
+270,map_pf_incidence_rate.2019.max,max malaria rate per 1000 people in 2019
+271,map_pf_incidence_rate.2012.mean,mean malaria rate per 1000 people in 2012
+272,map_pf_incidence_rate.2013.mean,mean malaria rate per 1000 people in 2013
+273,map_pf_incidence_rate.2014.mean,mean malaria rate per 1000 people in 2014
+274,map_pf_incidence_rate.2015.mean,mean malaria rate per 1000 people in 2015
+275,map_pf_incidence_rate.2016.mean,mean malaria rate per 1000 people in 2016
+276,map_pf_incidence_rate.2017.mean,mean malaria rate per 1000 people in 2017
+277,map_pf_incidence_rate.2018.mean,mean malaria rate per 1000 people in 2018
+278,map_pf_incidence_rate.2019.mean,mean malaria rate per 1000 people in 2019
+279,map_pf_incidence_rate.2012.min,min malaria rate per 1000 people in 2012
+280,map_pf_incidence_rate.2013.min,min malaria rate per 1000 people in 2013
+281,map_pf_incidence_rate.2014.min,min malaria rate per 1000 people in 2014
+282,map_pf_incidence_rate.2015.min,min malaria rate per 1000 people in 2015
+283,map_pf_incidence_rate.2016.min,min malaria rate per 1000 people in 2016
+284,map_pf_incidence_rate.2017.min,min malaria rate per 1000 people in 2017
+285,map_pf_incidence_rate.2018.min,min malaria rate per 1000 people in 2018
+286,map_pf_incidence_rate.2019.min,min malaria rate per 1000 people in 2019
+287,cru_ts_405_pre_yearly_mean.2012.min,min precipitation in millimeters in 2012
+288,cru_ts_405_pre_yearly_mean.2012.mean,mean precipitation in millimeters in 2012
+289,cru_ts_405_pre_yearly_mean.2012.max,max precipitation in millimeters in 2012
+290,cru_ts_405_pre_yearly_mean.2013.min,min precipitation in millimeters in 2013
+291,cru_ts_405_pre_yearly_mean.2013.mean,mean precipitation in millimeters in 2013
+292,cru_ts_405_pre_yearly_mean.2013.max,max precipitation in millimeters in 2013
+293,cru_ts_405_pre_yearly_mean.2014.min,min precipitation in millimeters in 2014
+294,cru_ts_405_pre_yearly_mean.2014.mean,mean precipitation in millimeters in 2014
+295,cru_ts_405_pre_yearly_mean.2014.max,max precipitation in millimeters in 2014
+296,cru_ts_405_pre_yearly_mean.2015.min,min precipitation in millimeters in 2015
+297,cru_ts_405_pre_yearly_mean.2015.mean,mean precipitation in millimeters in 2015
+298,cru_ts_405_pre_yearly_mean.2015.max,max precipitation in millimeters in 2015
+299,cru_ts_405_pre_yearly_mean.2016.min,min precipitation in millimeters in 2016
+300,cru_ts_405_pre_yearly_mean.2016.mean,mean precipitation in millimeters in 2016
+301,cru_ts_405_pre_yearly_mean.2016.max,max precipitation in millimeters in 2016
+302,cru_ts_405_pre_yearly_mean.2017.min,min precipitation in millimeters in 2017
+303,cru_ts_405_pre_yearly_mean.2017.mean,mean precipitation in millimeters in 2017
+304,cru_ts_405_pre_yearly_mean.2017.max,max precipitation in millimeters in 2017
+305,cru_ts_405_pre_yearly_mean.2018.min,min precipitation in millimeters in 2018
+306,cru_ts_405_pre_yearly_mean.2018.mean,mean precipitation in millimeters in 2018
+307,cru_ts_405_pre_yearly_mean.2018.max,max precipitation in millimeters in 2018
+308,cru_ts_405_pre_yearly_mean.2019.min,min precipitation in millimeters in 2019
+309,cru_ts_405_pre_yearly_mean.2019.mean,mean precipitation in millimeters in 2019
+310,cru_ts_405_pre_yearly_mean.2019.max,max precipitation in millimeters in 2019
+311,cru_ts_405_pre_yearly_mean.2020.min,min precipitation in millimeters in 2020
+312,cru_ts_405_pre_yearly_mean.2020.mean,mean precipitation in millimeters in 2020
+313,cru_ts_405_pre_yearly_mean.2020.max,max precipitation in millimeters in 2020
+314,modis_landcover_51.2012.categorical_barren_or_sparsely_vegetated,barren or sparsely vegetated categorical MODIS in 2012
+315,modis_landcover_51.2012.categorical_count,count categorical MODIS in 2012
+316,modis_landcover_51.2012.categorical_grasslands,grasslands categorical MODIS in 2012
+317,modis_landcover_51.2012.categorical_open_shrublands,open shrublands categorical MODIS in 2012
+318,modis_landcover_51.2012.categorical_water,water categorical MODIS in 2012
+319,modis_landcover_51.2012.categorical_evergreen_needleleaf_forest,evergreen needleleaf forest categorical MODIS in 2012
+320,modis_landcover_51.2012.categorical_evergreen_broadleaf_forest,evergreen broadleaf forest categorical MODIS in 2012
+321,modis_landcover_51.2012.categorical_deciduous_needleleaf_forest,deciduous needleleaf forest categorical MODIS in 2012
+322,modis_landcover_51.2012.categorical_deciduous_broadleaf_forest,deciduous broadleaf forest categorical MODIS in 2012
+323,modis_landcover_51.2012.categorical_mixed_forest,mixed forest categorical MODIS in 2012
+324,modis_landcover_51.2012.categorical_closed_shrublands,closed shrublands categorical MODIS in 2012
+325,modis_landcover_51.2012.categorical_woody_savannas,woody savannas categorical MODIS in 2012
+326,modis_landcover_51.2012.categorical_savannas,savannas categorical MODIS in 2012
+327,modis_landcover_51.2012.categorical_permanent_wetlands,permanent wetlands categorical MODIS in 2012
+328,modis_landcover_51.2012.categorical_croplands,croplands categorical MODIS in 2012
+329,modis_landcover_51.2012.categorical_urban_and_builtup,urban and builtup categorical MODIS in 2012
+330,modis_landcover_51.2012.categorical_cropland_natural_vegetation_mosaic,cropland natural vegetation mosaic categorical MODIS in 2012
+331,modis_landcover_51.2012.categorical_snow_and_ice,snow and ice categorical MODIS in 2012
+332,photov2019mean,mean photovoltaic potential in kWh/kWp in 2019
+333,photov2019max,max photovoltaic potential in kWh/kWp in 2019
+334,photov2019min,min photovoltaic potential in kWh/kWp in 2019
+335,elev2017mean,Mean elevation in meters in 2017
+336,elev2017max,Max elevation in meters in 2017
+337,elev2017min,Min elevation in meters in 2017
+338,distanceRoad2017mean,mean distance to road in meters in 2017
+339,distanceRoad2017max,max distance to road in meters in 2017
+340,distanceRoad2017min,min distance to road in meters in 2017
+341,slope500m2017mean,mean slope in degrees in 2017
+342,slope500m2017max,max slope in degrees in 2017
+343,slope500m2017min,min slope in degrees in 2017
+344,dist_water2017mean,mean distance to water in meters in 2017
+345,dist_water2017max,max distance to water in meters in 2017
+346,dist_water2017min,min distance to water in meters in 2017

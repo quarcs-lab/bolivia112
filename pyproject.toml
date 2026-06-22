@@ -1,0 +1,52 @@
+[project]
+name = "ds4bolivia"
+version = "0.1.0"
+description = "A Data Science Repository to Study GeoSpatial Development in Bolivia"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+authors = [
+    {name = "Carlos Mendez"},
+    {name = "Erick Gonzales"},
+    {name = "Pedro Leoni"},
+    {name = "Lykke Andersen"},
+    {name = "Hendrix Peralta"},
+]
+
+dependencies = [
+    # Core data science
+    "pandas>=2.0",
+    "numpy>=1.24",
+    # Visualization
+    "matplotlib>=3.7",
+    "seaborn>=0.12",
+    "plotly>=5.15",
+    # Spatial analysis
+    "geopandas>=0.14",
+    "folium>=0.14",
+    "contextily>=1.4",
+    "libpysal>=4.9",
+    "mapclassify>=2.6",
+    "esda>=2.5",
+    "splot>=1.1",
+    "mgwr>=2.2",
+    "inequality>=1.0",
+    # Machine learning
+    "scikit-learn>=1.3",
+    "statsmodels>=0.14",
+    "xgboost>=2.0",
+    "optuna>=3.3",
+    # Jupyter
+    "jupyter>=1.0",
+    "notebook>=7.0",
+    "jupytext>=1.19.1",
+]
+
+[project.urls]
+Repository = "https://github.com/quarcs-lab/ds4bolivia"
+
+[tool.uv]
+constraint-dependencies = [
+    "numba>=0.60,<0.62",
+    "llvmlite>=0.44,<0.45",
+]

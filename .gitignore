@@ -1,0 +1,21 @@
+# R
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Virtual environment (UV)
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
