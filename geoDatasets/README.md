@@ -4,7 +4,10 @@
 
 This directory is designated for geospatial datasets in various GIS formats (GeoJSON, Shapefile, GeoPackage, etc.) covering Bolivia's 112 provinces. Currently, the main geospatial data is stored in the [maps/](../maps/) directory.
 
-> **Note:** Province values are population-weighted aggregations of the municipal data (see [../province_aggregation_report.md](../province_aggregation_report.md)).
+> **Note:** This folder is an **empty placeholder** — the repository's geospatial data currently lives
+> in [`../maps/`](../maps/) (province boundaries **generated** from the GADM ADM2 GeoPackage and matched
+> to `prov_id` by name — not aggregated). The tabular *data* folders use population-weighted
+> aggregation; see [../province_aggregation_report.md](../province_aggregation_report.md).
 
 ## Current Status
 

@@ -10,8 +10,10 @@ INE `mun_id`).
 
 > 📊 **How the data was built:** see [`province_aggregation_report.md`](province_aggregation_report.md).
 > Intensive variables (indices, rates, per-capita, embeddings) are population-weighted means; extensive
-> variables (population, CO₂, land-cover/area counts) are summed. SDG variables are weighted by the
-> Municipal Atlas `population_2020`; all other variables by the year-matched `pop/pop.csv` series.
+> variables (population, CO₂, land-cover/area counts) are summed. All variables are weighted by the
+> INE `pop/pop.csv` series — SDG variables by `pop2020`, others year-matched — and the `population_2020`
+> column equals INE pop2020. Province cells with no municipal data for an SDG variable are imputed from
+> the department's pop-weighted mean and flagged (`<var>_imputed`).
 > Everything is reproducible via [`code/build_bolivia112.py`](code/build_bolivia112.py).
 
 This repository is organized for researchers and data scientists interested in:
@@ -78,12 +80,43 @@ All province datasets use **`prov_id`** as the primary join key.
 | **[notebooks](notebooks/)** | Province-level ESDA / spatial analysis tutorials | [README](notebooks/README.md) |
 | **[apps](apps/)** | Interactive GeoExplorer (province) | [README](apps/README.md) |
 
+### How each dataset was aggregated & generated
+
+Each folder's README carries the full detail; this is the one-line summary. "Aggregation" means
+municipality → province (339 → 112) — see [`province_aggregation_report.md`](province_aggregation_report.md)
+and the per-variable table [`code/aggregation_rules.csv`](code/aggregation_rules.csv).
+
+| Dataset | Aggregation (rule · weight) | Generated from (original source) |
+| :--- | :--- | :--- |
+| `regionNames` | not aggregated — derived identifiers | INE `mun_id` + `code/provinceNames.csv` (GADM/INE/Wikipedia cross-checked) |
+| `sdg`, `sdgVariables` | population-weighted mean · `pop2020`; all-NaN cells imputed (dept mean) + flagged | Atlas Municipal de los ODS — Andersen et al. (2020), SDSN Bolivia |
+| `pop` | **sum** (extensive count) | `code/archive_stata_code/040_*.do` from a raw export — *provider not documented in repo* |
+| `ntl` | population-weighted mean of **ln** values · year-matched `pop` | VIIRS night-time lights → `030_*.do` / `060_*.do` (HP trend λ=400) |
+| `satelliteEmbeddings` | population-weighted mean · `pop2017` (`pop_sum` summed in the popWeighted file) | Google Satellite Embeddings V1 (2017) via GEE — `code/aggregate-satellite-embedings-to-adm*.js` |
+| `datasets` | join of `sdg` + `satelliteEmbeddings` (rules inherited) | as above |
+| `gdp` | **not aggregated** — attached as-is | GADM ADM2 GeoPackage (already province-level) — *original GDP method not documented in repo* |
+| `maps` | not aggregated — geometry | GADM ADM2 GeoPackage; polygons matched to `prov_id` by name |
+| **master** `bolivia112_v*.csv` | per-variable via `classify()` — see below | all of the above, from `ds4bolivia` |
+
 ### Master files
+
+`bolivia112_v20260622.csv` gathers every municipal variable in one wide table. Each variable's
+**aggregation rule is recorded per-variable** in
+[`code/aggregation_rules.csv`](code/aggregation_rules.csv) (`varname, agg, weight, note`):
+
+- **`wmean`** (139) — intensive variables: all `sdg*`/`index_sdg*`/`imds`/`urbano_2012` weighted by
+  `pop2020`; `ln_NTLpc*`, embeddings, climate/elevation/distance `.mean`, MODIS ratios weighted by
+  year-matched `pop`.
+- **`sum`** (138) — extensive totals: `pop20YY`, `co20YY`, CO₂/land-cover/impervious-area pixel counts
+  (`population_2020` is set to INE `pop2020`).
+- **`min`/`max`** (32/32) — `.min`/`.max` companions of physical variables.
+- **`recompute`** (1) — `rank_imds`, re-ranked over the 112 provinces.
+- All-NaN SDG cells are **imputed** (department pop-weighted mean) and flagged via `<var>_imputed`.
 
 | File | Description |
 | :--- | :--- |
-| `bolivia112_v20260622.csv` | All 342 aggregated variables in one wide table (112 × 347) |
-| `definitions_bolivia112_v20260622.csv` | Variable dictionary |
+| `bolivia112_v20260622.csv` | All 342 aggregated variables (+5 `<var>_imputed` flags) in one wide table (112 × 352) |
+| `definitions_bolivia112_v20260622.csv` | Variable dictionary (one row per column) |
 
 ---
 

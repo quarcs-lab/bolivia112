@@ -4,21 +4,32 @@
 
 This directory contains detailed Sustainable Development Goal (SDG) variables for Bolivia's 112 provinces. Unlike the aggregated SDG indices in [sdg/](../sdg/), this dataset includes the underlying individual indicators that compose each SDG index, providing granular data for in-depth analysis.
 
-> **Note:** Province values are population-weighted aggregations of the underlying municipal data (intensive variables = weighted mean, extensive variables = sum). See [../province_aggregation_report.md](../province_aggregation_report.md) for details.
+> **Note:** Province values are population-weighted aggregations of the underlying municipal data, weighted by INE `pop2020` (intensive variables = weighted mean, extensive variables = sum). `population_2020` is the INE 2020 population (= Σ municipal `pop2020`, consistent with `pop/pop.csv`). See [../province_aggregation_report.md](../province_aggregation_report.md) for details.
 
 ## Files
 
 ### sdgVariables.csv
 
-Contains 64 detailed SDG variables plus population and urbanization data for all 112 provinces.
+Contains 64 detailed SDG variables plus population and urbanization data for all 112 provinces. Five
+`<var>_imputed` boolean flag columns mark province cells that were imputed because *all* their
+municipalities lacked that indicator (see **Missing values** below).
 
 ## Variable Dictionary
 
-| Variable Name | Description |
-| --- | --- |
-| **prov_id** | Province identifier (3-digit INE code) for joining datasets |
-| **population_2020** | Population 2020 |
-| **urbano_2012** | Urbanization rate, 2012 (% of population) |
+The core columns aggregate differently from the SDG indicators, so their rule is shown explicitly:
+
+| Variable Name | Description | Aggregation (municipality → province) |
+| --- | --- | --- |
+| **prov_id** | Province identifier (3-digit INE code) for joining datasets | province key (first 3 digits of `mun_id`) |
+| **population_2020** | Population 2020 (INE; = Σ municipal `pop2020`, consistent with `pop/pop.csv`) | **set to INE `pop2020`** (sum of municipal `pop2020`) |
+| **urbano_2012** | Urbanization rate, 2012 (% of population) | population-weighted mean · `pop2020` |
+
+> **All `sdg*` indicators listed below** share one rule — **population-weighted mean weighted by
+> `pop2020`** (`prov = Σ xᵢ·pop2020ᵢ / Σ pop2020ᵢ`). The only exceptions are the five indicators that
+> are fully missing for some province and are therefore **imputed** (each carries a companion
+> `<var>_imputed` flag): `sdg1_1_eepr`, `sdg8_4_rem`, `sdg10_2_iec`, `sdg2_4_pual`, `sdg2_4_td` — see
+> **Missing values & imputation** in the Notes. The per-variable rules are also machine-readable in
+> [`../code/aggregation_rules.csv`](../code/aggregation_rules.csv).
 
 ### SDG 1: No Poverty
 
@@ -199,14 +210,48 @@ gender_parity_vars = [col for col in df_sdg_vars.columns if 'sdg5' in col]
 df_gender = df_sdg_vars[['prov_id'] + gender_parity_vars]
 ```
 
-## Data Source
+## How these variables were aggregated & generated
 
-SDG indicators are originally constructed by:
+**Generated (original source → municipal indicator).** The granular SDG indicators are constructed at
+the **municipal** level (339 municipalities) by the *Atlas Municipal de los Objetivos de Desarrollo
+Sostenible en Bolivia 2020*:
 
-**Andersen, L. E., Canelas, S., Gonzales, A., Peñaranda, L. (2020)**
-*Atlas municipal de los Objetivos de Desarrollo Sostenible en Bolivia 2020*
-La Paz: Universidad Privada Boliviana, SDSN Bolivia
-Available at: [https://atlas.sdsnbolivia.org](https://atlas.sdsnbolivia.org)
+> Andersen, L. E., Canelas, S., Gonzales, A., Peñaranda, L. (2020). *Atlas municipal de los Objetivos
+> de Desarrollo Sostenible en Bolivia 2020.* La Paz: Universidad Privada Boliviana, SDSN Bolivia.
+> [https://atlas.sdsnbolivia.org](https://atlas.sdsnbolivia.org)
+
+`bolivia112` consumes these municipal indicators from
+[`ds4bolivia`](https://github.com/quarcs-lab/ds4bolivia).
+
+**Aggregated (municipality → province).** Performed by `build_curated()` in
+[`../code/build_bolivia112.py`](../code/build_bolivia112.py):
+
+- All `sdg*` indicators and `urbano_2012` → **population-weighted mean weighted by `pop2020`** (rule
+  `wmean`, weight `2020`).
+- `population_2020` → **set to INE `pop2020`** (the sum of municipal `pop2020`), so it matches
+  [`../pop/pop.csv`](../pop/README.md).
+- Province cells with **no municipal data at all** are **imputed** from the department's pop-weighted
+  mean and flagged — see **Missing values & imputation** in the Notes.
+
+Full method: [../province_aggregation_report.md](../province_aggregation_report.md).
+
+## Aggregation caveats (statistical)
+
+A statistician's audit of this aggregation is in
+[`../sdg_aggregation_audit.md`](../sdg_aggregation_audit.md). Key points for users:
+
+- **Weights are approximate for many indicators.** 36 of 62 indicators are rates whose true
+  denominator is *not* total population (households, children, women, enrolled pupils, land/forest
+  area, …) yet are population-weighted by `pop2020`. Check
+  [`sdg_reference_populations.csv`](sdg_reference_populations.csv) — the `weight_is_approximate` flag
+  marks these — and [`../code/sdg_aggregation_sensitivity.csv`](../code/sdg_aggregation_sensitivity.csv)
+  to see which are also empirically weight-sensitive.
+- **Areal rates are area-weighted** (`sdg15_1_pa`, `sdg13_2_dra`, `sdg15_5_blr`), not pop-weighted —
+  exact for `sdg15_1_pa`, a land-area proxy for the two forest rates.
+- **Imputed cells** (`<var>_imputed = True`) are synthetic — exclude them from inferential/spatial
+  models or model the flag.
+- **Low support / single-municipality provinces:** some province values rest on one municipality; see
+  the audit for the support diagnostics.
 
 ## Relationship to Other Datasets
 
@@ -220,8 +265,8 @@ Use `prov_id` (3-digit INE province code) to join this dataset with other datase
 
 ## Notes
 
-- Province values are population-weighted aggregations of the underlying municipal data (intensive variables = weighted mean, extensive variables = sum); see [../province_aggregation_report.md](../province_aggregation_report.md)
+- Province values are population-weighted aggregations of the underlying municipal data, weighted by INE `pop2020` (intensive variables = weighted mean, extensive variables = sum); see [../province_aggregation_report.md](../province_aggregation_report.md)
 - This dataset provides the granular indicators that compose the SDG indices
-- Some variables have missing values for certain provinces due to data availability
+- **Missing values & imputation:** where only *some* municipalities lack an indicator, the weighted mean simply renormalizes over those with data. Where *all* municipalities of a province lack an indicator, the province value is **imputed** with the pop-weighted mean of the same department's provinces that have data, and the `<var>_imputed` flag is set to `True`. Eight cells are imputed: `sdg1_1_eepr`, `sdg8_4_rem`, `sdg10_2_iec` for **904 (Abuná)** & **905 (Federico Román)** (Pando); `sdg2_4_pual`, `sdg2_4_td` for **301 (Cercado, Cochabamba)**. To analyze only observed data, filter out rows where the relevant `<var>_imputed` is `True`.
 - Years of measurement vary by indicator (2012-2019)
 - Units and scales differ across variables - always check the description

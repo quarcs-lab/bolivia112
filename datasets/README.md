@@ -4,7 +4,11 @@
 
 This directory contains merged datasets that combine multiple data sources for comprehensive spatial analysis of Bolivia's provinces.
 
-> **Note:** Province values are population-weighted aggregations of the underlying municipal data (intensive variables = weighted mean, extensive variables = sum). See [../province_aggregation_report.md](../province_aggregation_report.md) for details.
+> **Note:** This file is a **join** (on `prov_id`) of two *already-aggregated* province tables —
+> `sdg/sdg.csv` and `satelliteEmbeddings/satelliteEmbeddings2017.csv` — so each column keeps the
+> aggregation of its source (SDG indices: pop-weighted mean · `pop2020`; embeddings: pop-weighted mean
+> · `pop2017`). See **How these variables were aggregated & generated** below and
+> [../province_aggregation_report.md](../province_aggregation_report.md).
 
 ## Files
 
@@ -71,11 +75,20 @@ y = df['index_sdg1']  # No Poverty index
 assert df['prov_id'].nunique() == 112
 ```
 
-## Data Sources
+## How these variables were aggregated & generated
 
-- **SDG Data**: [Atlas Municipal de los ODS Bolivia](https://atlas.sdsnbolivia.org), aggregated from 339 municipalities to 112 provinces using population weighting (see [../province_aggregation_report.md](../province_aggregation_report.md))
-- **Satellite Embeddings**: Google Earth Engine Satellite Embeddings V1
-- **Administrative Boundaries**: Bolivia 112 provinces shapefile
+This file is **not aggregated separately** — `build_datasets()` in
+[`../code/build_bolivia112.py`](../code/build_bolivia112.py) builds it as an inner join on `prov_id`
+of two already-aggregated province tables, so each column inherits the rule of its source:
+
+| Columns | Source table | Generated from (original source) | Aggregation (municipality → province) |
+|---|---|---|---|
+| `imds`, `index_sdg1…17` | [`../sdg/sdg.csv`](../sdg/README.md) | Atlas Municipal de los ODS, SDSN Bolivia — Andersen et al. (2020) | population-weighted mean · `pop2020` |
+| `A00`–`A63` | [`../satelliteEmbeddings/`](../satelliteEmbeddings/README.md) | Google Satellite Embeddings V1 ANNUAL (2017) via Google Earth Engine | population-weighted mean · `pop2017` |
+| `prov_id, prov, dep, dep_id, dep_prov` | [`../regionNames/`](../regionNames/README.md) | derived INE identifiers | not aggregated (join keys) |
+
+See each source README and [../province_aggregation_report.md](../province_aggregation_report.md) for
+full detail.
 
 ## Join Key
 

@@ -4,7 +4,7 @@
 
 This directory contains the data processing scripts and machine learning models used to construct datasets and perform poverty predictions in **bolivia112**, the province-level (112 provinces) replication of the municipal [ds4bolivia](https://github.com/quarcs-lab/ds4bolivia) repository. The scripts are organized by type and function.
 
-> **Note:** All province values are **population-weighted aggregations** of the underlying municipal data (intensive variables = weighted mean, extensive variables = sum), keyed by `prov_id`. See [../province_aggregation_report.md](../province_aggregation_report.md) for the full methodology.
+> **Note:** `build_bolivia112.py` aggregates municipality → province as follows: **intensive** variables → population-weighted mean (SDGs by `pop2020`; others by year-matched `pop`); **extensive** variables → sum; GDP and geometry → attached as-is. The per-variable rule for every column lives in [`aggregation_rules.csv`](aggregation_rules.csv); see also the dataset summary in the [main README](../README.md) and the full [province aggregation report](../province_aggregation_report.md).
 
 ## Scripts Overview
 
@@ -16,7 +16,8 @@ Builds the entire `bolivia112` dataset by aggregating the 339 municipal tables o
 
 **Functionality:**
 - Aggregates municipal data to provinces using **population-weighted aggregation** (intensive variables = weighted mean, extensive variables = sum; `min`/`max` companions kept as min/max)
-- Weights SDG-related variables by `population_2020` and all other variables by year-matched `pop/pop.csv`
+- Weights **all** variables by the INE `pop/pop.csv` series — SDG-related variables by `pop2020`, all others year-matched — and sets the `population_2020` column to INE pop2020 (= Σ municipal `pop2020`)
+- Imputes all-NaN SDG cells with the pop-weighted department mean and flags them via `<var>_imputed` columns
 - Reproduces every province CSV with the same filenames and column schemas as `ds4bolivia`
 - Recomputes derived fields (e.g. `rank_imds`) at the province level
 - Idempotent: re-running reproduces the same outputs

@@ -4,7 +4,7 @@
 
 This directory contains composite indices measuring progress toward the United Nations Sustainable Development Goals (SDGs) for Bolivia's 112 provinces. These indices provide a comprehensive view of social, economic, and environmental development at the provincial level.
 
-> **Note:** Province values are population-weighted aggregations of the underlying municipal data (intensive variables = weighted mean, extensive variables = sum). See [../province_aggregation_report.md](../province_aggregation_report.md).
+> **Note:** Every value here is the **population-weighted mean** of a province's municipalities, weighted by **`pop2020`** (all columns are intensive 0–100 indices). Original source: the *Atlas Municipal de los ODS* (SDSN Bolivia). See **How these variables were aggregated & generated** below and [../province_aggregation_report.md](../province_aggregation_report.md).
 
 ## Files
 
@@ -70,14 +70,37 @@ df_sdg['avg_sdg'] = df_sdg[sdg_cols].mean(axis=1)
 low_sdg = df_sdg[df_sdg['avg_sdg'] < 50]
 ```
 
-## Data Source
+## How these variables were aggregated & generated
 
-SDG indicators are originally constructed by:
+**Generated (original source → municipal index).** The SDG indices are constructed at the
+**municipal** level (339 municipalities) by the *Atlas Municipal de los Objetivos de Desarrollo
+Sostenible en Bolivia 2020*:
 
-**Andersen, L. E., Canelas, S., Gonzales, A., Peñaranda, L. (2020)**
-*Atlas municipal de los Objetivos de Desarrollo Sostenible en Bolivia 2020*
-La Paz: Universidad Privada Boliviana, SDSN Bolivia
-Available at: [https://atlas.sdsnbolivia.org](https://atlas.sdsnbolivia.org)
+> Andersen, L. E., Canelas, S., Gonzales, A., Peñaranda, L. (2020). *Atlas municipal de los Objetivos
+> de Desarrollo Sostenible en Bolivia 2020.* La Paz: Universidad Privada Boliviana, SDSN Bolivia.
+> [https://atlas.sdsnbolivia.org](https://atlas.sdsnbolivia.org)
+
+Each `index_sdg*` and the composite `imds` is a 0–100 score. `bolivia112` consumes the municipal
+values from [`ds4bolivia`](https://github.com/quarcs-lab/ds4bolivia) and rolls them up to provinces.
+
+**Aggregated (municipality → province).** Every column is **intensive**, so each province value is the
+**population-weighted mean of its municipalities, weighted by `pop2020`** (the 2020 population series
+in [`../pop/pop.csv`](../pop/README.md)):
+
+```
+prov_value = Σ(xᵢ · pop2020ᵢ) / Σ(pop2020ᵢ)     over municipalities i that have data
+```
+
+This is performed by `build_curated()` in [`../code/build_bolivia112.py`](../code/build_bolivia112.py)
+(rule `wmean`, weight `2020` in [`../code/aggregation_rules.csv`](../code/aggregation_rules.csv)).
+`sdg.csv` has no missing cells, so no imputation is applied here (see
+[`../sdgVariables/README.md`](../sdgVariables/README.md) for the imputation rule that applies to the
+granular indicators). Full method: [../province_aggregation_report.md](../province_aggregation_report.md).
+
+> **Statistical caveat.** `imds` and `index_sdg*` are population-weighted **means of the municipal
+> index values**, not indices recomputed from province indicators via the SDSN normalisation (whose
+> bounds are not in this repo). Read them as averaged municipal indices. See the audit:
+> [`../sdg_aggregation_audit.md`](../sdg_aggregation_audit.md) (finding 3).
 
 ## Detailed Variables
 

@@ -1,0 +1,63 @@
+varname,varlabel,statistical_type,reference_population,weight_used,weight_is_approximate,note
+sdg1_1_eepr,"Extreme energy poverty rate, 2016 (% of houses)",rate_proportion,households,pop2020,True,% of houses
+sdg1_1_ubn,"Unsatisfied basic needs, 2012 (% of population)",rate_proportion,total_population,pop2020,False,
+sdg1_2_mpi,"Multidimensional poverty index, 2012",index,total_population,pop2020,False,composite index
+sdg1_4_abs,"Access to the 3 basic services, 2012 (% of households)",rate_proportion,households,pop2020,True,% of households
+sdg2_2_cmc,"Chronic malnutrition in children (< 5 years), 2016 (%)",rate_proportion,children_under_5,pop2020,True,
+sdg2_2_oww,"Obesity in women (15-49 years), 2016 (%)",rate_proportion,women_15_49,pop2020,True,
+sdg2_4_pual,"Average area per Production Unit Agriculture and Livestock, 2013 (ha)",mean_per_unit,agricultural_units_UPA,pop2020,True,mean ha per UPA; should weight by #UPAs
+sdg2_4_td,"Tractor density, 2013 (per 1,000 UPAs)",density_per_unit,agricultural_units_UPA,pop2020,True,"per 1,000 UPAs"
+sdg3_1_idca,"Institutional childbirth coverage, average 2008-2012 (%)",rate_proportion,births,pop2020,True,institutional childbirth coverage
+sdg3_2_imr,"Infant mortality rate (< 1 year), 2016 (per. 1,000 live births)",rate_proportion,live_births,pop2020,True,"per 1,000 live births"
+sdg3_2_mrc,"Children mortality rate in (< 5 years), 2016 (per. 1,000 live births)",rate_proportion,live_births,pop2020,True,"per 1,000 live births"
+sdg3_3_cdir,"Chagas disease infestation rate, 2017 (% of households)",rate_proportion,households,pop2020,True,% of households
+sdg3_3_di,"Dengue incidence, 2018 (per 10,000 population)",incidence_per_capita,total_population,pop2020,False,"per 10,000 pop"
+sdg3_3_imr,"Malaria incidence, average 2014-17 (per 1,000 population)",incidence_per_capita,total_population,pop2020,False,"per 1,000 pop"
+sdg3_3_ti,"Tuberculosis incidence, 2017 (per 100,000 population)",incidence_per_capita,total_population,pop2020,False,"per 100,000 pop"
+sdg3_3_hivi,"HIV incidence, average 2014-17 (per 1,000,00 population)",incidence_per_capita,total_population,pop2020,False,"per 1,000,000 pop"
+sdg3_7_afr,"Adolescent fertility rate (15-19 years), 2012 (births per 1,000 women)",rate_proportion,women_15_19,pop2020,True,"births per 1,000 women 15-19"
+sdg4_1_ssdrm,"Secondary school dropout rate, male, 2017 (% of enrolled)",rate_proportion,enrolled_secondary_male,pop2020,True,% of enrolled
+sdg4_1_ssdrf,"Secondary school dropout rate, females, 2017 (% of enrolled)",rate_proportion,enrolled_secondary_female,pop2020,True,% of enrolled
+sdg4_4_phe,"Population with higher education (>= 19 years), 2012 (%)",rate_proportion,population_19plus,pop2020,True,mild: age-restricted denom ~ total pop
+sdg4_6_lr,"Literacy rate for (>= 15 years), 2012 (%)",rate_proportion,population_15plus,pop2020,True,mild: age-restricted denom ~ total pop
+sdg4_c_qti,"Qualified teachers at the initial level, 2016 (%)",rate_proportion,teachers_initial,pop2020,True,% of teachers
+sdg4_c_qts,"Qualified teachers at the secondary level, 2016",rate_proportion,teachers_secondary,pop2020,True,% of teachers
+sdg5_1_gpsd,"Gender parity in school dropouts in  secondary school, 2017",parity_index,total_population,pop2020,False,gender-parity ratio
+sdg5_1_gpyp,"Gender parity in years of education of young people (25-35 years old), 2012. (25",parity_index,total_population,pop2020,False,gender-parity ratio
+sdg5_1_gpmpi,"Gender Parity in the Multidimensional Poverty Index, 2012",parity_index,total_population,pop2020,False,gender-parity ratio
+sdg5_5_gpop,"Gender parity in the overall participation rate (>=10 years), 2012",parity_index,total_population,pop2020,False,gender-parity ratio
+sdg6_1_dwc,"Drinking water coverage, 2017 (% of population)",rate_proportion,total_population,pop2020,False,
+sdg6_2_sc,"Sanitation coverage, 2017 (% of population)",rate_proportion,total_population,pop2020,False,
+sdg6_3_wwt,"Wastewater treatment, 2017 (% of wastewater) wastewater)",rate_proportion,wastewater_volume,pop2020,True,% of wastewater
+sdg7_1_ec,"Electricity coverage, 2012 (% of population) population)",rate_proportion,total_population,pop2020,False,
+sdg7_1_rec,"Residential electricity consumption per capita, 2016 (kWh/person/year)",per_capita_level,total_population,pop2020,False,kWh per person
+sdg7_1_cce,"Clean cooking energy, 2012 (% of households)",rate_proportion,households,pop2020,True,% of households
+sdg7_3_co2epc,"CO2 emissions per capita by energy, 2016. (tCO2/person/year)",per_capita_level,total_population,pop2020,False,tCO2 per person
+sdg8_4_rem,"Residential electric meters with zero consumption, 2016 (%)",rate_proportion,electric_meters,pop2020,True,% of meters
+sdg8_5_oprm,"Overall participation rate males (>= 10 years), 2012 (%)",rate_proportion,males_10plus,pop2020,True,
+sdg8_5_ofrm,"Overall female participation rate (>= 10 years), 2012 (%)",rate_proportion,females_10plus,pop2020,True,
+sdg8_6_mlm,"Men who do not study or participate in the labor market (15-24 years), 2012 (%)",rate_proportion,men_15_24,pop2020,True,
+sdg8_6_wlm,"Women who do not study or participate in the labor market (15-24 years),2012 (%)",rate_proportion,women_15_24,pop2020,True,
+sdg8_10_dbb,"Density of bank branches, 2018 (per 100,000 inhabitants)",density_per_capita,total_population,pop2020,False,"per 100,000 inhabitants"
+sdg8_11_idi,"Index of the degree of intermediation in migration, 2012",index,total_population,pop2020,False,composite index
+sdg9_1_routes,"Number of railways/primary roads entering/leaving the municipality, 2019",count_extensive,none_count,pop2020,True,extensive count aggregated as weighted mean (audit finding 4)
+sdg9_5_cd,"Kuaa computers delivered, 2016 (per 100 school-age population, 6-19 years)",density_per_subpopulation,school_age_6_19,pop2020,True,per 100 school-age 6-19
+sdg9_5_eutf,"Educational units with technological floors, 2016 (%)",rate_proportion,educational_units,pop2020,True,% of educational units
+sdg9_c_mnc,"Fixed and mobile network coverage, 2012 (% of households)",rate_proportion,households,pop2020,True,% of households
+sdg9_c_drb,"Density of radio bases, 2016 (number of radio bases per 1000 inhabitants)",density_per_capita,total_population,pop2020,False,"per 1,000 inhabitants"
+sdg10_2_gcye,"GINI coefficient of years of education, 2012",inequality_index,total_population,pop2020,False,Gini of education
+sdg10_2_iec,"Inequality in electricity consumption, 2016",inequality_index,total_population,pop2020,False,inequality of electricity use
+sdg10_2_nssp,"Non-Spanish speaking population (>= 3 years), 2012 (%)",rate_proportion,population_3plus,pop2020,True,mild: age-restricted denom ~ total pop
+sdg11_1_hocr,"Overcrowding rate, 2012 (% of households)",rate_proportion,households,pop2020,True,% of households
+sdg11_1_hno,"Households that do not have a toilet, bathroom or latrine, 2012 (%) latrine, 201",rate_proportion,households,pop2020,True,% of households
+sdg11_2_samt,"Seats available for mass transit, 2017 (per 1,000 inhabitants)",density_per_capita,total_population,pop2020,False,"per 1,000 inhabitants"
+sdg13_1_ccvi,"Climate change vulnerability Index, 2015",index,total_population,pop2020,False,composite index
+sdg13_2_tco2e,"Total CO2 emissions per capita, 2016 (tCO2/person/year)",per_capita_level,total_population,pop2020,False,tCO2 per person
+sdg13_2_dra,"Deforestation rate, average 2016-2018 (% of forest area 2015)",areal_rate,forest_area,area,True,proxy: total land area used for forest area
+sdg15_1_pa,"Protected areas, 2019 (% of the municipality's land area) municipality)",areal_rate,land_area,area,False,exact: total municipal land area
+sdg15_5_blr,"Biodiversity loss rate due to deforestation deforestation, average 2016-2018",areal_rate,forest_area,area,True,proxy: total land area used for forest area
+sdg16_1_rhr,"Registered homicide rate, average 2015-2017. (per 100,000 inhabitants)",incidence_per_capita,total_population,pop2020,False,"per 100,000 inhabitants"
+sdg16_6_pbec,"Programmed budget execution capacity, 2017 (%)",rate_proportion,budget_lines,pop2020,True,% of programmed budget
+sdg16_9_cr,"Children registered in the civil registry (< 5 years), 2012 (%)",rate_proportion,children_under_5,pop2020,True,
+sdg17_1_pmtax,"Proportion of municipal revenues that come from local taxes, 2017 (%)",rate_proportion,municipal_revenue,pop2020,True,% of municipal revenues
+sdg17_5_pipc,"Public investment per capita, 2017 (Bs./person)",per_capita_level,total_population,pop2020,False,Bs per person

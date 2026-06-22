@@ -4,7 +4,7 @@
 
 This directory contains night-time lights (NTL) data for Bolivia's 112 provinces from 2012 to 2020. Night-time lights are a widely-used proxy for economic activity, electrification, and urbanization.
 
-> **Note**: Province values are population-weighted aggregations of the underlying municipal data (intensive variables use a weighted mean; extensive variables are summed). See the [province aggregation report](../province_aggregation_report.md) for details.
+> **Note**: Each value is **log NTL per capita** (intensive). Province values are the **population-weighted mean of the municipal ln values**, weighted by the **year-matched** population (e.g. `ln_NTLpc2015` uses `pop2015`). See **How these variables were aggregated & generated** below and the [province aggregation report](../province_aggregation_report.md).
 
 ## Files
 
@@ -21,11 +21,28 @@ Night-time lights (NTL) data is captured by satellite sensors that detect artifi
 - **High Temporal Resolution**: Annual or more frequent observations
 - **Spatial Coverage**: Available for remote areas lacking traditional statistics
 
-## Data Sources
+## How these variables were aggregated & generated
 
-- **VIIRS (Visible Infrared Imaging Radiometer Suite)**: 2012-2020
-- **DMSP-OLS**: Historical data (pre-2012)
-- Processed through Google Earth Engine or similar platforms
+**Generated (original source → municipal series).**
+
+- **VIIRS (Visible Infrared Imaging Radiometer Suite)** — the conventional NTL sensor for 2012–2020
+  (**DMSP-OLS** for pre-2012 history).
+- The municipal series are produced by two Stata scripts: cleaning + Hodrick-Prescott trend in
+  [`../code/archive_stata_code/030_clean_and_estimate_NTL_trends.do`](../code/archive_stata_code/030_clean_and_estimate_NTL_trends.do),
+  then per-capita + log transform in
+  [`../code/archive_stata_code/060_compute_NTL_pc.do`](../code/archive_stata_code/060_compute_NTL_pc.do).
+  `bolivia112` consumes the municipal result from [`ds4bolivia`](https://github.com/quarcs-lab/ds4bolivia).
+
+> ⚠️ The cleaning script reads a raw satellite export (`…/rawData/NTL/<hash>_results.csv`); the exact
+> product/collection is **not re-stated in the script**. VIIRS is the standard product for this period
+> but is not independently confirmed in the repo.
+
+**Aggregated (municipality → province).** Each `ln_NTLpc*` / `ln_t400NTLpc*` is intensive and is
+aggregated as the **population-weighted mean of the municipal *ln* values** (the average is taken on
+the log scale directly, not on raw NTL), weighted by the **year-matched** population —
+`ln_NTLpc2015` → `pop2015`, etc. (rule `wmean` with the year as weight in
+[`../code/aggregation_rules.csv`](../code/aggregation_rules.csv), via `build_curated()` in
+[`../code/build_bolivia112.py`](../code/build_bolivia112.py)).
 
 ## Variable Dictionary
 
@@ -110,9 +127,13 @@ Use `prov_id` to join this dataset with other datasets in the repository.
 
 ## Processing Scripts
 
-See [code/030_clean_and_estimate_NTL_trends.do](../code/README.md) and [code/060_compute_NTL_pc.do](../code/README.md) for data processing details.
+Municipal series: [`../code/archive_stata_code/030_clean_and_estimate_NTL_trends.do`](../code/archive_stata_code/030_clean_and_estimate_NTL_trends.do)
+and [`../code/archive_stata_code/060_compute_NTL_pc.do`](../code/archive_stata_code/060_compute_NTL_pc.do).
+Province aggregation (`wmean` of the ln values): [`../code/build_bolivia112.py`](../code/build_bolivia112.py).
 
 ## References
+
+Methodology references (not the data source):
 
 - Henderson, J. V., Storeygard, A., & Weil, D. N. (2012). Measuring economic growth from outer space. American Economic Review, 102(2), 994-1028.
 - Elvidge, C. D., et al. (2017). VIIRS night-time lights. International Journal of Remote Sensing, 38(21), 5860-5879.

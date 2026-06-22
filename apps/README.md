@@ -4,7 +4,7 @@
 
 This directory contains interactive web applications built with Google Earth Engine (GEE) for visualizing spatial and temporal dynamics of development indicators across Bolivia's provinces.
 
-**Note:** Province values are population-weighted aggregations of the underlying municipal data (intensive variables use a weighted mean, extensive variables are summed). See [../province_aggregation_report.md](../province_aggregation_report.md).
+**Note:** Province values are population-weighted means for intensive variables (SDGs by `pop2020`; others by year-matched `pop`) and sums for extensive ones; GDP is attached as-is from the GADM GeoPackage. See the dataset summary in the [main README](../README.md) and the full [province aggregation report](../province_aggregation_report.md).
 
 ## Applications
 

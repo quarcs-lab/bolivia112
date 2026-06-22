@@ -4,7 +4,7 @@
 
 This directory contains annual population estimates for Bolivia's 112 provinces from 2001 to 2020. Population data is essential for per capita calculations, demographic analysis, and as a control variable in development studies.
 
-> **Note:** Province values are population-weighted aggregations of the underlying municipal data (population counts are summed across the municipalities that make up each province). See [../province_aggregation_report.md](../province_aggregation_report.md) for details.
+> **Note:** Population is an **extensive** count, so each province value is the **sum** of its municipalities' populations (no weighting). This `pop` series is itself the **weight** used to aggregate the other (intensive) datasets. See **How this data was aggregated & generated** below and [../province_aggregation_report.md](../province_aggregation_report.md).
 
 ## Files
 
@@ -12,14 +12,25 @@ This directory contains annual population estimates for Bolivia's 112 provinces 
 
 Contains estimated total population for each province across 20 years (2001-2020).
 
-## Data Sources
+## How this data was aggregated & generated
 
-Population estimates are derived from:
+**Generated (original source → municipal series).** The municipal population series is produced by
+[`../code/archive_stata_code/040_clean_and_estimate_Population_trends.do`](../code/archive_stata_code/040_clean_and_estimate_Population_trends.do),
+which cleans a raw export and estimates the 2001–2020 trend; `bolivia112` consumes the municipal
+result from [`ds4bolivia`](https://github.com/quarcs-lab/ds4bolivia).
 
-- **National Census Data**: Bolivia's national censuses (2001, 2012)
-- **Inter-censal Projections**: Statistical projections between census years
-- **Administrative Records**: Province-level demographic updates
-- **Satellite-based Estimates**: WorldPop, LandScan, or similar gridded population datasets
+> ⚠️ **Source provider not documented in this repo.** The processing script reads a raw export
+> (`…/rawData/Pop/<hash>_results.csv`) and does **not** name the original provider. Bolivian municipal
+> population is commonly sourced from the *Instituto Nacional de Estadística (INE)* census and
+> projections and/or gridded products such as *WorldPop* — but **neither is confirmed here**, so treat
+> the provider as unverified.
+
+**Aggregated (municipality → province).** Population is **extensive**, so each `pop20YY` column is the
+**sum** of its municipalities' populations (rule `sum` in
+[`../code/aggregation_rules.csv`](../code/aggregation_rules.csv), via `build_curated()` in
+[`../code/build_bolivia112.py`](../code/build_bolivia112.py)). National `pop2020` is conserved exactly
+(Σ municipal = Σ province = 11,877,664). Full method:
+[../province_aggregation_report.md](../province_aggregation_report.md).
 
 ## Variable Dictionary
 
@@ -120,10 +131,11 @@ df_merged['investment_pc_2017'] = df_merged['sdg17_5_pipc']  # Already per capit
 
 ## Data Quality Notes
 
-- **Census Years (2001, 2012)**: Higher confidence, direct enumeration
-- **Inter-censal Years**: Estimates based on projections with varying uncertainty
-- **Small Provinces**: Greater relative error in estimates for low-population areas
-- **Migration**: May not fully capture internal migration between provinces
+- **Small provinces**: greater relative uncertainty for low-population areas.
+- **Migration**: may not fully capture internal migration between provinces.
+- **Provider/method**: the original provider and estimation method are not documented in this repo
+  (see *How this data was aggregated & generated* above), so per-year confidence cannot be
+  characterized here.
 
 ## Join Key
 
@@ -131,9 +143,13 @@ Use `prov_id` to join this dataset with other datasets in the repository.
 
 ## Processing Scripts
 
-See [code/040_clean_and_estimate_Population_trends.do](../code/README.md) for data processing details.
+Municipal series: [`../code/archive_stata_code/040_clean_and_estimate_Population_trends.do`](../code/archive_stata_code/040_clean_and_estimate_Population_trends.do).
+Province aggregation (`sum`): [`../code/build_bolivia112.py`](../code/build_bolivia112.py).
 
 ## References
+
+> ⚠️ The links below are **possible** providers of Bolivian municipal population, listed for
+> orientation only — neither is confirmed as the source of this series in the repo.
 
 - Instituto Nacional de Estadística (INE) Bolivia: [https://www.ine.gob.bo](https://www.ine.gob.bo)
 - WorldPop Global Population Datasets: [https://www.worldpop.org](https://www.worldpop.org)

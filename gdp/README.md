@@ -4,7 +4,11 @@
 
 This directory contains Gross Domestic Product (GDP) per capita data at the province level for Bolivia, covering the 112 provinces.
 
-> **Note:** Province values are population-weighted aggregations of the municipal data (intensive variables such as GDP per capita use a population-weighted mean; extensive variables are summed). See the [province aggregation report](../province_aggregation_report.md) for details.
+> **Note:** GDP per capita here is **not aggregated from municipalities**. It is read **directly from
+> the GADM ADM2 GeoPackage** (`bolivia_adm2_gdp_perCapita_1990_2024.gpkg`) — whose ADM2 units already
+> *are* the 112 provinces — and attached as-is by `build_gdp()` (no weighting, no aggregation). This is
+> the one folder whose values are not produced by the population-weighted pipeline. See **How this data
+> was generated** below and the [province aggregation report](../province_aggregation_report.md).
 
 ## Current Status
 
@@ -15,7 +19,6 @@ This directory provides a long-run panel of GDP per capita estimates:
 Additional GDP-related information can be found in:
 
 - **[Interactive Dashboard](https://carlos-mendez.projects.earthengine.app/view/geoexplorer1v100bolivia)** - Visualizes GDP estimates along with other indicators
-- **Archive data**: [archive20250523/](../archive20250523/) - May contain historical GDP datasets
 
 ## Content
 
@@ -51,16 +54,22 @@ The `gdp_perCapita_1990_2024.csv` file contains the following variables (112 row
 | **dep_id** | Department identifier |
 | **gdppc1990 ... gdppc2024** | GDP per capita for each year from 1990 to 2024 |
 
-## Methodology
+## How this data was generated
 
-GDP estimates at the province level are derived by aggregating municipal estimates using population weights. The underlying municipal estimates are typically built from:
+**Attached, not aggregated.** Unlike every other folder, these values are **already province-level in
+the source** and are copied across unchanged — there is **no municipal→province aggregation and no
+population weighting**. `build_gdp()` in [`../code/build_bolivia112.py`](../code/build_bolivia112.py):
 
-- **Satellite-based proxies**: Night-time lights, building density, land use
-- **Machine learning models**: Using satellite embeddings to predict economic output
-- **Statistical downscaling**: Disaggregating department-level GDP to municipalities
-- **Survey-based estimates**: Household income and expenditure surveys
+1. Reads the GADM ADM2 GeoPackage `bolivia_adm2_gdp_perCapita_1990_2024.gpkg` (in [`../maps/`](../maps/)
+   or the repo root) — its ADM2 polygons are the 112 provinces, each carrying annual GDP-per-capita
+   fields for 1990–2024.
+2. Matches each polygon to `prov_id` by its `(dep_id, normalized province name)`.
+3. Renames the year columns to `gdppc1990 … gdppc2024` and writes the table.
 
-Per capita values are then combined into provinces as a population-weighted mean of the constituent municipalities.
+> ⚠️ **Original GDP source and estimation method are not documented in this repo.** The figures arrive
+> pre-computed inside the GeoPackage; how they were produced (e.g. satellite proxies, downscaling of
+> national accounts, surveys) is **not recorded here** — treat the methodology as unverified. The
+> reference below is a *general* method paper, **not** the source of these specific numbers.
 
 ## Join Key
 
@@ -85,7 +94,8 @@ print(df_merged[["prov_id", "prov", "gdppc2024"]].head())
 
 ## References
 
-For GDP estimation methodologies using satellite data, see:
+General methodology reference for satellite-based GDP estimation — **not** the source of these
+specific figures (which is undocumented in the repo, see above):
 
 - [Henderson, J. V., Storeygard, A., & Weil, D. N. (2012). Measuring economic growth from outer space](https://www.aeaweb.org/articles?id=10.1257/aer.102.2.994)
 - Main project README: [Data Integration Examples](../README.md)

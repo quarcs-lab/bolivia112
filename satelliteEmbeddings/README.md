@@ -5,7 +5,7 @@
 **Source Platform:** Google Earth Engine (GEE)  
 **Source Collection:** `GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL`  
 
-> **Note:** The province values in this folder are **population-weighted aggregations** of the underlying municipal embeddings. See [../province_aggregation_report.md](../province_aggregation_report.md) for the aggregation methodology.
+> **Note:** Each `A00`–`A63` is the **population-weighted mean** of the municipal embeddings, weighted by **`pop2017`**. The municipal embeddings are themselves the spatial mean of the 10 m Google Satellite Embeddings (2017). See **2. Methodology** below and [../province_aggregation_report.md](../province_aggregation_report.md).
 
 ## 1. Context & Overview
 
@@ -14,6 +14,10 @@ This dataset contains spatially aggregated "embedding" vectors derived from high
 ### Files
 
 **satelliteEmbeddings2017.csv** - Contains 65 columns: one identifier (prov_id) and 64 embedding dimensions (A00-A63) for all 112 provinces.
+
+**satelliteEmbeddings2017popWeighted.csv** - A variant (66 columns) whose municipal embeddings were
+**population-weighted within Google Earth Engine** (pixels weighted by WorldPop population) before the
+province roll-up; it adds a `pop_sum` column (summed). See **2. Methodology**.
 
 ### What are Satellite Embeddings?
 Unlike traditional satellite data that provides physical values (e.g., surface reflectance, temperature), these embeddings are the output of a deep learning model (a self-supervised Convolutional Neural Network). 
@@ -32,10 +36,21 @@ These 64 variables capture complex spatial patterns that simple indices like NDV
 
 ## 2. Methodology
 
-1.  **Source Data:** Google Satellite Embeddings V1 (Annual Mosaic 2017).
+1.  **Source Data (generation):** Google Satellite Embeddings V1 Annual Mosaic 2017 — GEE collection
+    `GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL` (a self-supervised CNN over Sentinel-2 + Landsat).
 2.  **Resolution:** The native embeddings were computed at approximately **10m resolution**.
-3.  **Aggregation:** We first calculated the **spatial mean** of each embedding band for every municipal polygon in Bolivia, then rolled the 339 municipal values up to the 112 provinces as a **population-weighted mean** of their constituent municipalities (see [../province_aggregation_report.md](../province_aggregation_report.md)).
-4.  **Spatial Scope:** 112 Provinces in Bolivia.
+3.  **Municipal step (GEE):** the **spatial mean** of each embedding band was computed per municipal
+    polygon, using [`../code/aggregate-satellite-embedings-to-adm.js`](../code/aggregate-satellite-embedings-to-adm.js).
+    A population-weighted variant,
+    [`../code/aggregate-satellite-embedings-to-adm-pop-weighted1.js`](../code/aggregate-satellite-embedings-to-adm-pop-weighted1.js),
+    instead weights pixels by **WorldPop GP 100 m (2017)** population (downsampled to 10 m) — this
+    produces `satelliteEmbeddings2017popWeighted.csv`.
+4.  **Province step (aggregation):** the 339 municipal values are rolled up to the 112 provinces as a
+    **population-weighted mean weighted by `pop2017`** (rule `wmean`, weight `2017` in
+    [`../code/aggregation_rules.csv`](../code/aggregation_rules.csv), via `build_curated()` in
+    [`../code/build_bolivia112.py`](../code/build_bolivia112.py)); the pop-weighted file additionally
+    **sums** its `pop_sum` column. See [../province_aggregation_report.md](../province_aggregation_report.md).
+5.  **Spatial Scope:** 112 Provinces in Bolivia.
 
 ---
 

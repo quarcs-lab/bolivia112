@@ -4,7 +4,7 @@
 
 This directory contains administrative metadata and identifiers for Bolivia's 112 provinces. This dataset serves as the foundation for joining all other datasets in the repository.
 
-Bolivia's administrative hierarchy has three levels: **Department → Province (provincia) → Municipality (municipio)**. There are **9 departments**, **112 provinces**, and **339 municipalities**. This repository works at the **province** level: every province row is a **population-weighted aggregation** of its constituent municipalities (intensive variables = weighted mean, extensive variables = sum). See [../province_aggregation_report.md](../province_aggregation_report.md) for the aggregation methodology.
+Bolivia's administrative hierarchy has three levels: **Department → Province (provincia) → Municipality (municipio)**. There are **9 departments**, **112 provinces**, and **339 municipalities**. This repository works at the **province** level: the *data* folders aggregate municipal values to provinces by population weighting (intensive variables = weighted mean, extensive variables = sum — see [../province_aggregation_report.md](../province_aggregation_report.md)). The columns in **this** file are administrative **identifiers** — they are *derived*, not aggregated (see *How these identifiers were generated* below).
 
 ## Files
 
@@ -27,6 +27,19 @@ Official names and identifiers for all **112 provinces** (one row per province):
 | **n_mun** | Number of municipalities aggregated into the province |
 | **gadm_name** | Province name as spelled in GADM / the ADM2 GeoPackage (`NAME_2`) |
 | **sources** | URLs consulted to verify the name/capital |
+
+## How these identifiers were generated
+
+These columns are **derived identifiers** (not aggregated municipal values), produced by
+`load_crosswalk()` and `build_region_names()` in
+[`../code/build_bolivia112.py`](../code/build_bolivia112.py):
+
+- **`prov_id`** = first 3 digits of the INE municipal code, `int(mun_id[:3])`.
+- **`prov`, `capital`, `gadm_name`, `sources`** come from the vendored
+  [`../code/provinceNames.csv`](../code/provinceNames.csv), cross-validated against the GADM ADM2
+  polygons, INE and Wikipedia (see `province_verification_report.md`).
+- **`n_mun`** = number of municipalities whose `mun_id` maps to each `prov_id`.
+- **`dep`, `dep_id`, `dep_prov`** = department name, alphabetical department code, and combined label.
 
 ## Decoding `prov_id`
 

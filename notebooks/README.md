@@ -4,7 +4,7 @@
 
 This directory contains Jupyter notebooks with step-by-step tutorials for exploratory spatial data analysis (ESDA), machine learning, and poverty prediction using Bolivia's provincial development data and satellite imagery.
 
-**Note:** All province values are population-weighted aggregations of the municipal data (intensive variables = weighted mean, extensive variables = sum). See [../province_aggregation_report.md](../province_aggregation_report.md) for details.
+**Note:** Province values are population-weighted means for intensive variables (SDGs by `pop2020`; others by year-matched `pop`) and sums for extensive ones; GDP is attached as-is from the GADM GeoPackage. See the dataset summary in the [main README](../README.md) and the full [province aggregation report](../province_aggregation_report.md).
 
 ## Files
 
