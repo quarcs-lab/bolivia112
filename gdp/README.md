@@ -14,7 +14,9 @@ This directory contains Gross Domestic Product (GDP) per capita data at the prov
 
 This directory provides a long-run panel of GDP per capita estimates:
 
-- **[gdp_perCapita_1990_2024.csv](gdp_perCapita_1990_2024.csv)** - Annual GDP per capita for the 112 provinces, 1990-2024.
+- **[gdp_perCapita_1990_2024.csv](gdp_perCapita_1990_2024.csv)** - Annual GDP per capita for the 112 provinces, 1990-2024 (**wide** format: one row per province, one column per year).
+- **[gdp_perCapita_long.csv](gdp_perCapita_long.csv)** - The same data reshaped to **tidy/long** form (one row per province-year), with an added `log_gdppc` column. Ready for [expdpy](https://cmg777.github.io/expdpy/).
+- **[gdp_perCapita_def.csv](gdp_perCapita_def.csv)** - The [expdpy](https://cmg777.github.io/expdpy/explanation/data-model.html) **data dictionary** (`df_def`) describing the variables in the long panel.
 
 Additional GDP-related information can be found in:
 
@@ -53,6 +55,47 @@ The `gdp_perCapita_1990_2024.csv` file contains the following variables (112 row
 | **dep** | Department name |
 | **dep_id** | Department identifier |
 | **gdppc1990 ... gdppc2024** | GDP per capita for each year from 1990 to 2024 |
+
+## Long-form (tidy) panel for expdpy
+
+For panel-data workflows and the [expdpy](https://cmg777.github.io/expdpy/) library, the wide table
+above is also provided in **tidy/long** form, where each row is a single province-year observation.
+This follows the [expdpy data model](https://cmg777.github.io/expdpy/explanation/data-model.html):
+the data stays long (no pivoting/aggregation), and a companion **data dictionary** declares the
+entity, time, and variable roles.
+
+### `gdp_perCapita_long.csv` — the panel (`df`)
+
+`112 provinces × 35 years = 3,920` rows, one per province-year:
+
+| Variable Name | Description |
+| --- | --- |
+| **prov_id** | Province identifier (3-digit INE code) — the panel **entity** key |
+| **prov** | Province name |
+| **dep** | Department name |
+| **dep_id** | Department identifier |
+| **year** | Calendar year (1990–2024) — the panel **time** index |
+| **gdppc** | GDP per capita for that province-year |
+| **log_gdppc** | Natural logarithm of `gdppc` |
+
+### `gdp_perCapita_def.csv` — the data dictionary (`df_def`)
+
+One row per variable, using the expdpy schema `var_name, type, label, var_def, can_be_na`. The `type`
+column maps each variable to its role: `prov_id`=`entity`, `year`=`time`, `prov`/`dep`/`dep_id`=`factor`,
+and `gdppc`/`log_gdppc`=`numeric`.
+
+```python
+import pandas as pd
+from expdpy import set_labels  # adjust import to your expdpy version
+
+df     = pd.read_csv("gdp/gdp_perCapita_long.csv")
+df_def = pd.read_csv("gdp/gdp_perCapita_def.csv")
+df     = set_labels(df, df_def, set_panel=True)  # attaches labels + declares the panel
+```
+
+> **Note:** this `df_def` deliberately uses the expdpy column schema
+> (`var_name, type, label, var_def, can_be_na`), which differs from the repository's master data
+> dictionary convention (`idx, varname, varlabel`).
 
 ## How this data was generated
 
