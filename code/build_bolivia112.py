@@ -8,9 +8,18 @@ Aggregates municipal (339) data to provinces (112) via population-weighted aggre
   * min / max variables                                        -> min / max
 
 Weights:
-  * SDG-related variables  -> population_2020 (Municipal Atlas, from sdgVariables.csv)
+  * SDG-related variables  -> INE pop2020 (pop/pop.csv). The province `population_2020` column is
+                              likewise set to INE pop2020 (= sum of municipal pop2020), so it is
+                              consistent with pop/pop.csv (not the Municipal Atlas count).
+  * areal SDG rates        -> land area (modis_total_area); sdg15_1_pa, sdg13_2_dra, sdg15_5_blr
+                              measure % of land/forest area, so pop-weighting is wrong (see
+                              sdg_aggregation_audit.md)
   * all other variables    -> pop/pop.csv, year-matched (pop2015 weights any 2015 value;
                               non-temporal "other" vars use pop2017)
+
+All-NaN SDG cells (a province whose municipalities ALL lack a given SDG variable) are imputed with
+the pop2020-weighted mean of the same department's provinces that have data, and marked with a
+companion boolean `<var>_imputed` column.
 
 Grouping key: prov_id (first 3 digits of mun_id), from <ds4bolivia>/regionNames/regionNames.csv.
 Output: <repo-root>/<folder>/<same filename>.csv, keyed by prov_id, identical column schemas.
@@ -71,16 +80,28 @@ def load_crosswalk():
     return rn[["asdf_id", "prov_id", "prov", "dep", "dep_id"]].copy()
 
 
+# Areal SDG rates: denominator is land/forest area, NOT population, so they are weighted by land
+# area ("area" weight) rather than pop2020. sdg15_1_pa (% of land area) is exact; the two forest
+# rates use total land area as a proxy for forest area. See sdg_aggregation_audit.md (finding 2).
+AREAL_RATES = {"sdg15_1_pa", "sdg13_2_dra", "sdg15_5_blr"}
+
+
 def load_weights():
-    """Return dict of weight-name -> Series(asdf_id -> weight)."""
+    """Return dict of weight-name -> Series(asdf_id -> weight). Keys are INE pop years
+    ("2001".."2020"); "2020" is the SDG weight. "area" is a land-area weight for areal SDG rates.
+    (The Municipal-Atlas population is no longer used as a weight.)"""
     w = {}
-    sv = pd.read_csv(p_in("sdgVariables", "sdgVariables.csv"))
-    w["ATLAS"] = sv.set_index("asdf_id")["population_2020"].astype(float)  # SDG weight
     pop = pd.read_csv(p_in("pop", "pop.csv")).set_index("asdf_id")
     for c in pop.columns:                                                 # pop2001..pop2020
         m = re.search(r"(20\d\d)", c)
         if m:
             w[m.group(1)] = pop[c].astype(float)
+    # land-area weight: municipal modis_total_area pixel count ∝ land area (mean over years, which
+    # is ~time-invariant). Used for the areal SDG rates above. Read from the ds4bolivia master.
+    master = pd.read_csv(p_in("ds4bolivia_v20250523.csv"))
+    acols = [c for c in master.columns if c.startswith("modis_total_area")]
+    if acols:
+        w["area"] = master.set_index("asdf_id")[acols].mean(axis=1).astype(float)
     return w
 
 
@@ -115,6 +136,49 @@ def year_of(col, default="2017"):
     return m.group(1) if m else default
 
 
+def is_sdg_family(v):
+    """SDG-family variable: the sdg* indicators, the index_sdg* composites, and imds."""
+    return v.startswith(("sdg", "index_sdg")) or v == "imds"
+
+
+def ine_pop2020_by_prov(xwalk, weights):
+    """Series(prov_id -> sum of municipal INE pop2020). Used as the province population_2020."""
+    s = weights["2020"]                                   # index: asdf_id
+    df = pd.DataFrame({"asdf_id": s.index, "pop2020": s.values})
+    df = df.merge(xwalk[["asdf_id", "prov_id"]], on="asdf_id", how="left")
+    return df.groupby("prov_id")["pop2020"].sum()
+
+
+def impute_sdg_dept_mean(prov_df, xwalk, weights):
+    """Fill all-NaN SDG-family province cells with the pop2020-weighted mean of the same
+    department's provinces that have data; append a boolean `<var>_imputed` flag per filled
+    column (True only at the imputed provinces). Non-SDG columns are never touched, and partial
+    coverage (some municipalities present) is left to the weighted-mean engine, so only genuine
+    all-municipalities-missing cells are imputed. Returns a copy with any flag columns appended."""
+    df = prov_df.copy()
+    dep = xwalk.drop_duplicates("prov_id").set_index("prov_id")["dep_id"]
+    popw = ine_pop2020_by_prov(xwalk, weights)            # prov_id -> pop2020
+    depid = df["prov_id"].map(dep)
+    flags = {}
+    for col in [c for c in df.columns if c != "prov_id" and is_sdg_family(c)]:
+        s = pd.to_numeric(df[col], errors="coerce")
+        if not s.isna().any():
+            continue
+        flag = pd.Series(False, index=df.index)
+        for i in df.index[s.isna()]:                     # donors use ORIGINAL data (stale s), not
+            donors = (depid == depid[i]) & s.notna()     # other imputed cells in the same dept
+            if not donors.any():
+                continue
+            w = df.loc[donors, "prov_id"].map(popw).astype(float).to_numpy()
+            df.loc[i, col] = float(np.average(s[donors].to_numpy(), weights=w))
+            flag[i] = True
+        if flag.any():
+            flags[col + "_imputed"] = flag
+    for k, v in flags.items():
+        df[k] = v
+    return df
+
+
 # ---------------------------------------------------------------- Stage 0 output
 def build_region_names(xwalk):
     pn = pd.read_csv(PROVNAMES)
@@ -127,21 +191,31 @@ def build_region_names(xwalk):
 
 # ---------------------------------------------------------------- Stage 1
 def build_curated(xwalk, weights):
-    # sdg.csv : imds + index_sdg* -> wmean by ATLAS(population_2020)
+    # sdg.csv : imds + index_sdg* -> wmean by INE pop2020
     sdg = pd.read_csv(p_in("sdg", "sdg.csv"))
     cols = [c for c in sdg.columns if c != "asdf_id"]
-    write_csv(aggregate(sdg, [(c, "wmean", "ATLAS") for c in cols], weights, xwalk),
-              "sdg", "sdg.csv")
+    prov_sdg = aggregate(sdg, [(c, "wmean", "2020") for c in cols], weights, xwalk)
+    prov_sdg = impute_sdg_dept_mean(prov_sdg, xwalk, weights)  # no-op today (sdg.csv has no all-NaN)
+    write_csv(prov_sdg, "sdg", "sdg.csv")
 
-    # sdgVariables.csv : all SDG vars wmean by ATLAS; population_2020 -> sum
+    # sdgVariables.csv : all SDG vars wmean by INE pop2020; population_2020 := INE pop2020
     sv = pd.read_csv(p_in("sdgVariables", "sdgVariables.csv"))
     rules = []
     for c in sv.columns:
         if c == "asdf_id":
             continue
-        rules.append((c, "sum", None) if c == "population_2020" else (c, "wmean", "ATLAS"))
+        if c == "population_2020":
+            rules.append((c, "sum", None))
+        elif c in AREAL_RATES and "area" in weights:        # areal rate -> land-area weighted
+            rules.append((c, "wmean", "area"))
+        else:
+            rules.append((c, "wmean", "2020"))
     prov_sv = aggregate(sv, rules, weights, xwalk)
-    prov_sv["population_2020"] = prov_sv["population_2020"].round().astype("Int64")
+    # population_2020 column := INE pop2020 (sum of municipal pop2020), not the Atlas sum
+    ine_pop = ine_pop2020_by_prov(xwalk, weights)
+    prov_sv["population_2020"] = prov_sv["prov_id"].map(ine_pop).round().astype("Int64")
+    # fill all-NaN SDG cells (e.g. 904/905 Pando, 301 Cochabamba) by pop-weighted dept mean
+    prov_sv = impute_sdg_dept_mean(prov_sv, xwalk, weights)
     write_csv(prov_sv, "sdgVariables", "sdgVariables.csv")
 
     # pop.csv : pop20YY -> sum
@@ -253,9 +327,11 @@ def classify(v, label):
         return ("recompute", "", "ranking recomputed over the 112 provinces")
     if v.startswith(("sdg", "index_sdg")) or v in {"imds", "urbano_2012", "population_2020"}:
         if v == "population_2020":
-            return ("sum", "", "Atlas population count")
+            return ("sum", "", "set to INE pop2020 (= sum of municipal pop2020)")
+        if v in AREAL_RATES:
+            return ("wmean", "area", "areal rate: weighted by land area, not population")
         note = "SDG count-type kept as weighted mean (SDG rule)" if ("number" in lab or v.endswith("routes")) else ""
-        return ("wmean", "ATLAS", note)
+        return ("wmean", "2020", note)
     if re.fullmatch(r"pop20\d\d", v):
         return ("sum", "", "population count")
     if "NTLpc" in v:
@@ -286,7 +362,10 @@ def generate_master_rules():
 
 
 def aggregate_master(xwalk, weights, region_prov):
-    rules = pd.read_csv(p_out("code", "aggregation_rules.csv")).fillna({"weight": ""})
+    # weight kept as str: weight keys are year labels ("2020", "2017", ...) that pandas would
+    # otherwise read back as floats (2020.0) and fail the string-keyed `weights` lookup.
+    rules = pd.read_csv(p_out("code", "aggregation_rules.csv"),
+                        dtype={"weight": str}).fillna({"weight": ""})
     df = pd.read_csv(p_in("ds4bolivia_v20250523.csv"))
     agg_rules, recompute = [], []
     for _, r in rules.iterrows():
@@ -301,21 +380,31 @@ def aggregate_master(xwalk, weights, region_prov):
     prov = region_prov[["prov_id", "prov", "dep", "dep_id", "dep_prov"]].merge(out, on="prov_id")
     if "imds" in prov.columns and "rank_imds" in recompute:
         prov["rank_imds"] = prov["imds"].rank(ascending=False, method="min").astype(int)
-    if "population_2020" in prov.columns:
-        prov["population_2020"] = prov["population_2020"].round().astype("Int64")
+    if "population_2020" in prov.columns:                       # := INE pop2020, like sdgVariables
+        ine_pop = ine_pop2020_by_prov(xwalk, weights)
+        prov["population_2020"] = prov["prov_id"].map(ine_pop).round().astype("Int64")
     for c in [c for c in prov.columns if re.fullmatch(r"pop20\d\d", c)]:
         prov[c] = prov[c].round().astype("Int64")
+    # fill all-NaN SDG cells by pop-weighted dept mean (same rule as the curated sdgVariables)
+    prov = impute_sdg_dept_mean(prov, xwalk, weights)
     ver = "v20260622"
     write_csv(prov, f"bolivia112_{ver}.csv")
-    # definitions: drop municipal-only ID rows, add province keys
+    # definitions: drop municipal-only ID rows, add province keys + any imputation-flag columns
     defs = pd.read_csv(p_in("definitions_ds4bolivia_v20250523.csv"))
     defs = defs.rename(columns={defs.columns[0]: "idx"})
-    keep = defs[~defs["varname"].isin(ID_COLS)]
+    keep = defs[~defs["varname"].isin(ID_COLS)].copy()
+    keep.loc[keep["varname"] == "population_2020", "varlabel"] = \
+        "Population 2020 (INE; sum of municipal pop2020 — consistent with pop/pop.csv)"
     head = pd.DataFrame({"varname": ["prov_id", "prov", "dep", "dep_id", "dep_prov"],
                          "varlabel": ["Province code (first 3 digits of mun_id)", "Province name",
                                       "Department name", "Department ID",
                                       "Department-Province label"]})
-    out_defs = pd.concat([head, keep[["varname", "varlabel"]]], ignore_index=True)
+    flagcols = [c for c in prov.columns if c.endswith("_imputed")]
+    tail = pd.DataFrame({"varname": flagcols,
+                         "varlabel": [f"1 if {c[:-len('_imputed')]} was imputed (pop-weighted "
+                                      f"department mean; all member municipalities missing)"
+                                      for c in flagcols]})
+    out_defs = pd.concat([head, keep[["varname", "varlabel"]], tail], ignore_index=True)
     out_defs.insert(0, "idx", range(len(out_defs)))
     write_csv(out_defs, f"definitions_bolivia112_{ver}.csv")
 
@@ -382,23 +471,57 @@ def verify(xwalk, weights):
     print(f"  {'OK ' if cons else 'BAD'} pop2020 conservation: mun_total={mun_pop['pop2020'].sum():.0f} "
           f"prov_total={prov_pop['pop2020'].sum():.0f}")
 
-    # conservation: ATLAS population_2020 sum
-    mun_atlas = pd.read_csv(p_in("sdgVariables", "sdgVariables.csv"))["population_2020"].sum()
-    prov_atlas = pd.read_csv(p_out("sdgVariables", "sdgVariables.csv"))["population_2020"].sum()
-    consa = abs(mun_atlas - prov_atlas) < 1.0
-    print(f"  {'OK ' if consa else 'BAD'} Atlas population_2020 conservation: "
-          f"mun={mun_atlas:.0f} prov={prov_atlas:.0f}")
+    # population_2020 column now equals INE pop2020 (= sum of municipal pop2020), per pop/pop.csv
+    psv = pd.read_csv(p_out("sdgVariables", "sdgVariables.csv"))
+    ppop2020 = pd.read_csv(p_out("pop", "pop.csv")).set_index("prov_id")["pop2020"]
+    pop_match = (psv.set_index("prov_id")["population_2020"].astype(float).round()
+                 == ppop2020.round()).all()
+    print(f"  {'OK ' if pop_match else 'BAD'} population_2020 == INE pop2020 for all provinces "
+          f"(min={int(psv['population_2020'].min())}; was 1712 under the Atlas count)")
 
-    # bounds: weighted-mean imds within [min,max] of member municipalities
-    msdg = pd.read_csv(p_in("sdg", "sdg.csv")).merge(xwalk[["asdf_id", "prov_id"]], on="asdf_id")
-    psdg = pd.read_csv(p_out("sdg", "sdg.csv")).set_index("prov_id")["imds"]
-    b = msdg.groupby("prov_id")["imds"].agg(["min", "max"])
-    inb = ((psdg >= b["min"] - 1e-9) & (psdg <= b["max"] + 1e-9)).all()
-    print(f"  {'OK ' if inb else 'BAD'} imds within municipal [min,max] for every province")
+    # bounds: every non-imputed SDG weighted mean within municipal [min,max] (sdg.csv + sdgVariables)
+    inb, nbad = True, 0
+    for sub, fname in [("sdg", "sdg.csv"), ("sdgVariables", "sdgVariables.csv")]:
+        mun = pd.read_csv(p_in(sub, fname)).merge(xwalk[["asdf_id", "prov_id"]], on="asdf_id")
+        prov = pd.read_csv(p_out(sub, fname))
+        cols = [c for c in prov.columns if is_sdg_family(c) and not c.endswith("_imputed")]
+        for c in cols:
+            bnd = mun.groupby("prov_id")[c].agg(["min", "max"])
+            v = prov.set_index("prov_id")[c].astype(float)
+            fc = c + "_imputed"
+            imp = (prov.set_index("prov_id")[fc].astype(bool) if fc in prov.columns
+                   else pd.Series(False, index=v.index))
+            chkmask = v.notna() & ~imp
+            bad = chkmask & ~((v >= bnd["min"] - 1e-6) & (v <= bnd["max"] + 1e-6))
+            if bad.any():
+                inb = False
+                nbad += int(bad.sum())
+    print(f"  {'OK ' if inb else 'BAD'} every non-imputed SDG weighted mean within municipal [min,max]"
+          + ("" if inb else f"  ({nbad} violations)"))
+
+    # imputation: all-NaN SDG cells filled & flagged, none left, each within its department's range
+    flagcols = [c for c in psv.columns if c.endswith("_imputed")]
+    n_imp = int(psv[flagcols].astype(bool).sum().sum()) if flagcols else 0
+    datacols = [c for c in psv.columns if is_sdg_family(c) and not c.endswith("_imputed")]
+    n_nan = int(psv[datacols].isna().sum().sum())
+    dep = xwalk.drop_duplicates("prov_id").set_index("prov_id")["dep_id"]
+    depser = psv["prov_id"].map(dep)
+    imp_ok = True
+    for fc in flagcols:
+        c = fc[:-len("_imputed")]
+        for idx in psv.index[psv[fc].astype(bool)]:
+            donors = psv.loc[(depser == depser[idx]) & (~psv[fc].astype(bool)), c].astype(float)
+            val = float(psv.at[idx, c])
+            if donors.empty or not (donors.min() - 1e-6 <= val <= donors.max() + 1e-6):
+                imp_ok = False
+    print(f"  {'OK ' if (n_nan == 0 and imp_ok) else 'BAD'} imputation: {n_imp} cells filled & flagged, "
+          f"{n_nan} NaN left in sdgVariables SDG cols, all within dept [min,max]")
 
     # spot-check: Murillo 201 (La Paz) should be high imds (El Alto + La Paz dominate)
+    psdg = pd.read_csv(p_out("sdg", "sdg.csv")).set_index("prov_id")["imds"]
     print(f"  spot: Murillo(201) imds={psdg.get(201):.1f}  Litoral(405) imds={psdg.get(405):.1f}")
-    print("== %s ==" % ("ALL OK" if ok and cons and consa and inb else "CHECK FAILURES"))
+    allok = ok and cons and pop_match and inb and n_nan == 0 and imp_ok
+    print("== %s ==" % ("ALL OK" if allok else "CHECK FAILURES"))
 
 
 def main():

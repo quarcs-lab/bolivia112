@@ -6,7 +6,7 @@ idx,varname,varlabel
 4,dep_prov,Department-Province label
 5,imds,Municipal Sustainable Development Index
 6,rank_imds,Bolivia Index Ranking
-7,population_2020,Population 2020
+7,population_2020,Population 2020 (INE; sum of municipal pop2020 — consistent with pop/pop.csv)
 8,urbano_2012,"Urbanization rate, 2012 (% of population)"
 9,sdg1_1_eepr,"Extreme energy poverty rate, 2016 (% of houses)"
 10,sdg1_1_ubn,"Unsatisfied basic needs, 2012 (% of population)"
@@ -346,3 +346,8 @@ idx,varname,varlabel
 344,dist_water2017mean,mean distance to water in meters in 2017
 345,dist_water2017max,max distance to water in meters in 2017
 346,dist_water2017min,min distance to water in meters in 2017
+347,sdg1_1_eepr_imputed,1 if sdg1_1_eepr was imputed (pop-weighted department mean; all member municipalities missing)
+348,sdg2_4_pual_imputed,1 if sdg2_4_pual was imputed (pop-weighted department mean; all member municipalities missing)
+349,sdg2_4_td_imputed,1 if sdg2_4_td was imputed (pop-weighted department mean; all member municipalities missing)
+350,sdg8_4_rem_imputed,1 if sdg8_4_rem was imputed (pop-weighted department mean; all member municipalities missing)
+351,sdg10_2_iec_imputed,1 if sdg10_2_iec was imputed (pop-weighted department mean; all member municipalities missing)
