@@ -24,6 +24,35 @@ This repository is organized for researchers and data scientists interested in:
 
 ---
 
+## 📌 Project Status
+
+**Operational** — every 112-province dataset is complete and the build is fully reproducible
+(`uv run python code/build_bolivia112.py`, idempotent). *Last updated: 2026-06-23.*
+
+| Area | Status |
+| :--- | :--- |
+| Data | ✅ Complete — 112 provinces in every folder; master `bolivia112_v20260622.csv` (112 × 352) |
+| Build pipeline | ✅ Reproducible & idempotent — per-variable rules in [`code/aggregation_rules.csv`](code/aggregation_rules.csv) |
+| SDG aggregation | ✅ Audited — weighted by INE `pop2020`, areal rates area-weighted, all-NaN cells imputed + flagged |
+| Maps | ✅ 112 province boundaries (GADM ADM2) |
+| Notebooks | ✅ 6 province-level EDA/ESDA tutorials |
+| Web app | ⚠️ Live GeoExplorer; live edits need a province boundary asset in your Earth Engine account |
+
+**Recent changes** (last 2 commits): SDG weighting switched from the Municipal-Atlas count to INE
+`pop2020`; the three areal rates re-weighted by land area; 8 all-NaN SDG cells imputed + flagged; and a
+full statistical audit added ([`sdg_aggregation_audit.md`](sdg_aggregation_audit.md)).
+
+**Before using the data** (see [`sdg_aggregation_audit.md`](sdg_aggregation_audit.md) for detail):
+- 36 of 62 SDG indicators are population-weighted approximations of non-population rates — check
+  [`sdgVariables/sdg_reference_populations.csv`](sdgVariables/sdg_reference_populations.csv)
+  (`weight_is_approximate`) and [`code/sdg_aggregation_sensitivity.csv`](code/sdg_aggregation_sensitivity.csv).
+- Exclude `_imputed` cells from inference; read `imds`/`index_sdg*` as averaged municipal indices (not
+  province-recomputed); MAUP applies and 15 provinces are single-municipality passthroughs.
+
+**Pending:** the Earth Engine app needs an uploaded province boundary asset to run live.
+
+---
+
 ## 🖥️ Interactive Apps
 
 * [Space-time dynamics of population, luminosity, land cover and GDP](apps/): Google Earth Engine
