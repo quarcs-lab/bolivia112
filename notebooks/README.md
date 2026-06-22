@@ -77,6 +77,16 @@ A comprehensive notebook combining traditional exploratory data analysis with sp
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/quarcs-lab/bolivia112/blob/main/notebooks/eda_esda.ipynb)
 
+#### gdp_validation.ipynb
+
+**Validation — aggregated SDG indicators vs GDP per capita**
+
+First illustrates the space-time dynamics of provincial GDP per capita (1990–2024) — representative provinces, percentile and box-plot evolution, mean vs median, in levels and logs — then validates the municipality→province SDG aggregation against an independent target: correlations of the 16 composite indices and 62 granular indicators with log GDP per capita (2017), scatter trendlines, a significance-aware sign-direction check, and a programmatic verdict.
+
+**Run in Google Colab:**
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/quarcs-lab/bolivia112/blob/main/notebooks/gdp_validation.ipynb)
+
 ---
 
 ## Prerequisites
@@ -152,6 +162,7 @@ For best results, follow this sequence:
 4. Advance to [esda_heterogeneity.ipynb](esda_heterogeneity.ipynb) for GWR and MGWR
 5. See [esda.ipynb](esda.ipynb) for an alternative ESDA tutorial
 6. Review [eda_esda.ipynb](eda_esda.ipynb) for the comprehensive combined notebook
+7. Validate the aggregation with [gdp_validation.ipynb](gdp_validation.ipynb) — SDG indicators vs GDP per capita
 
 ## Data Used
 

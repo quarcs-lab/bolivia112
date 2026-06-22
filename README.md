@@ -72,6 +72,8 @@ notebook now groups by **province** (`ADM2 = 'prov'`) over the 112 provinces.
 * **Spatial Inequality** — Theil/Gini decomposition by department.
 * **Spatial Heterogeneity (GWR & MGWR)** — spatially varying NTL↔development relationships.
 * **Extended EDA + Spatial Analysis** — combined traditional + spatial methods.
+* **GDP Validation** — space-time dynamics of GDP per capita (1990–2024) and a check that the aggregated
+  SDG indices/indicators correlate with GDP in the theoretically expected directions.
 
 See [notebooks/README.md](notebooks/README.md). Sources are kept as Jupytext `.md`; regenerate
 executable notebooks with `uv run jupytext --to ipynb --execute notebooks/<name>.md`.
