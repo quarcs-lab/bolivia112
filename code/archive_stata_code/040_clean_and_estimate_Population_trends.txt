@@ -1,0 +1,754 @@
+-----------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/carlosmendez/Documents/GitHub/project2021o/c00-transform_data/040_clean_and_estimate_Population_tre
+> nds.txt
+  log type:  text
+ opened on:  26 Apr 2022, 12:56:12
+
+. 
+. ** 3. Install modules
+. *ssc install estout, replace all
+. *ssc install outreg2, replace all
+. *ssc install reghdfe, replace all * INFO: http://scorreia.com/software/reghdfe/
+. *net install gr0009_1, from (http://www.stata-journal.com/software/sj10-1) replace all
+. *net install tsg_schemes, from("https://raw.githubusercontent.com/asjadnaqvi/Stata-schemes/main/schemes/") replace al
+> l
+. *set scheme white_tableau, permanently
+. *set scheme gg_tableau, permanently
+. 
+. ** 4. Import data
+. import delimited "../data/rawData/Pop/622081a016cfcc2a7a4e3ab2_results.csv", case(preserve) clear
+(50 vars, 339 obs)
+
+. 
+. describe
+
+Contains data
+ Observations:           339                  
+    Variables:            50                  
+-----------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-----------------------------------------------------------------------------------------------------------------------
+asdf_id         int     %8.0g                 
+worldpop_po~200 float   %9.0g                 worldpop_pop_count_1km_mosaic.2000.count
+v3              str17   %17s                  worldpop_pop_count_1km_mosaic.2000.sum
+v4              float   %9.0g                 worldpop_pop_count_1km_mosaic.2001.count
+v5              float   %9.0g                 worldpop_pop_count_1km_mosaic.2001.sum
+v6              float   %9.0g                 worldpop_pop_count_1km_mosaic.2003.count
+v7              float   %9.0g                 worldpop_pop_count_1km_mosaic.2003.sum
+v8              float   %9.0g                 worldpop_pop_count_1km_mosaic.2002.count
+v9              float   %9.0g                 worldpop_pop_count_1km_mosaic.2002.sum
+v10             float   %9.0g                 worldpop_pop_count_1km_mosaic.2005.count
+v11             float   %9.0g                 worldpop_pop_count_1km_mosaic.2005.sum
+v12             float   %9.0g                 worldpop_pop_count_1km_mosaic.2004.count
+v13             float   %9.0g                 worldpop_pop_count_1km_mosaic.2004.sum
+v14             float   %9.0g                 worldpop_pop_count_1km_mosaic.2006.count
+v15             float   %9.0g                 worldpop_pop_count_1km_mosaic.2006.sum
+v16             float   %9.0g                 worldpop_pop_count_1km_mosaic.2008.count
+v17             float   %9.0g                 worldpop_pop_count_1km_mosaic.2008.sum
+v18             float   %9.0g                 worldpop_pop_count_1km_mosaic.2007.count
+v19             float   %9.0g                 worldpop_pop_count_1km_mosaic.2007.sum
+v20             float   %9.0g                 worldpop_pop_count_1km_mosaic.2009.count
+v21             float   %9.0g                 worldpop_pop_count_1km_mosaic.2009.sum
+worldpop_po~201 float   %9.0g                 worldpop_pop_count_1km_mosaic.2010.count
+v23             float   %9.0g                 worldpop_pop_count_1km_mosaic.2010.sum
+v24             float   %9.0g                 worldpop_pop_count_1km_mosaic.2011.count
+v25             float   %9.0g                 worldpop_pop_count_1km_mosaic.2011.sum
+v26             float   %9.0g                 worldpop_pop_count_1km_mosaic.2012.count
+v27             float   %9.0g                 worldpop_pop_count_1km_mosaic.2012.sum
+v28             float   %9.0g                 worldpop_pop_count_1km_mosaic.2013.count
+v29             float   %9.0g                 worldpop_pop_count_1km_mosaic.2013.sum
+v30             float   %9.0g                 worldpop_pop_count_1km_mosaic.2014.count
+v31             float   %9.0g                 worldpop_pop_count_1km_mosaic.2014.sum
+v32             float   %9.0g                 worldpop_pop_count_1km_mosaic.2015.count
+v33             float   %9.0g                 worldpop_pop_count_1km_mosaic.2015.sum
+v34             float   %9.0g                 worldpop_pop_count_1km_mosaic.2016.count
+v35             float   %9.0g                 worldpop_pop_count_1km_mosaic.2016.sum
+v36             float   %9.0g                 worldpop_pop_count_1km_mosaic.2017.count
+v37             float   %9.0g                 worldpop_pop_count_1km_mosaic.2017.sum
+v38             float   %9.0g                 worldpop_pop_count_1km_mosaic.2018.count
+v39             float   %9.0g                 worldpop_pop_count_1km_mosaic.2018.sum
+v40             float   %9.0g                 worldpop_pop_count_1km_mosaic.2019.count
+v41             float   %9.0g                 worldpop_pop_count_1km_mosaic.2019.sum
+worldpop_po~202 float   %9.0g                 worldpop_pop_count_1km_mosaic.2020.count
+v43             float   %9.0g                 worldpop_pop_count_1km_mosaic.2020.sum
+Level           str4    %9s                   
+gqid            int     %8.0g                 
+id              int     %8.0g                 
+shapeGroup      str3    %9s                   
+shapeID         str26   %26s                  
+shapeName       str32   %32s                  
+shapeType       str4    %9s                   
+-----------------------------------------------------------------------------------------------------------------------
+Sorted by: 
+     Note: Dataset has changed since last saved.
+
+. summarize
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     asdf_id |        339         169     98.0051          0        338
+worldpop~200 |        339    3870.449    7945.237      17.18   87811.16
+          v3 |          0
+          v4 |        339    3860.274    7929.396      17.17   87811.16
+          v5 |        339    24436.67    87126.26   219.5939    1100910
+-------------+---------------------------------------------------------
+          v6 |        339    3860.274    7929.396      17.17   87811.16
+          v7 |        339    25259.27    90277.65   261.9886    1155505
+          v8 |        339    3860.274    7929.396      17.17   87811.16
+          v9 |        339    24840.61    88617.68    237.515    1127900
+         v10 |        339    3860.274    7929.396      17.17   87811.16
+-------------+---------------------------------------------------------
+         v11 |        339    26138.39    93285.53   304.8908    1208395
+         v12 |        339    3860.274    7929.396      17.17   87811.16
+         v13 |        339    25690.72    91877.22   280.7339    1183557
+         v14 |        339    3860.274    7929.396      17.17   87811.16
+         v15 |        339    26602.64    95140.61   325.3436    1240269
+-------------+---------------------------------------------------------
+         v16 |        339    3860.274    7929.396      17.17   87811.16
+         v17 |        339    27574.08    98650.57   379.6332    1296906
+         v18 |        339    3860.274    7929.396      17.17   87811.16
+         v19 |        339    27080.17    96833.97    354.985    1267908
+         v20 |        339    3860.274    7929.396      17.17   87811.16
+-------------+---------------------------------------------------------
+         v21 |        339    28078.82    100556.9   412.5431    1330029
+worldpop~201 |        339    3860.274    7929.396      17.17   87811.16
+         v23 |        339    28602.76    102482.5   440.7266    1362528
+         v24 |        339    3860.274    7929.396      17.17   87811.16
+         v25 |        339    29149.45      104150   476.7716    1387944
+-------------+---------------------------------------------------------
+         v26 |        339    3860.274    7929.396      17.17   87811.16
+         v27 |        339    29725.21    106567.2   518.9156    1429553
+         v28 |        339    3860.274    7929.396      17.17   87811.16
+         v29 |        339    30310.05      108932   559.2823    1468142
+         v30 |        339    3860.274    7929.396      17.17   87811.16
+-------------+---------------------------------------------------------
+         v31 |        339    30912.69    111007.1   594.9893    1500294
+         v32 |        339    3860.274    7929.396      17.17   87811.16
+         v33 |        339    31535.45    113426.1   611.1754    1538835
+         v34 |        339    3860.274    7929.396      17.17   87811.16
+         v35 |        339    32186.12    115445.6   638.6938    1570342
+-------------+---------------------------------------------------------
+         v36 |        339    3860.274    7929.396      17.17   87811.16
+         v37 |        339    32858.76    117649.3   661.8224    1604458
+         v38 |        339    3860.274    7929.396      17.17   87811.16
+         v39 |        339    33559.27    120157.7    657.392    1643086
+         v40 |        339    3860.274    7929.396      17.17   87811.16
+-------------+---------------------------------------------------------
+         v41 |        339    34284.56    122641.2   636.0154    1681318
+worldpop~202 |        339    3860.274    7929.396      17.17   87811.16
+         v43 |        339    35037.36    125250.6   621.4688    1721638
+       Level |          0
+        gqid |        339         169     98.0051          0        338
+-------------+---------------------------------------------------------
+          id |        339         169     98.0051          0        338
+  shapeGroup |          0
+     shapeID |          0
+   shapeName |          0
+   shapeType |          0
+
+. 
+. ** Drop unnecesary variables
+. drop worldpop_pop_count_1km_mosaic200 v4 v6 v8 v10 v12 v14 v16 v18 v20 worldpop_pop_count_1km_mosaic201 v24 v26 v28 v
+> 30 v32 v34 v36 v38 v40 worldpop_pop_count_1km_mosaic202 Level gqid id shapeType shapeGroup
+
+. describe
+
+Contains data
+ Observations:           339                  
+    Variables:            24                  
+-----------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-----------------------------------------------------------------------------------------------------------------------
+asdf_id         int     %8.0g                 
+v3              str17   %17s                  worldpop_pop_count_1km_mosaic.2000.sum
+v5              float   %9.0g                 worldpop_pop_count_1km_mosaic.2001.sum
+v7              float   %9.0g                 worldpop_pop_count_1km_mosaic.2003.sum
+v9              float   %9.0g                 worldpop_pop_count_1km_mosaic.2002.sum
+v11             float   %9.0g                 worldpop_pop_count_1km_mosaic.2005.sum
+v13             float   %9.0g                 worldpop_pop_count_1km_mosaic.2004.sum
+v15             float   %9.0g                 worldpop_pop_count_1km_mosaic.2006.sum
+v17             float   %9.0g                 worldpop_pop_count_1km_mosaic.2008.sum
+v19             float   %9.0g                 worldpop_pop_count_1km_mosaic.2007.sum
+v21             float   %9.0g                 worldpop_pop_count_1km_mosaic.2009.sum
+v23             float   %9.0g                 worldpop_pop_count_1km_mosaic.2010.sum
+v25             float   %9.0g                 worldpop_pop_count_1km_mosaic.2011.sum
+v27             float   %9.0g                 worldpop_pop_count_1km_mosaic.2012.sum
+v29             float   %9.0g                 worldpop_pop_count_1km_mosaic.2013.sum
+v31             float   %9.0g                 worldpop_pop_count_1km_mosaic.2014.sum
+v33             float   %9.0g                 worldpop_pop_count_1km_mosaic.2015.sum
+v35             float   %9.0g                 worldpop_pop_count_1km_mosaic.2016.sum
+v37             float   %9.0g                 worldpop_pop_count_1km_mosaic.2017.sum
+v39             float   %9.0g                 worldpop_pop_count_1km_mosaic.2018.sum
+v41             float   %9.0g                 worldpop_pop_count_1km_mosaic.2019.sum
+v43             float   %9.0g                 worldpop_pop_count_1km_mosaic.2020.sum
+shapeID         str26   %26s                  
+shapeName       str32   %32s                  
+-----------------------------------------------------------------------------------------------------------------------
+Sorted by: 
+     Note: Dataset has changed since last saved.
+
+. sum
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     asdf_id |        339         169     98.0051          0        338
+          v3 |          0
+          v5 |        339    24436.67    87126.26   219.5939    1100910
+          v7 |        339    25259.27    90277.65   261.9886    1155505
+          v9 |        339    24840.61    88617.68    237.515    1127900
+-------------+---------------------------------------------------------
+         v11 |        339    26138.39    93285.53   304.8908    1208395
+         v13 |        339    25690.72    91877.22   280.7339    1183557
+         v15 |        339    26602.64    95140.61   325.3436    1240269
+         v17 |        339    27574.08    98650.57   379.6332    1296906
+         v19 |        339    27080.17    96833.97    354.985    1267908
+-------------+---------------------------------------------------------
+         v21 |        339    28078.82    100556.9   412.5431    1330029
+         v23 |        339    28602.76    102482.5   440.7266    1362528
+         v25 |        339    29149.45      104150   476.7716    1387944
+         v27 |        339    29725.21    106567.2   518.9156    1429553
+         v29 |        339    30310.05      108932   559.2823    1468142
+-------------+---------------------------------------------------------
+         v31 |        339    30912.69    111007.1   594.9893    1500294
+         v33 |        339    31535.45    113426.1   611.1754    1538835
+         v35 |        339    32186.12    115445.6   638.6938    1570342
+         v37 |        339    32858.76    117649.3   661.8224    1604458
+         v39 |        339    33559.27    120157.7    657.392    1643086
+-------------+---------------------------------------------------------
+         v41 |        339    34284.56    122641.2   636.0154    1681318
+         v43 |        339    35037.36    125250.6   621.4688    1721638
+     shapeID |          0
+   shapeName |          0
+
+. 
+. ** Raname variables
+. rename v3 pop2000
+
+. rename v5 pop2001
+
+. rename v7 pop2003
+
+. rename v9 pop2002
+
+. rename v11 pop2005
+
+. rename v13 pop2004
+
+. rename v15 pop2006
+
+. rename v17 pop2008
+
+. rename v19 pop2007
+
+. rename v21 pop2009
+
+. rename v23 pop2010
+
+. rename v25 pop2011
+
+. rename v27 pop2012
+
+. rename v29 pop2013
+
+. rename v31 pop2014
+
+. rename v33 pop2015
+
+. rename v35 pop2016
+
+. rename v37 pop2017
+
+. rename v39 pop2018
+
+. rename v41 pop2019
+
+. rename v43 pop2020
+
+. 
+. ** Order variables
+. order pop2002, after(pop2001)
+
+. order pop2004, after(pop2003)
+
+. order pop2007, after(pop2006)
+
+. order shapeName, after(asdf_id)
+
+. des
+
+Contains data
+ Observations:           339                  
+    Variables:            24                  
+-----------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-----------------------------------------------------------------------------------------------------------------------
+asdf_id         int     %8.0g                 
+shapeName       str32   %32s                  
+pop2000         str17   %17s                  worldpop_pop_count_1km_mosaic.2000.sum
+pop2001         float   %9.0g                 worldpop_pop_count_1km_mosaic.2001.sum
+pop2002         float   %9.0g                 worldpop_pop_count_1km_mosaic.2002.sum
+pop2003         float   %9.0g                 worldpop_pop_count_1km_mosaic.2003.sum
+pop2004         float   %9.0g                 worldpop_pop_count_1km_mosaic.2004.sum
+pop2005         float   %9.0g                 worldpop_pop_count_1km_mosaic.2005.sum
+pop2006         float   %9.0g                 worldpop_pop_count_1km_mosaic.2006.sum
+pop2007         float   %9.0g                 worldpop_pop_count_1km_mosaic.2007.sum
+pop2008         float   %9.0g                 worldpop_pop_count_1km_mosaic.2008.sum
+pop2009         float   %9.0g                 worldpop_pop_count_1km_mosaic.2009.sum
+pop2010         float   %9.0g                 worldpop_pop_count_1km_mosaic.2010.sum
+pop2011         float   %9.0g                 worldpop_pop_count_1km_mosaic.2011.sum
+pop2012         float   %9.0g                 worldpop_pop_count_1km_mosaic.2012.sum
+pop2013         float   %9.0g                 worldpop_pop_count_1km_mosaic.2013.sum
+pop2014         float   %9.0g                 worldpop_pop_count_1km_mosaic.2014.sum
+pop2015         float   %9.0g                 worldpop_pop_count_1km_mosaic.2015.sum
+pop2016         float   %9.0g                 worldpop_pop_count_1km_mosaic.2016.sum
+pop2017         float   %9.0g                 worldpop_pop_count_1km_mosaic.2017.sum
+pop2018         float   %9.0g                 worldpop_pop_count_1km_mosaic.2018.sum
+pop2019         float   %9.0g                 worldpop_pop_count_1km_mosaic.2019.sum
+pop2020         float   %9.0g                 worldpop_pop_count_1km_mosaic.2020.sum
+shapeID         str26   %26s                  
+-----------------------------------------------------------------------------------------------------------------------
+Sorted by: 
+     Note: Dataset has changed since last saved.
+
+. sum
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     asdf_id |        339         169     98.0051          0        338
+   shapeName |          0
+     pop2000 |          0
+     pop2001 |        339    24436.67    87126.26   219.5939    1100910
+     pop2002 |        339    24840.61    88617.68    237.515    1127900
+-------------+---------------------------------------------------------
+     pop2003 |        339    25259.27    90277.65   261.9886    1155505
+     pop2004 |        339    25690.72    91877.22   280.7339    1183557
+     pop2005 |        339    26138.39    93285.53   304.8908    1208395
+     pop2006 |        339    26602.64    95140.61   325.3436    1240269
+     pop2007 |        339    27080.17    96833.97    354.985    1267908
+-------------+---------------------------------------------------------
+     pop2008 |        339    27574.08    98650.57   379.6332    1296906
+     pop2009 |        339    28078.82    100556.9   412.5431    1330029
+     pop2010 |        339    28602.76    102482.5   440.7266    1362528
+     pop2011 |        339    29149.45      104150   476.7716    1387944
+     pop2012 |        339    29725.21    106567.2   518.9156    1429553
+-------------+---------------------------------------------------------
+     pop2013 |        339    30310.05      108932   559.2823    1468142
+     pop2014 |        339    30912.69    111007.1   594.9893    1500294
+     pop2015 |        339    31535.45    113426.1   611.1754    1538835
+     pop2016 |        339    32186.12    115445.6   638.6938    1570342
+     pop2017 |        339    32858.76    117649.3   661.8224    1604458
+-------------+---------------------------------------------------------
+     pop2018 |        339    33559.27    120157.7    657.392    1643086
+     pop2019 |        339    34284.56    122641.2   636.0154    1681318
+     pop2020 |        339    35037.36    125250.6   621.4688    1721638
+     shapeID |          0
+
+. 
+. ** Remove inf in string variables
+. ds pop*, has(type string)  
+pop2000
+
+. foreach v in `r(varlist)' {
+  2.       replace `v' = "" if `v' == "inf"
+  3. }
+(40 real changes made)
+
+. 
+. ** Convert string variables to numeric
+. destring , replace
+asdf_id already numeric; no replace
+shapeName: contains nonnumeric characters; no replace
+pop2000: all characters numeric; replaced as double
+(40 missing values generated)
+pop2001 already numeric; no replace
+pop2002 already numeric; no replace
+pop2003 already numeric; no replace
+pop2004 already numeric; no replace
+pop2005 already numeric; no replace
+pop2006 already numeric; no replace
+pop2007 already numeric; no replace
+pop2008 already numeric; no replace
+pop2009 already numeric; no replace
+pop2010 already numeric; no replace
+pop2011 already numeric; no replace
+pop2012 already numeric; no replace
+pop2013 already numeric; no replace
+pop2014 already numeric; no replace
+pop2015 already numeric; no replace
+pop2016 already numeric; no replace
+pop2017 already numeric; no replace
+pop2018 already numeric; no replace
+pop2019 already numeric; no replace
+pop2020 already numeric; no replace
+shapeID: contains nonnumeric characters; no replace
+
+. describe
+
+Contains data
+ Observations:           339                  
+    Variables:            24                  
+-----------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-----------------------------------------------------------------------------------------------------------------------
+asdf_id         int     %8.0g                 
+shapeName       str32   %32s                  
+pop2000         double  %10.0g                worldpop_pop_count_1km_mosaic.2000.sum
+pop2001         float   %9.0g                 worldpop_pop_count_1km_mosaic.2001.sum
+pop2002         float   %9.0g                 worldpop_pop_count_1km_mosaic.2002.sum
+pop2003         float   %9.0g                 worldpop_pop_count_1km_mosaic.2003.sum
+pop2004         float   %9.0g                 worldpop_pop_count_1km_mosaic.2004.sum
+pop2005         float   %9.0g                 worldpop_pop_count_1km_mosaic.2005.sum
+pop2006         float   %9.0g                 worldpop_pop_count_1km_mosaic.2006.sum
+pop2007         float   %9.0g                 worldpop_pop_count_1km_mosaic.2007.sum
+pop2008         float   %9.0g                 worldpop_pop_count_1km_mosaic.2008.sum
+pop2009         float   %9.0g                 worldpop_pop_count_1km_mosaic.2009.sum
+pop2010         float   %9.0g                 worldpop_pop_count_1km_mosaic.2010.sum
+pop2011         float   %9.0g                 worldpop_pop_count_1km_mosaic.2011.sum
+pop2012         float   %9.0g                 worldpop_pop_count_1km_mosaic.2012.sum
+pop2013         float   %9.0g                 worldpop_pop_count_1km_mosaic.2013.sum
+pop2014         float   %9.0g                 worldpop_pop_count_1km_mosaic.2014.sum
+pop2015         float   %9.0g                 worldpop_pop_count_1km_mosaic.2015.sum
+pop2016         float   %9.0g                 worldpop_pop_count_1km_mosaic.2016.sum
+pop2017         float   %9.0g                 worldpop_pop_count_1km_mosaic.2017.sum
+pop2018         float   %9.0g                 worldpop_pop_count_1km_mosaic.2018.sum
+pop2019         float   %9.0g                 worldpop_pop_count_1km_mosaic.2019.sum
+pop2020         float   %9.0g                 worldpop_pop_count_1km_mosaic.2020.sum
+shapeID         str26   %26s                  
+-----------------------------------------------------------------------------------------------------------------------
+Sorted by: 
+     Note: Dataset has changed since last saved.
+
+. sum
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     asdf_id |        339         169     98.0051          0        338
+   shapeName |          0
+     pop2000 |        299    1.09e+37    5.54e+37   206.0009   3.40e+38
+     pop2001 |        339    24436.67    87126.26   219.5939    1100910
+     pop2002 |        339    24840.61    88617.68    237.515    1127900
+-------------+---------------------------------------------------------
+     pop2003 |        339    25259.27    90277.65   261.9886    1155505
+     pop2004 |        339    25690.72    91877.22   280.7339    1183557
+     pop2005 |        339    26138.39    93285.53   304.8908    1208395
+     pop2006 |        339    26602.64    95140.61   325.3436    1240269
+     pop2007 |        339    27080.17    96833.97    354.985    1267908
+-------------+---------------------------------------------------------
+     pop2008 |        339    27574.08    98650.57   379.6332    1296906
+     pop2009 |        339    28078.82    100556.9   412.5431    1330029
+     pop2010 |        339    28602.76    102482.5   440.7266    1362528
+     pop2011 |        339    29149.45      104150   476.7716    1387944
+     pop2012 |        339    29725.21    106567.2   518.9156    1429553
+-------------+---------------------------------------------------------
+     pop2013 |        339    30310.05      108932   559.2823    1468142
+     pop2014 |        339    30912.69    111007.1   594.9893    1500294
+     pop2015 |        339    31535.45    113426.1   611.1754    1538835
+     pop2016 |        339    32186.12    115445.6   638.6938    1570342
+     pop2017 |        339    32858.76    117649.3   661.8224    1604458
+-------------+---------------------------------------------------------
+     pop2018 |        339    33559.27    120157.7    657.392    1643086
+     pop2019 |        339    34284.56    122641.2   636.0154    1681318
+     pop2020 |        339    35037.36    125250.6   621.4688    1721638
+     shapeID |          0
+
+. 
+. ** Drop observations for the year 2000 as they contain huge outliers
+. drop pop2000 
+
+. 
+. ** Reshape data from wide to long
+. reshape long pop, i(asdf_id shapeName shapeID) j(year)
+(j = 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 2016 2017 2018 2019 2020)
+
+Data                               Wide   ->   Long
+-----------------------------------------------------------------------------
+Number of observations              339   ->   6,780       
+Number of variables                  23   ->   5           
+j variable (20 values)                    ->   year
+xij variables:
+            pop2001 pop2002 ... pop2020   ->   pop
+-----------------------------------------------------------------------------
+
+. 
+. ** Linear interpolation of missing values
+. xtset asdf_id year
+
+Panel variable: asdf_id (strongly balanced)
+ Time variable: year, 2001 to 2020
+         Delta: 1 unit
+
+. gen ln_pop = ln(pop) // multiply by 1 million to avoid negative numbers
+
+. 
+. ipolate ln_pop year, gen(ln_pop_ip) epolate by (asdf_id)
+
+. 
+. des
+
+Contains data
+ Observations:         6,780                  
+    Variables:             7                  
+-----------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-----------------------------------------------------------------------------------------------------------------------
+asdf_id         int     %8.0g                 
+shapeName       str32   %32s                  
+shapeID         str26   %26s                  
+year            int     %10.0g                
+pop             float   %9.0g                 
+ln_pop          float   %9.0g                 
+ln_pop_ip       double  %10.0g                Interpolation of ln_pop on year
+-----------------------------------------------------------------------------------------------------------------------
+Sorted by: asdf_id  year
+     Note: Dataset has changed since last saved.
+
+. sum
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     asdf_id |      6,780         169    97.86766          0        338
+   shapeName |          0
+     shapeID |          0
+        year |      6,780      2010.5    5.766707       2001       2020
+         pop |      6,780    29193.15    105045.7   219.5939    1721638
+-------------+---------------------------------------------------------
+      ln_pop |      6,780    9.309598    1.159507    5.39178   14.35879
+   ln_pop_ip |      6,780    9.309598    1.159507    5.39178   14.35879
+
+. 
+. 
+. ** Compute long-run trends: HP filter with parameters 6.25, 100, 400
+. pfilter ln_pop_ip, method(hp) trend(tr6_ln_y)   smooth(6.25)
+
+. pfilter ln_pop_ip, method(hp) trend(tr100_ln_y) smooth(100)
+
+. pfilter ln_pop_ip, method(hp) trend(tr400_ln_y) smooth(400)
+
+. 
+. ** Re-express NTL in its original scale
+. gen   tr6_pop = exp(tr6_ln_y)
+
+. gen tr100_pop = exp(tr100_ln_y)
+
+. gen tr400_pop = exp(tr400_ln_y)
+
+. 
+. ** Label variables
+. label variable shapeName "Municipality name"
+
+. label variable shapeID   "Municipality Geoquery Polygon ID"
+
+. 
+. label variable pop "Estimated population count"
+
+. notes pop: Estimated population count from WorldPop. Underlying dataset provides number of people per 1km pixel. The 
+> mapping approach is Random Forest-based dasymetric redistribution  >>>Download link: http://geo.aiddata.org/query/#!/
+> status/622081a016cfcc2a7a4e3ab2
+
+. 
+. label variable tr6_pop "Trend of population (HP 6.25)"
+
+. notes tr6_pop: The trend is based on the HP filter with a smoothing parameter of 6.25
+
+. label variable tr100_pop "Trend of population (HP 100)"
+
+. notes tr100_pop: The trend is based on the HP filter with a smoothing parameter of 100
+
+. label variable tr400_pop "Trend of population (HP 400)"
+
+. notes tr400_pop: The trend is based on the HP filter with a smoothing parameter of 400
+
+. 
+. 
+. ** Verify similarity with the original series
+. reg pop tr6_pop, robust
+
+Linear regression                               Number of obs     =      6,780
+                                                F(1, 6778)        >   99999.00
+                                                Prob > F          =     0.0000
+                                                R-squared         =     1.0000
+                                                Root MSE          =     203.73
+
+------------------------------------------------------------------------------
+             |               Robust
+         pop | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     tr6_pop |   1.000002   .0001828  5471.70   0.000     .9996434     1.00036
+       _cons |   .4547039   4.159067     0.11   0.913    -7.698374    8.607781
+------------------------------------------------------------------------------
+
+. reg pop tr100_pop, robust
+
+Linear regression                               Number of obs     =      6,780
+                                                F(1, 6778)        >   99999.00
+                                                Prob > F          =     0.0000
+                                                R-squared         =     1.0000
+                                                Root MSE          =      251.5
+
+------------------------------------------------------------------------------
+             |               Robust
+         pop | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   tr100_pop |   1.000001   .0002345  4265.24   0.000     .9995411     1.00046
+       _cons |   .7325332   5.325525     0.14   0.891    -9.707169    11.17224
+------------------------------------------------------------------------------
+
+. reg pop tr400_pop, robust
+
+Linear regression                               Number of obs     =      6,780
+                                                F(1, 6778)        >   99999.00
+                                                Prob > F          =     0.0000
+                                                R-squared         =     1.0000
+                                                Root MSE          =     269.59
+
+------------------------------------------------------------------------------
+             |               Robust
+         pop | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   tr400_pop |          1   .0002537  3941.96   0.000     .9995029    1.000498
+       _cons |   .9074175   5.776297     0.16   0.875    -10.41594    12.23077
+------------------------------------------------------------------------------
+
+. 
+. tw (sc pop tr6_pop)   (lfit pop tr6_pop),   name(fig1, replace)
+
+. tw (sc pop tr100_pop) (lfit pop tr100_pop), name(fig2, replace)
+
+. tw (sc pop tr400_pop) (lfit pop tr400_pop), name(fig3, replace)
+
+. 
+. tsline tr6_pop pop if asdf_id == 91, name(fig4, replace)
+
+. tsline tr6_pop pop if asdf_id == 93, name(fig5, replace)
+
+. tsline tr6_pop pop if asdf_id == 109, name(fig6, replace)
+
+. tsline tr6_pop pop if asdf_id == 217, name(fig7, replace)
+
+. tsline tr6_pop pop if asdf_id == 218, name(fig8, replace)
+
+. tsline tr6_pop pop if asdf_id == 225, name(fig9, replace)
+
+. tsline tr6_pop pop if asdf_id == 228, name(fig10, replace)
+
+. tsline tr6_pop pop if asdf_id == 218, name(fig11, replace)
+
+. tsline tr6_pop pop if asdf_id == 160, name(ElAlto, replace)
+
+. 
+. tsline tr400_pop pop if asdf_id == 91, name(ffig4, replace)
+
+. tsline tr400_pop pop if asdf_id == 93, name(ffig5, replace)
+
+. tsline tr400_pop pop if asdf_id == 109, name(ffig6, replace)
+
+. tsline tr400_pop pop if asdf_id == 217, name(ffig7, replace)
+
+. tsline tr400_pop pop if asdf_id == 218, name(ffig8, replace)
+
+. tsline tr400_pop pop if asdf_id == 225, name(ffig9, replace)
+
+. tsline tr400_pop pop if asdf_id == 228, name(ffig10, replace)
+
+. tsline tr400_pop pop if asdf_id == 218, name(ffig11, replace)
+
+. tsline tr400_pop pop if asdf_id == 160, name(fElAlto, replace)
+
+. 
+. 
+. ** Drop unnecesary variables
+. drop tr6_ln_y tr100_ln_y tr400_ln_y ln_pop ln_pop_ip
+
+. 
+. describe
+
+Contains data
+ Observations:         6,780                  
+    Variables:             8                  
+-----------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-----------------------------------------------------------------------------------------------------------------------
+asdf_id         int     %8.0g                 
+shapeName       str32   %32s                  Municipality name
+shapeID         str26   %26s                  Municipality Geoquery Polygon ID
+year            int     %10.0g                
+pop             float   %9.0g               * Estimated population count
+tr6_pop         float   %9.0g               * Trend of population (HP 6.25)
+tr100_pop       float   %9.0g               * Trend of population (HP 100)
+tr400_pop       float   %9.0g               * Trend of population (HP 400)
+                                            * indicated variables have notes
+-----------------------------------------------------------------------------------------------------------------------
+Sorted by: asdf_id  year
+     Note: Dataset has changed since last saved.
+
+. sum
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     asdf_id |      6,780         169    97.86766          0        338
+   shapeName |          0
+     shapeID |          0
+        year |      6,780      2010.5    5.766707       2001       2020
+         pop |      6,780    29193.15    105045.7   219.5939    1721638
+-------------+---------------------------------------------------------
+     tr6_pop |      6,780    29192.65    105045.3   220.2197    1720778
+   tr100_pop |      6,780     29192.4    105045.3   221.3703    1722643
+   tr400_pop |      6,780    29192.24    105045.3   221.6266    1723612
+
+. 
+. 
+. 
+. ** Save long-form panel dataset
+. save             "../data/Population_trends.dta", replace
+file ../data/Population_trends.dta saved
+
+. export delimited "../data/Population_trends.csv", replace
+file ../data/Population_trends.csv saved
+
+. 
+. 
+. ** Save wide-form panel dataset
+. reshape wide pop tr6_pop tr100_pop tr400_pop, i(asdf_id shapeName)  j(year)  
+(j = 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 2016 2017 2018 2019 2020)
+
+Data                               Long   ->   Wide
+-----------------------------------------------------------------------------
+Number of observations            6,780   ->   339         
+Number of variables                   8   ->   83          
+j variable (20 values)             year   ->   (dropped)
+xij variables:
+                                    pop   ->   pop2001 pop2002 ... pop2020
+                                tr6_pop   ->   tr6_pop2001 tr6_pop2002 ... tr6_pop2020
+                              tr100_pop   ->   tr100_pop2001 tr100_pop2002 ... tr100_pop2020
+                              tr400_pop   ->   tr400_pop2001 tr400_pop2002 ... tr400_pop2020
+-----------------------------------------------------------------------------
+
+. order _all, alphabetic
+
+. order shapeName, after(asdf_id)
+
+. drop shapeID
+
+. save             "../data/Population_trends-wide.dta", replace
+file ../data/Population_trends-wide.dta saved
+
+. export delimited "../data/Population_trends-wide.csv", replace
+file ../data/Population_trends-wide.csv saved
+
+. 
+. 
+. ** 99. Close log file
+. log close
+      name:  <unnamed>
+       log:  /Users/carlosmendez/Documents/GitHub/project2021o/c00-transform_data/040_clean_and_estimate_Population_tre
+> nds.txt
+  log type:  text
+ closed on:  26 Apr 2022, 12:56:55
+-----------------------------------------------------------------------------------------------------------------------

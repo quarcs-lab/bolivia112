@@ -1,0 +1,183 @@
+-----------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/carlosmendez/Documents/GitHub/project2021o/c00-transform_data/060_compute_NTL_pc.txt
+  log type:  text
+ opened on:  27 Apr 2022, 11:17:51
+
+. 
+. ** 3. Install modules
+. *ssc install estout, replace all
+. *ssc install outreg2, replace all
+. *ssc install reghdfe, replace all * INFO: http://scorreia.com/software/reghdfe/
+. *net install gr0009_1, from (http://www.stata-journal.com/software/sj10-1) replace all
+. *net install tsg_schemes, from("https://raw.githubusercontent.com/asjadnaqvi/Stata-schemes/main/schemes/") replace al
+> l
+. *set scheme white_tableau, permanently
+. *set scheme gg_tableau, permanently
+. 
+. 
+. ** 4. Import data
+. use "../data/Population_trends.dta", clear
+
+. 
+. describe
+
+Contains data from ../data/Population_trends.dta
+ Observations:         6,780                  
+    Variables:             8                  26 Apr 2022 12:56
+-----------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-----------------------------------------------------------------------------------------------------------------------
+asdf_id         int     %8.0g                 
+shapeName       str32   %32s                  Municipality name
+shapeID         str26   %26s                  Municipality Geoquery Polygon ID
+year            int     %10.0g                
+pop             float   %9.0g               * Estimated population count
+tr6_pop         float   %9.0g               * Trend of population (HP 6.25)
+tr100_pop       float   %9.0g               * Trend of population (HP 100)
+tr400_pop       float   %9.0g               * Trend of population (HP 400)
+                                            * indicated variables have notes
+-----------------------------------------------------------------------------------------------------------------------
+Sorted by: asdf_id  year
+
+. summarize
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     asdf_id |      6,780         169    97.86766          0        338
+   shapeName |          0
+     shapeID |          0
+        year |      6,780      2010.5    5.766707       2001       2020
+         pop |      6,780    29193.15    105045.7   219.5939    1721638
+-------------+---------------------------------------------------------
+     tr6_pop |      6,780    29192.65    105045.3   220.2197    1720778
+   tr100_pop |      6,780     29192.4    105045.3   221.3703    1722643
+   tr400_pop |      6,780    29192.24    105045.3   221.6266    1723612
+
+. 
+. ** Select observations from 2012-2020
+. keep if year > 2011
+(3,729 observations deleted)
+
+. 
+. ** Merge with NTL dataset
+. sort asdf_id year
+
+. merge 1:1 asdf_id year using "../data/NTL_trends.dta"
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                             0
+    Matched                             3,051  (_merge==3)
+    -----------------------------------------
+
+. drop _merge
+
+. 
+. ** Rescale NTL by 100,000,000 to be able to compute log (NTL/pop)
+. gen NTL     = 100000000*ntl
+(67 missing values generated)
+
+. gen t6NTL   = 100000000*tr6_ntl
+
+. gen t100NTL = 100000000*tr100_ntl
+
+. gen t400NTL = 100000000*tr400_ntl
+
+. 
+. label variable     NTL "NTL (Sum of NTL) rescaled by 100,000,000"
+
+. label variable   t6NTL "Trend of NTL (HP 6.25)"
+
+. label variable t100NTL "Trend of NTL (HP 100)"
+
+. label variable t400NTL "Trend of NTL (HP 400)"
+
+. 
+. ** Compute log of NTL/POP
+. gen ln_NTLpc = ln(NTL/pop)
+(67 missing values generated)
+
+. gen ln_t6NTLpc = ln(t6NTL/tr6_pop) 
+
+. gen ln_t100NTLpc = ln(t100NTL/tr100_pop) 
+
+. gen ln_t400NTLpc = ln(t400NTL/tr400_pop)
+
+. 
+. label variable ln_NTLpc      "Log sum of lights per capita"
+
+. label variable ln_t6NTLpc    "Log sum of lights per capita (Trend HP 6.25)"
+
+. label variable ln_t100NTLpc  "Log sum of lights per capita (Trend HP 100)"
+
+. label variable ln_t400NTLpc  "Log sum of lights per capita (Trend HP 400)"
+
+. 
+. des ln_NTLpc ln_t6NTLpc ln_t100NTLpc ln_t400NTLpc
+
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-----------------------------------------------------------------------------------------------------------------------
+ln_NTLpc        float   %9.0g                 Log sum of lights per capita
+ln_t6NTLpc      float   %9.0g                 Log sum of lights per capita (Trend HP 6.25)
+ln_t100NTLpc    float   %9.0g                 Log sum of lights per capita (Trend HP 100)
+ln_t400NTLpc    float   %9.0g                 Log sum of lights per capita (Trend HP 400)
+
+. sum ln_NTLpc ln_t6NTLpc ln_t100NTLpc ln_t400NTLpc
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+    ln_NTLpc |      2,984     13.5848     1.31488   8.398978   18.32956
+  ln_t6NTLpc |      3,051    13.53934    1.424224   .8570069   18.13531
+ln_t100NTLpc |      3,051    13.53935    1.420241   .8562111   18.07757
+ln_t400NTLpc |      3,051    13.53939    1.420209   .8560951    18.0634
+
+. 
+. ** Save long-form panel dataset
+. save             "../data/lnNTLpc.dta", replace
+file ../data/lnNTLpc.dta saved
+
+. export delimited "../data/lnNTLpc.csv", replace
+file ../data/lnNTLpc.csv saved
+
+. 
+. ** Save wide-form panel dataset
+. keep asdf_id shapeName year ln_NTLpc ln_t6NTLpc ln_t100NTLpc ln_t400NTLpc
+
+. reshape wide ln_NTLpc ln_t6NTLpc ln_t100NTLpc ln_t400NTLpc, i(asdf_id shapeName)  j(year)  
+(j = 2012 2013 2014 2015 2016 2017 2018 2019 2020)
+
+Data                               Long   ->   Wide
+-----------------------------------------------------------------------------
+Number of observations            3,051   ->   339         
+Number of variables                   7   ->   38          
+j variable (9 values)              year   ->   (dropped)
+xij variables:
+                               ln_NTLpc   ->   ln_NTLpc2012 ln_NTLpc2013 ... ln_NTLpc2020
+                             ln_t6NTLpc   ->   ln_t6NTLpc2012 ln_t6NTLpc2013 ... ln_t6NTLpc2020
+                           ln_t100NTLpc   ->   ln_t100NTLpc2012 ln_t100NTLpc2013 ... ln_t100NTLpc2020
+                           ln_t400NTLpc   ->   ln_t400NTLpc2012 ln_t400NTLpc2013 ... ln_t400NTLpc2020
+-----------------------------------------------------------------------------
+
+. order _all, alphabetic
+
+. order shapeName, after(asdf_id)
+
+. save             "../data/lnNTLpc_trends-wide.dta", replace
+file ../data/lnNTLpc_trends-wide.dta saved
+
+. export delimited "../data/lnNTLpc_trends-wide.csv", replace
+file ../data/lnNTLpc_trends-wide.csv saved
+
+. 
+. 
+. 
+. ** 99. Close log file
+. log close
+      name:  <unnamed>
+       log:  /Users/carlosmendez/Documents/GitHub/project2021o/c00-transform_data/060_compute_NTL_pc.txt
+  log type:  text
+ closed on:  27 Apr 2022, 11:17:51
+-----------------------------------------------------------------------------------------------------------------------

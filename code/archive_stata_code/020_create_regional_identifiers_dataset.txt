@@ -1,0 +1,509 @@
+-----------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/carlosmendez/Documents/GitHub/project2021o/c00-transform_data/020_create_regional_identifiers_datas
+> et.txt
+  log type:  text
+ opened on:  26 Apr 2022, 12:37:49
+
+. 
+. ** 3. Install modules
+. *ssc install estout, replace all
+. *ssc install outreg2, replace all
+. *ssc install reghdfe, replace all * INFO: http://scorreia.com/software/reghdfe/
+. *net install gr0009_1, from (http://www.stata-journal.com/software/sj10-1) replace all
+. *net install tsg_schemes, from("https://raw.githubusercontent.com/asjadnaqvi/Stata-schemes/main/schemes/") replace al
+> l
+. *set scheme white_tableau, permanently
+. *set scheme gg_tableau, permanently
+. 
+. 
+. ** 4. Import data
+. use "../data/rawData/bd_atlasmunicipalodsbolivia2020_Stata15_full.dta", clear
+
+. sort poly_id
+
+. 
+. ** Select variables
+. keep id municipio dep depmun poly_id asdf_id
+
+. 
+. ** Rename and label variables
+. rename id mun_id
+
+. label variable mun_id "Municipality ID"
+
+. 
+. rename municipio mun
+
+. label variable mun "Municipality"
+
+. 
+. label variable dep "Department"
+
+. egen dep_id = group(dep)
+
+. label variable dep_id "Department ID"
+
+. 
+. rename depmun dep_mun
+
+. label variable dep_mun "Department-municipality"
+
+. 
+. label variable poly_id "Polygon ID"
+
+. label variable asdf_id "ASDF ID"
+
+. 
+. ** Order variables
+. order poly_id, first
+
+. order asdf_id, after(poly_id)
+
+. order dep_id, after(dep)
+
+. order mun_id, after(mun)
+
+. 
+. list poly_id asdf_id mun dep
+
+     +-----------------------------------------------------------+
+     | poly_id   asdf_id                        mun          dep |
+     |-----------------------------------------------------------|
+  1. |       1       254                      Sucre   Chuquisaca |
+  2. |       2       201                     Yotala   Chuquisaca |
+  3. |       3       300                     Poroma   Chuquisaca |
+  4. |       4       174                    Azurduy   Chuquisaca |
+  5. |       5       186                    Tarvita   Chuquisaca |
+     |-----------------------------------------------------------|
+  6. |       6       206                    Zudañez   Chuquisaca |
+  7. |       7       255                     Presto   Chuquisaca |
+  8. |       8       244                   Mojocoya   Chuquisaca |
+  9. |       9       200                       Icla   Chuquisaca |
+ 10. |      10       243                    Padilla   Chuquisaca |
+     |-----------------------------------------------------------|
+ 11. |      11       203                     Tomina   Chuquisaca |
+ 12. |      12       199                   Sopachuy   Chuquisaca |
+ 13. |      13       198               Villa Alcalá   Chuquisaca |
+ 14. |      14       190                  El Villar   Chuquisaca |
+ 15. |      15       194                 Monteagudo   Chuquisaca |
+     |-----------------------------------------------------------|
+ 16. |      16       193                  Huacareta   Chuquisaca |
+ 17. |      17       205                   Tarabuco   Chuquisaca |
+ 18. |      18       202                  Yamparáez   Chuquisaca |
+ 19. |      19       336                    Camargo   Chuquisaca |
+ 20. |      20        35                  San Lucas   Chuquisaca |
+     |-----------------------------------------------------------|
+ 21. |      21        37                  Incahuasi   Chuquisaca |
+ 22. |      22       322              Villa Charcas   Chuquisaca |
+ 23. |      23       246              Villa Serrano   Chuquisaca |
+ 24. |      24       105               Villa Abecia   Chuquisaca |
+ 25. |      25        36                    Culpina   Chuquisaca |
+     |-----------------------------------------------------------|
+ 26. |      26       104               Las Carreras   Chuquisaca |
+ 27. |      27       241                  Muyupampa   Chuquisaca |
+ 28. |      28       191                    Huacaya   Chuquisaca |
+ 29. |      29       247                  Macharetí   Chuquisaca |
+ 30. |      30       176                     La Paz       La Paz |
+     |-----------------------------------------------------------|
+ 31. |      31       158                      Palca       La Paz |
+ 32. |      32       157                   Mecapaca       La Paz |
+ 33. |      33       159                  Achocalla       La Paz |
+ 34. |      34       160                    El Alto       La Paz |
+ 35. |      35       326                  Achacachi       La Paz |
+     |-----------------------------------------------------------|
+ 36. |      36        41                 Ancoraimes       La Paz |
+ 37. |      37       239                Chua Cocani       La Paz |
+ 38. |      38       237                    Huarina       La Paz |
+ 39. |      39       230          Santiago de Huata       La Paz |
+ 40. |      40       155                  Huatajata       La Paz |
+     |-----------------------------------------------------------|
+ 41. |      41        25                  Coro Coro       La Paz |
+ 42. |      42       112                 Caquiaviri       La Paz |
+ 43. |      43       139                   Calacoto       La Paz |
+ 44. |      44       150                   Comanche       La Paz |
+ 45. |      45       325                    Charaña       La Paz |
+     |-----------------------------------------------------------|
+ 46. |      46       307            Waldo Ballivián       La Paz |
+ 47. |      47       111        Nazacara de Pacajes       La Paz |
+ 48. |      48       134                    Callapa       La Paz |
+ 49. |      49       323              Puerto Acosta       La Paz |
+ 50. |      50        51                   Mocomoco       La Paz |
+     |-----------------------------------------------------------|
+ 51. |      51        43            Puerto Carabuco       La Paz |
+ 52. |      52       240                   Humanata       La Paz |
+ 53. |      53       324                     Escoma       La Paz |
+ 54. |      54       179                      Chuma       La Paz |
+ 55. |      55       305                      Ayata       La Paz |
+     |-----------------------------------------------------------|
+ 56. |      56       172                   Aucapata       La Paz |
+ 57. |      57       177                     Sorata       La Paz |
+ 58. |      58       180                     Guanay       La Paz |
+ 59. |      59       192                   Tacacoma       La Paz |
+ 60. |      60       171                   Quiabaya       La Paz |
+     |-----------------------------------------------------------|
+ 61. |      61       168                    Combaya       La Paz |
+ 62. |      62       175                    Tipuani       La Paz |
+ 63. |      63       182                     Mapiri       La Paz |
+ 64. |      64       181                   Teoponte       La Paz |
+ 65. |      65       210                      Apolo       La Paz |
+     |-----------------------------------------------------------|
+ 66. |      66       208                  Pelechuco       La Paz |
+ 67. |      67       152                     Viacha       La Paz |
+ 68. |      68       165                     Guaqui       La Paz |
+ 69. |      69        75                 Tiahuanacu       La Paz |
+ 70. |      70       163                Desaguadero       La Paz |
+     |-----------------------------------------------------------|
+ 71. |      71       328      San Andrés de Machaca       La Paz |
+ 72. |      72       164           Jesús de Machaca       La Paz |
+ 73. |      73       327                     Taraco       La Paz |
+ 74. |      74       116                    Luribay       La Paz |
+ 75. |      75        27                  Sapahaqui       La Paz |
+     |-----------------------------------------------------------|
+ 76. |      76       138                       Yaco       La Paz |
+ 77. |      77       149                      Malla       La Paz |
+ 78. |      78        28                    Cairoma       La Paz |
+ 79. |      79        60                  Inquisivi       La Paz |
+ 80. |      80       154                      Quime       La Paz |
+     |-----------------------------------------------------------|
+ 81. |      81        59                    Cajuata       La Paz |
+ 82. |      82        29                   Colquiri       La Paz |
+ 83. |      83        30                     Ichoca       La Paz |
+ 84. |      84       153      Villa Libertad Licoma       La Paz |
+ 85. |      85        62                  Chulumani       La Paz |
+     |-----------------------------------------------------------|
+ 86. |      86        61                    Irupana       La Paz |
+ 87. |      87       161                  Yanacachi       La Paz |
+ 88. |      88       209              Palos Blancos       La Paz |
+ 89. |      89       178                  La Asunta       La Paz |
+ 90. |      90       167                   Pucarani       La Paz |
+     |-----------------------------------------------------------|
+ 91. |      91       156                       Laja       La Paz |
+ 92. |      92       242                   Batallas       La Paz |
+ 93. |      93       231               Puerto Pérez       La Paz |
+ 94. |      94       142                  Sica Sica       La Paz |
+ 95. |      95        17                      Umala       La Paz |
+     |-----------------------------------------------------------|
+ 96. |      96       173                    Ayo Ayo       La Paz |
+ 97. |      97       151                  Calamarca       La Paz |
+ 98. |      98       143                 Patacamaya       La Paz |
+ 99. |      99       144                 Colquencha       La Paz |
+100. |     100       130                    Collana       La Paz |
+     |-----------------------------------------------------------|
+101. |     101       169                    Coroico       La Paz |
+102. |     102       170                   Coripata       La Paz |
+103. |     103       304                    Ixiamas       La Paz |
+104. |     104       212           San Buenaventura       La Paz |
+105. |     105       183                  Charazani       La Paz |
+     |-----------------------------------------------------------|
+106. |     106       207                      Curva       La Paz |
+107. |     107       185                 Copacabana       La Paz |
+108. |     108       196       San Pedro de Tiquina       La Paz |
+109. |     109       166              Tito Yupanqui       La Paz |
+110. |     110        20       San Pedro Cuarahuara       La Paz |
+     |-----------------------------------------------------------|
+111. |     111        16                Papel Pampa       La Paz |
+112. |     112        14                 Chacarilla       La Paz |
+113. |     113       145        Santiago de Machaca       La Paz |
+114. |     114       137                   Catacora       La Paz |
+115. |     115       236                   Caranavi       La Paz |
+     |-----------------------------------------------------------|
+116. |     116       235                  Alto Beni       La Paz |
+117. |     117       135                 Cochabamba   Cochabamba |
+118. |     118         5                    Aiquile   Cochabamba |
+119. |     119       334                   Pasorapa   Cochabamba |
+120. |     120        53                   Omereque   Cochabamba |
+     |-----------------------------------------------------------|
+121. |     121       292              Independencia   Cochabamba |
+122. |     122       106                  Morochata   Cochabamba |
+123. |     123       251                   Cocapata   Cochabamba |
+124. |     124        85                     Tarata   Cochabamba |
+125. |     125       120                    Anzaldo   Cochabamba |
+     |-----------------------------------------------------------|
+126. |     126        15                    Arbieto   Cochabamba |
+127. |     127       119                  Sacabamba   Cochabamba |
+128. |     128       140                      Arani   Cochabamba |
+129. |     129       273                      Vacas   Cochabamba |
+130. |     130        24                      Arque   Cochabamba |
+     |-----------------------------------------------------------|
+131. |     131       125                   Tacopaya   Cochabamba |
+132. |     132        23                   Capinota   Cochabamba |
+133. |     133       128                 Santivañez   Cochabamba |
+134. |     134        21                     Sicaya   Cochabamba |
+135. |     135       124                      Cliza   Cochabamba |
+     |-----------------------------------------------------------|
+136. |     136       121                       Toko   Cochabamba |
+137. |     137       131                     Tolata   Cochabamba |
+138. |     138        79                Quillacollo   Cochabamba |
+139. |     139        83                  Sipe Sipe   Cochabamba |
+140. |     140        81                  Tiquipaya   Cochabamba |
+     |-----------------------------------------------------------|
+141. |     141        84                      Vinto   Cochabamba |
+142. |     142        82                Colcapirhua   Cochabamba |
+143. |     143        80                     Sacaba   Cochabamba |
+144. |     144       301                     Colomi   Cochabamba |
+145. |     145       266               Villa Tunari   Cochabamba |
+     |-----------------------------------------------------------|
+146. |     146       162                   Tapacarí   Cochabamba |
+147. |     147        86                     Totora   Cochabamba |
+148. |     148       298                       Pojo   Cochabamba |
+149. |     149       274                     Pocona   Cochabamba |
+150. |     150       267                    Chimoré   Cochabamba |
+     |-----------------------------------------------------------|
+151. |     151       283          Puerto Villarroel   Cochabamba |
+152. |     152       299                 Entre Ríos   Cochabamba |
+153. |     153       333                     Mizque   Cochabamba |
+154. |     154       303                  Vila Vila   Cochabamba |
+155. |     155       302                     Alalay   Cochabamba |
+     |-----------------------------------------------------------|
+156. |     156       141                     Punata   Cochabamba |
+157. |     157        12               Villa Rivero   Cochabamba |
+158. |     158        26                 San Benito   Cochabamba |
+159. |     159       123                    Tacachi   Cochabamba |
+160. |     160       122                 Cuchumuela   Cochabamba |
+     |-----------------------------------------------------------|
+161. |     161       238                    Bolívar   Cochabamba |
+162. |     162       268                    Tiraque   Cochabamba |
+163. |     163       269                  Shinahota   Cochabamba |
+164. |     164        18                      Oruro        Oruro |
+165. |     165       136                  Caracollo        Oruro |
+     |-----------------------------------------------------------|
+166. |     166       126                   El Choro        Oruro |
+167. |     167       129       Pari-Paria-Soracachi        Oruro |
+168. |     168       330                 Challapata        Oruro |
+169. |     169         1                  Quillacas        Oruro |
+170. |     170       114                     Corque        Oruro |
+     |-----------------------------------------------------------|
+171. |     171       309                Choque Cota        Oruro |
+172. |     172       308      Curahuara de Carangas        Oruro |
+173. |     173        66                      Turco        Oruro |
+174. |     174         9                Huachacalla        Oruro |
+175. |     175       310                     Escara        Oruro |
+     |-----------------------------------------------------------|
+176. |     176       109       Cruz de Machacamarca        Oruro |
+177. |     177       108         Yunguyo de Litoral        Oruro |
+178. |     178         0                  Esmeralda        Oruro |
+179. |     179        63                      Poopó        Oruro |
+180. |     180        11                      Pazña        Oruro |
+     |-----------------------------------------------------------|
+181. |     181       110                  Antequera        Oruro |
+182. |     182         8                    Huanuni        Oruro |
+183. |     183       117               Machacamarca        Oruro |
+184. |     184       314   Salinas de Garci Mendoza        Oruro |
+185. |     185         2             Pampa Aullagas        Oruro |
+     |-----------------------------------------------------------|
+186. |     186        44                     Sabaya        Oruro |
+187. |     187       311                    Coipasa        Oruro |
+188. |     188       312                    Chipaya        Oruro |
+189. |     189       127                     Toledo        Oruro |
+190. |     190       133                 Eucaliptus        Oruro |
+     |-----------------------------------------------------------|
+191. |     191        13      Santiago de Andamarca        Oruro |
+192. |     192       113         Belén de Andamarca        Oruro |
+193. |     193        64        San Pedro de Totora        Oruro |
+194. |     194        10                      Huari        Oruro |
+195. |     195        71                  La Rivera        Oruro |
+     |-----------------------------------------------------------|
+196. |     196        67               Todos Santos        Oruro |
+197. |     197       107                   Carangas        Oruro |
+198. |     198        19               Huayllamarca        Oruro |
+199. |     199       195                     Potosí       Potosí |
+200. |     200        39                 Tinguipaya       Potosí |
+     |-----------------------------------------------------------|
+201. |     201        49                    Yocalla       Potosí |
+202. |     202        50                     Urmiri       Potosí |
+203. |     203       331                      Uncía       Potosí |
+204. |     204       313                   Chayanta       Potosí |
+205. |     205         3                  Llallagua       Potosí |
+     |-----------------------------------------------------------|
+206. |     206       232                 Chuquihuta       Potosí |
+207. |     207        65                   Betanzos       Potosí |
+208. |     208       187                     Chaquí       Potosí |
+209. |     209       329                  Tacobamba       Potosí |
+210. |     210        76                Colquechaca       Potosí |
+     |-----------------------------------------------------------|
+211. |     211       332                     Ravelo       Potosí |
+212. |     212        77                    Pocoata       Potosí |
+213. |     213       204                      Ocurí       Potosí |
+214. |     214        40   San Pedro de Buena Vista       Potosí |
+215. |     215        99                  Toro Toro       Potosí |
+     |-----------------------------------------------------------|
+216. |     216       335                  Cotagaita       Potosí |
+217. |     217       115                    Vitichi       Potosí |
+218. |     218         6            Villa de Sacaca       Potosí |
+219. |     219         4                   Caripuyo       Potosí |
+220. |     220       315                     Tupiza       Potosí |
+     |-----------------------------------------------------------|
+221. |     221       316                     Atocha       Potosí |
+222. |     222        42                 Colcha "K"       Potosí |
+223. |     223       317        San Pedro de Quemes       Potosí |
+224. |     224       103         San Pablo de Lípez       Potosí |
+225. |     225        93                   Mojinete       Potosí |
+     |-----------------------------------------------------------|
+226. |     226        91    San Antonio de Esmoruco       Potosí |
+227. |     227       188                       Puna       Potosí |
+228. |     228       184                  Caiza "D"       Potosí |
+229. |     229       189                    Ckochas       Potosí |
+230. |     230       306                      Uyuni       Potosí |
+     |-----------------------------------------------------------|
+231. |     231        46                     Tomave       Potosí |
+232. |     232        47                      Porco       Potosí |
+233. |     233       118                  Arampampa       Potosí |
+234. |     234         7                     Acasio       Potosí |
+235. |     235        78                      Llica       Potosí |
+     |-----------------------------------------------------------|
+236. |     236       102                      Tahua       Potosí |
+237. |     237       337                   Villazón       Potosí |
+238. |     238       100                San Agustín       Potosí |
+239. |     239       101                     Tarija       Tarija |
+240. |     240       338                    Padcaya       Tarija |
+     |-----------------------------------------------------------|
+241. |     241       321                    Bermejo       Tarija |
+242. |     242        94                    Yacuiba       Tarija |
+243. |     243        96                   Caraparí       Tarija |
+244. |     244        48                Villamontes       Tarija |
+245. |     245        92                    Uriondo       Tarija |
+     |-----------------------------------------------------------|
+246. |     246        95                   Yunchará       Tarija |
+247. |     247        97          Villa San Lorenzo       Tarija |
+248. |     248       319                  El Puente       Tarija |
+249. |     249        72                 Entre Ríos       Tarija |
+250. |     250        55    Santa Cruz de la Sierra   Santa Cruz |
+     |-----------------------------------------------------------|
+251. |     251       260                     Cotoca   Santa Cruz |
+252. |     252        54                    Porongo   Santa Cruz |
+253. |     253        31                 La Guardia   Santa Cruz |
+254. |     254        33                   El Torno   Santa Cruz |
+255. |     255       276                     Warnes   Santa Cruz |
+     |-----------------------------------------------------------|
+256. |     256       275                Okinawa Uno   Santa Cruz |
+257. |     257       293     San Ignacio de Velasco   Santa Cruz |
+258. |     258       265      San Miguel de Velasco   Santa Cruz |
+259. |     259       291                 San Rafael   Santa Cruz |
+260. |     260        87                Buena Vista   Santa Cruz |
+     |-----------------------------------------------------------|
+261. |     261        88                 San Carlos   Santa Cruz |
+262. |     262       261                   Yapacaní   Santa Cruz |
+263. |     263        38       San Juan de Yapacaní   Santa Cruz |
+264. |     264       290      San José de Chiquitos   Santa Cruz |
+265. |     265       278                     Pailón   Santa Cruz |
+     |-----------------------------------------------------------|
+266. |     266       287                     Roboré   Santa Cruz |
+267. |     267        90                Portachuelo   Santa Cruz |
+268. |     268        69        Santa Rosa del Sara   Santa Cruz |
+269. |     269       284              Colpa Belgica   Santa Cruz |
+270. |     270       197                 Lagunillas   Santa Cruz |
+     |-----------------------------------------------------------|
+271. |     271       289                   Charagua   Santa Cruz |
+272. |     272       259                    Cabezas   Santa Cruz |
+273. |     273       249                      Cuevo   Santa Cruz |
+274. |     274       253                  Gutiérrez   Santa Cruz |
+275. |     275       250                     Camiri   Santa Cruz |
+     |-----------------------------------------------------------|
+276. |     276       248                    Boyuibe   Santa Cruz |
+277. |     277       252                Vallegrande   Santa Cruz |
+278. |     278       257                     Trigal   Santa Cruz |
+279. |     279        32                  Moro Moro   Santa Cruz |
+280. |     280       256              Postrer Valle   Santa Cruz |
+     |-----------------------------------------------------------|
+281. |     281       245                     Pucará   Santa Cruz |
+282. |     282        34                  Samaipata   Santa Cruz |
+283. |     283       281               Pampa Grande   Santa Cruz |
+284. |     284       282                    Mairana   Santa Cruz |
+285. |     285       258                Quirusillas   Santa Cruz |
+     |-----------------------------------------------------------|
+286. |     286       270                    Montero   Santa Cruz |
+287. |     287       277             Gral. Saavedra   Santa Cruz |
+288. |     288       280                    Mineros   Santa Cruz |
+289. |     289       279           Fernández Alonso   Santa Cruz |
+290. |     290        58                  San Pedro   Santa Cruz |
+     |-----------------------------------------------------------|
+291. |     291        68                 Concepción   Santa Cruz |
+292. |     292        57                 San Javier   Santa Cruz |
+293. |     293       263                  San Ramón   Santa Cruz |
+294. |     294       318                 San Julián   Santa Cruz |
+295. |     295       297     San Antonio de Lomerío   Santa Cruz |
+     |-----------------------------------------------------------|
+296. |     296       262             Cuatro Cañadas   Santa Cruz |
+297. |     297       288                 San Matías   Santa Cruz |
+298. |     298       320                   Comarapa   Santa Cruz |
+299. |     299        52                    Saipina   Santa Cruz |
+300. |     300       285              Puerto Suárez   Santa Cruz |
+     |-----------------------------------------------------------|
+301. |     301        22            Puerto Quijarro   Santa Cruz |
+302. |     302       286       Carmen Rivero Tórrez   Santa Cruz |
+303. |     303       271      Ascensión de Guarayos   Santa Cruz |
+304. |     304       294                   Urubichá   Santa Cruz |
+305. |     305        98                  El Puente   Santa Cruz |
+     |-----------------------------------------------------------|
+306. |     306       296                   Trinidad         Beni |
+307. |     307       264                 San Javier         Beni |
+308. |     308       219                  Riberalta         Beni |
+309. |     309       226               Guayaramerín         Beni |
+310. |     310       215                      Reyes         Beni |
+     |-----------------------------------------------------------|
+311. |     311       214                  San Borja         Beni |
+312. |     312       224                 Santa Rosa         Beni |
+313. |     313       211               Rurrenabaque         Beni |
+314. |     314       213        Santa Ana de Yacuma         Beni |
+315. |     315       218                 Exaltación         Beni |
+     |-----------------------------------------------------------|
+316. |     316        56                San Ignacio         Beni |
+317. |     317        45                     Loreto         Beni |
+318. |     318       272                 San Andrés         Beni |
+319. |     319        73                San Joaquín         Beni |
+320. |     320        74                  San Ramón         Beni |
+     |-----------------------------------------------------------|
+321. |     321       217               Puerto Siles         Beni |
+322. |     322        89                  Magdalena         Beni |
+323. |     323       295                     Baures         Beni |
+324. |     324        70                  Huacaraje         Beni |
+325. |     325       132                     Cobija        Pando |
+     |-----------------------------------------------------------|
+326. |     326       220                   Porvenir        Pando |
+327. |     327       233                   Bolpebra        Pando |
+328. |     328       221                 Bella Flor        Pando |
+329. |     329       223                Puerto Rico        Pando |
+330. |     330       222                  San Pedro        Pando |
+     |-----------------------------------------------------------|
+331. |     331       234                 Filadelfia        Pando |
+332. |     332       216      Puerto Gonzalo Moreno        Pando |
+333. |     333       147                San Lorenzo        Pando |
+334. |     334       146                    El Sena        Pando |
+335. |     335       148                 Santa Rosa        Pando |
+     |-----------------------------------------------------------|
+336. |     336       225                     Ingavi        Pando |
+337. |     337       229            Nueva Esperanza        Pando |
+338. |     338       227      Villa Nueva-Loma Alta        Pando |
+339. |     339       228             Santos Mercado        Pando |
+     +-----------------------------------------------------------+
+
+. 
+. ** Merge with dataset: shapeID
+. merge 1:1 asdf_id using "../data/shapeID.dta"
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                             0
+    Matched                               339  (_merge==3)
+    -----------------------------------------
+
+. drop _merge
+
+. 
+. ** X. Save dataset
+. save             "../data/regional_identifiers.dta", replace
+file ../data/regional_identifiers.dta saved
+
+. export delimited "../data/regional_identifiers.csv", replace
+file ../data/regional_identifiers.csv saved
+
+. 
+. ** 99. Close log file
+. log close
+      name:  <unnamed>
+       log:  /Users/carlosmendez/Documents/GitHub/project2021o/c00-transform_data/020_create_regional_identifiers_datas
+> et.txt
+  log type:  text
+ closed on:  26 Apr 2022, 12:37:49
+-----------------------------------------------------------------------------------------------------------------------

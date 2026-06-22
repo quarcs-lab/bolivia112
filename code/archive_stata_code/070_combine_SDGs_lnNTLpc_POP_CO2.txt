@@ -1,0 +1,127 @@
+--------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/carlosmendez/Documents/GitHub/project2021o/c00-transform_data/070_combin
+> e_SDGs_lnNTLpc_POP_CO2.txt
+  log type:  text
+ opened on:  21 Aug 2022, 12:51:48
+
+. 
+. ** 3. Install modules
+. *ssc install estout, replace all
+. *ssc install outreg2, replace all
+. *ssc install reghdfe, replace all * INFO: http://scorreia.com/software/reghdfe/
+. *net install gr0009_1, from (http://www.stata-journal.com/software/sj10-1) replace all
+. *net install tsg_schemes, from("https://raw.githubusercontent.com/asjadnaqvi/Stata-schemes
+> /main/schemes/") replace all
+. *set scheme white_tableau, permanently
+. *set scheme gg_tableau, permanently
+. 
+. 
+. ** 4. Import data
+. use  "../data/regional_identifiers.dta", clear
+
+. 
+. describe
+
+Contains data from ../data/regional_identifiers.dta
+ Observations:           339                  
+    Variables:             8                  26 Apr 2022 12:37
+--------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+--------------------------------------------------------------------------------------------
+poly_id         int     %8.0g                 Polygon ID
+asdf_id         int     %8.0g                 ASDF ID
+mun             str24   %24s                  Municipality
+mun_id          long    %8.0g                 Municipality ID
+dep             str10   %10s                  Department
+dep_id          float   %9.0g                 Department ID
+dep_mun         str35   %35s                  Department-municipality
+shapeID         str26   %26s                  Municipality Geoquery Polygon ID
+--------------------------------------------------------------------------------------------
+Sorted by: asdf_id
+
+. summarize
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     poly_id |        339         170     98.0051          1        339
+     asdf_id |        339         169     98.0051          0        338
+         mun |          0
+      mun_id |        339    42887.39    23669.93      10101      90503
+         dep |          0
+-------------+---------------------------------------------------------
+      dep_id |        339    4.890855    2.236704          1          9
+     dep_mun |          0
+     shapeID |          0
+
+. 
+. ** Merge with SDGs database
+. sort asdf_id
+
+. merge 1:1 asdf_id using "../data/SDGs.dta"
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                             0
+    Matched                               339  (_merge==3)
+    -----------------------------------------
+
+. drop _merge
+
+. 
+. ** Merge with Population database
+. merge 1:1 asdf_id using "../data/Population_trends-wide.dta"
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                             0
+    Matched                               339  (_merge==3)
+    -----------------------------------------
+
+. drop _merge
+
+. 
+. ** Merge with NTL database
+. merge 1:1 asdf_id using "../data/lnNTLpc_trends-wide.dta"
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                             0
+    Matched                               339  (_merge==3)
+    -----------------------------------------
+
+. drop _merge
+
+. 
+. ** Merge with CO2 database
+. merge 1:1 asdf_id using "../data/CO2_trends-wide.dta"
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                             0
+    Matched                               339  (_merge==3)
+    -----------------------------------------
+
+. drop _merge
+
+. 
+. 
+. ** X. Save dataset
+. save             "../data/GeoDS4Bolivia_allVariables.dta", replace
+(file ../data/GeoDS4Bolivia_allVariables.dta not found)
+file ../data/GeoDS4Bolivia_allVariables.dta saved
+
+. export delimited "../data/GeoDS4Bolivia_allVariables.csv", replace
+(file ../data/GeoDS4Bolivia_allVariables.csv not found)
+file ../data/GeoDS4Bolivia_allVariables.csv saved
+
+. 
+. ** 99. Close log file
+. log close
+      name:  <unnamed>
+       log:  /Users/carlosmendez/Documents/GitHub/project2021o/c00-transform_data/070_combin
+> e_SDGs_lnNTLpc_POP_CO2.txt
+  log type:  text
+ closed on:  21 Aug 2022, 12:51:48
+--------------------------------------------------------------------------------------------

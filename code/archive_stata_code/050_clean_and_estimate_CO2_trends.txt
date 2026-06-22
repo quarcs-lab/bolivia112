@@ -1,0 +1,406 @@
+-----------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/carlosmendez/Documents/GitHub/project2021o/c00-transform_data/050_clean_and_estimate_CO2_trends.txt
+  log type:  text
+ opened on:  26 Apr 2022, 12:53:18
+
+. 
+. ** 3. Install modules
+. *ssc install estout, replace all
+. *ssc install outreg2, replace all
+. *ssc install reghdfe, replace all * INFO: http://scorreia.com/software/reghdfe/
+. *net install gr0009_1, from (http://www.stata-journal.com/software/sj10-1) replace all
+. *net install tsg_schemes, from("https://raw.githubusercontent.com/asjadnaqvi/Stata-schemes/main/schemes/") replace al
+> l
+. *set scheme white_tableau, permanently
+. *set scheme gg_tableau, permanently
+. 
+. ** 4. Import data
+. import delimited "../data/rawData/CO2/CO2.csv", case(preserve) clear
+(14 vars, 339 obs)
+
+. 
+. describe
+
+Contains data
+ Observations:           339                  
+    Variables:            14                  
+-----------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-----------------------------------------------------------------------------------------------------------------------
+asdf_id         int     %8.0g                 
+oco2_v10r~5mean float   %9.0g                 oco2_v10r_xco2_yearly.2015.mean
+oco2_v10r~7mean float   %9.0g                 oco2_v10r_xco2_yearly.2017.mean
+oco2_v10r~9mean float   %9.0g                 oco2_v10r_xco2_yearly.2019.mean
+oco2_v10r~0mean float   %9.0g                 oco2_v10r_xco2_yearly.2020.mean
+oco2_v10r~8mean float   %9.0g                 oco2_v10r_xco2_yearly.2018.mean
+oco2_v10r~6mean float   %9.0g                 oco2_v10r_xco2_yearly.2016.mean
+Level           str4    %9s                   
+gqid            int     %8.0g                 
+id              int     %8.0g                 
+shapeGroup      str3    %9s                   
+shapeID         str26   %26s                  
+shapeName       str32   %32s                  
+shapeType       str4    %9s                   
+-----------------------------------------------------------------------------------------------------------------------
+Sorted by: 
+     Note: Dataset has changed since last saved.
+
+. summarize
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     asdf_id |        339         169     98.0051          0        338
+oco2_v~5mean |        339     398.735    1.111346   394.2218   402.4441
+oco2_v~7mean |        339    403.5944    1.232606   400.0459   406.2261
+oco2_v~9mean |        339     408.822     1.19856   405.4501   413.2233
+oco2_v~0mean |        339    410.7122    1.071433   407.7056   414.2792
+-------------+---------------------------------------------------------
+oco2_v~8mean |        339    406.1151    1.083935   403.3114   409.9291
+oco2_v~6mean |        339    401.8463    1.050866   398.2344   404.4392
+       Level |          0
+        gqid |        339         169     98.0051          0        338
+          id |        339         169     98.0051          0        338
+-------------+---------------------------------------------------------
+  shapeGroup |          0
+     shapeID |          0
+   shapeName |          0
+   shapeType |          0
+
+. 
+. ** Drop unnecesary variables
+. drop Level gqid id shapeGroup shapeType
+
+. describe
+
+Contains data
+ Observations:           339                  
+    Variables:             9                  
+-----------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-----------------------------------------------------------------------------------------------------------------------
+asdf_id         int     %8.0g                 
+oco2_v10r~5mean float   %9.0g                 oco2_v10r_xco2_yearly.2015.mean
+oco2_v10r~7mean float   %9.0g                 oco2_v10r_xco2_yearly.2017.mean
+oco2_v10r~9mean float   %9.0g                 oco2_v10r_xco2_yearly.2019.mean
+oco2_v10r~0mean float   %9.0g                 oco2_v10r_xco2_yearly.2020.mean
+oco2_v10r~8mean float   %9.0g                 oco2_v10r_xco2_yearly.2018.mean
+oco2_v10r~6mean float   %9.0g                 oco2_v10r_xco2_yearly.2016.mean
+shapeID         str26   %26s                  
+shapeName       str32   %32s                  
+-----------------------------------------------------------------------------------------------------------------------
+Sorted by: 
+     Note: Dataset has changed since last saved.
+
+. sum
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     asdf_id |        339         169     98.0051          0        338
+oco2_v~5mean |        339     398.735    1.111346   394.2218   402.4441
+oco2_v~7mean |        339    403.5944    1.232606   400.0459   406.2261
+oco2_v~9mean |        339     408.822     1.19856   405.4501   413.2233
+oco2_v~0mean |        339    410.7122    1.071433   407.7056   414.2792
+-------------+---------------------------------------------------------
+oco2_v~8mean |        339    406.1151    1.083935   403.3114   409.9291
+oco2_v~6mean |        339    401.8463    1.050866   398.2344   404.4392
+     shapeID |          0
+   shapeName |          0
+
+. 
+. ** Raname variables
+. rename oco2_v10r_xco2_yearly2015mean co2015
+
+. rename oco2_v10r_xco2_yearly2017mean co2017
+
+. rename oco2_v10r_xco2_yearly2019mean co2019
+
+. rename oco2_v10r_xco2_yearly2020mean co2020
+
+. rename oco2_v10r_xco2_yearly2018mean co2018
+
+. rename oco2_v10r_xco2_yearly2016mean co2016
+
+. 
+. ** Order variables
+. order co2016, after(co2015)
+
+. order co2018, after(co2017)
+
+. order shapeName, after(asdf_id)
+
+. order shapeID, after(shapeName)
+
+. des
+
+Contains data
+ Observations:           339                  
+    Variables:             9                  
+-----------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-----------------------------------------------------------------------------------------------------------------------
+asdf_id         int     %8.0g                 
+shapeName       str32   %32s                  
+shapeID         str26   %26s                  
+co2015          float   %9.0g                 oco2_v10r_xco2_yearly.2015.mean
+co2016          float   %9.0g                 oco2_v10r_xco2_yearly.2016.mean
+co2017          float   %9.0g                 oco2_v10r_xco2_yearly.2017.mean
+co2018          float   %9.0g                 oco2_v10r_xco2_yearly.2018.mean
+co2019          float   %9.0g                 oco2_v10r_xco2_yearly.2019.mean
+co2020          float   %9.0g                 oco2_v10r_xco2_yearly.2020.mean
+-----------------------------------------------------------------------------------------------------------------------
+Sorted by: 
+     Note: Dataset has changed since last saved.
+
+. sum
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     asdf_id |        339         169     98.0051          0        338
+   shapeName |          0
+     shapeID |          0
+      co2015 |        339     398.735    1.111346   394.2218   402.4441
+      co2016 |        339    401.8463    1.050866   398.2344   404.4392
+-------------+---------------------------------------------------------
+      co2017 |        339    403.5944    1.232606   400.0459   406.2261
+      co2018 |        339    406.1151    1.083935   403.3114   409.9291
+      co2019 |        339     408.822     1.19856   405.4501   413.2233
+      co2020 |        339    410.7122    1.071433   407.7056   414.2792
+
+. 
+. 
+. ** Reshape data from wide to long
+. reshape long co, i(asdf_id shapeName shapeID) j(year)
+(j = 2015 2016 2017 2018 2019 2020)
+
+Data                               Wide   ->   Long
+-----------------------------------------------------------------------------
+Number of observations              339   ->   2,034       
+Number of variables                   9   ->   5           
+j variable (6 values)                     ->   year
+xij variables:
+               co2015 co2016 ... co2020   ->   co
+-----------------------------------------------------------------------------
+
+. 
+. ** Compute long-run trends: HP filter with parameters 6.25, 100, 400
+. gen ln_co = ln(co)
+
+. 
+. xtset asdf_id year
+
+Panel variable: asdf_id (strongly balanced)
+ Time variable: year, 2015 to 2020
+         Delta: 1 unit
+
+. pfilter ln_co, method(hp) trend(tr6_ln_y)   smooth(6.25)
+
+. pfilter ln_co, method(hp) trend(tr100_ln_y) smooth(100)
+
+. pfilter ln_co, method(hp) trend(tr400_ln_y) smooth(400)
+
+. 
+. 
+. ** Re-express NTL in its original scale
+. gen   tr6_co = exp(tr6_ln_y)
+
+. gen tr100_co = exp(tr100_ln_y)
+
+. gen tr400_co = exp(tr400_ln_y)
+
+. 
+. ** Label variables
+. label variable shapeName "Municipality name"
+
+. label variable shapeID   "Municipality Geoquery Polygon ID"
+
+. 
+. label variable co "Carbon dioxide (average concentration)"
+
+. notes co: The average concentration of carbon dioxide in a column of dry air extending from Earth's surface to the to
+> p of the atmosphere. The raster used is the result of aggregating one year of data to a 10km grid and then using a li
+> near interpolation to fill gaps. The underlying data were produced by NASA's OCO-2 project, and obtained from the OCO
+> -2 data archive maintained at the NASA Goddard Earth Science Data and Information Services Center.  >>>Download link:
+>  http://geo.aiddata.org/query/#!/status/624f0a2423ecef1a9a52c4a2
+
+. 
+. label variable tr6_co "Trend of CO2 concentration (HP 6.25)"
+
+. notes tr6_co: The trend is based on the HP filter with a smoothing parameter of 6.25
+
+. label variable tr100_co "Trend of CO2 concentration (HP 100)"
+
+. notes tr100_co: The trend is based on the HP filter with a smoothing parameter of 100
+
+. label variable tr400_co "Trend of CO2 concentration (HP 400)"
+
+. notes tr400_co: The trend is based on the HP filter with a smoothing parameter of 400
+
+. 
+. ** Verify similarity with the original series
+. reg co tr6_co, robust
+
+Linear regression                               Number of obs     =      2,034
+                                                F(1, 2032)        =   82511.77
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.9745
+                                                Root MSE          =     .67491
+
+------------------------------------------------------------------------------
+             |               Robust
+          co | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+      tr6_co |   1.002077   .0034885   287.25   0.000     .9952354    1.008918
+       _cons |  -.8404274   1.411863    -0.60   0.552    -3.609276    1.928422
+------------------------------------------------------------------------------
+
+. reg co tr100_co, robust
+
+Linear regression                               Number of obs     =      2,034
+                                                F(1, 2032)        =   65211.14
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.9697
+                                                Root MSE          =     .73567
+
+------------------------------------------------------------------------------
+             |               Robust
+          co | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+    tr100_co |   .9998701   .0039155   255.36   0.000     .9921914    1.007549
+       _cons |   .0532736   1.585036     0.03   0.973    -3.055192    3.161739
+------------------------------------------------------------------------------
+
+. reg co tr400_co, robust
+
+Linear regression                               Number of obs     =      2,034
+                                                F(1, 2032)        =   64202.62
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.9694
+                                                Root MSE          =     .73995
+
+------------------------------------------------------------------------------
+             |               Robust
+          co | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+    tr400_co |   .9996845   .0039454   253.38   0.000     .9919471    1.007422
+       _cons |   .1284515   1.597163     0.08   0.936    -3.003796    3.260699
+------------------------------------------------------------------------------
+
+. 
+. tw (sc co tr6_co)   (lfit co tr6_co),   name(fig1, replace)
+
+. tw (sc co tr100_co) (lfit co tr100_co), name(fig2, replace)
+
+. tw (sc co tr400_co) (lfit co tr400_co), name(fig3, replace)
+
+. 
+. tsline tr6_co co if asdf_id == 91, name(fig4, replace)
+
+. *tsline tr6_co co if asdf_id == 93, name(fig5, replace)
+. *tsline tr6_co co if asdf_id == 109, name(fig6, replace)
+. *tsline tr6_co co if asdf_id == 217, name(fig7, replace)
+. *tsline tr6_co co if asdf_id == 218, name(fig8, replace)
+. *tsline tr6_co co if asdf_id == 225, name(fig9, replace)
+. *tsline tr6_co co if asdf_id == 228, name(fig10, replace)
+. *tsline tr6_co co if asdf_id == 218, name(fig11, replace)
+. *tsline tr6_co co if asdf_id == 160, name(ElAlto, replace)
+. *
+. *tsline tr400_co co if asdf_id == 91, name(ffig4, replace)
+. *tsline tr400_co co if asdf_id == 93, name(ffig5, replace)
+. *tsline tr400_co co if asdf_id == 109, name(ffig6, replace)
+. *tsline tr400_co co if asdf_id == 217, name(ffig7, replace)
+. *tsline tr400_co co if asdf_id == 218, name(ffig8, replace)
+. *tsline tr400_co co if asdf_id == 225, name(ffig9, replace)
+. *tsline tr400_co co if asdf_id == 228, name(ffig10, replace)
+. *tsline tr400_co co if asdf_id == 218, name(ffig11, replace)
+. *tsline tr400_co co if asdf_id == 160, name(fElAlto, replace)
+. 
+. 
+. 
+. ** Drop unnecesary variables
+. drop tr6_ln_y tr100_ln_y tr400_ln_y ln_co 
+
+. 
+. describe
+
+Contains data
+ Observations:         2,034                  
+    Variables:             8                  
+-----------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-----------------------------------------------------------------------------------------------------------------------
+asdf_id         int     %8.0g                 
+shapeName       str32   %32s                  Municipality name
+shapeID         str26   %26s                  Municipality Geoquery Polygon ID
+year            int     %10.0g                
+co              float   %9.0g               * Carbon dioxide (average concentration)
+tr6_co          float   %9.0g               * Trend of CO2 concentration (HP 6.25)
+tr100_co        float   %9.0g               * Trend of CO2 concentration (HP 100)
+tr400_co        float   %9.0g               * Trend of CO2 concentration (HP 400)
+                                            * indicated variables have notes
+-----------------------------------------------------------------------------------------------------------------------
+Sorted by: asdf_id  year
+     Note: Dataset has changed since last saved.
+
+. sum
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     asdf_id |      2,034         169    97.88451          0        338
+   shapeName |          0
+     shapeID |          0
+        year |      2,034      2017.5    1.708245       2015       2020
+          co |      2,034    404.9708    4.228763   394.2218   414.2792
+-------------+---------------------------------------------------------
+      tr6_co |      2,034    404.9702    4.165933   396.2348   413.9744
+    tr100_co |      2,034    404.9702    4.164853   396.0784   414.1475
+    tr400_co |      2,034    404.9702    4.164867   396.0675   414.1588
+
+. 
+. ** Save long-form panel dataset
+. save             "../data/CO2_trends.dta", replace
+file ../data/CO2_trends.dta saved
+
+. export delimited "../data/CO2_trends.csv", replace
+file ../data/CO2_trends.csv saved
+
+. 
+. ** Save wide-form panel dataset
+. reshape wide co tr6_co tr100_co tr400_co, i(asdf_id shapeName)  j(year)  
+(j = 2015 2016 2017 2018 2019 2020)
+
+Data                               Long   ->   Wide
+-----------------------------------------------------------------------------
+Number of observations            2,034   ->   339         
+Number of variables                   8   ->   27          
+j variable (6 values)              year   ->   (dropped)
+xij variables:
+                                     co   ->   co2015 co2016 ... co2020
+                                 tr6_co   ->   tr6_co2015 tr6_co2016 ... tr6_co2020
+                               tr100_co   ->   tr100_co2015 tr100_co2016 ... tr100_co2020
+                               tr400_co   ->   tr400_co2015 tr400_co2016 ... tr400_co2020
+-----------------------------------------------------------------------------
+
+. order _all, alphabetic
+
+. order shapeName, after(asdf_id)
+
+. save             "../data/CO2_trends-wide.dta", replace
+file ../data/CO2_trends-wide.dta saved
+
+. export delimited "../data/CO2_trends-wide.csv", replace
+file ../data/CO2_trends-wide.csv saved
+
+. drop shapeID
+
+. ** 99. Close log file
+. log close
+      name:  <unnamed>
+       log:  /Users/carlosmendez/Documents/GitHub/project2021o/c00-transform_data/050_clean_and_estimate_CO2_trends.txt
+  log type:  text
+ closed on:  26 Apr 2022, 12:53:31
+-----------------------------------------------------------------------------------------------------------------------

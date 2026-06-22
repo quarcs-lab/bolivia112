@@ -1,0 +1,2333 @@
+--------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/carlosmendez/Documents/GitHub/project2021o/c00-transform_data/080_transl
+> ate_and_add_labels_to_static_variables.txt
+  log type:  text
+ opened on:  21 Aug 2022, 13:40:10
+
+. **=====================================================
+. ** Program Name: Translate and add labels to static variables
+. ** Author: Carlos Mendez
+. ** Date: 21-Aug-2022
+. ** ---------------------------------------------------------------------------------------
+> -----
+. ** Inputs/Ouputs:
+. * Data files used:
+.                     * ../data/GeoDS4Bolivia_allVariables.dta
+. 
+. * Data files created as final product:
+. 
+.                     * ../data/GeoDS4Bolivia
+. 
+. **=====================================================
+. 
+. 
+. **  Import data
+. use  "../data/GeoDS4Bolivia_allVariables.dta", clear
+
+. 
+. describe
+
+Contains data from ../data/GeoDS4Bolivia_allVariables.dta
+ Observations:           339                  
+    Variables:           344                  21 Aug 2022 12:51
+--------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+--------------------------------------------------------------------------------------------
+poly_id         int     %8.0g                 Polygon ID
+asdf_id         int     %8.0g                 ASDF ID
+mun             str24   %24s                  Municipality
+mun_id          long    %8.0g                 Municipality ID
+dep             str10   %10s                  Department
+dep_id          float   %9.0g                 Department ID
+dep_mun         str35   %35s                  Department-municipality
+shapeID         str26   %26s                  Municipality Geoquery Polygon ID
+imds            float   %8.0g                 Índice Municipal de Desarrollo Sostenible
+rank_imds       int     %8.0g                 Ranking del Índice de Bolivia
+poblacion_2020  long    %8.0g                 Población 2020
+urbano_2012     float   %8.0g                 Tasa de urbanización, 2012 (% de población)
+sdg1_1_ee       float   %8.0g                 Tasa de pobreza energética extrema, 2016 (% de
+                                                viviendas)
+sdg1_1_nbi      float   %8.0g                 Necesidades Básicas Insatisfechas, 2012 (% de
+                                                población)
+sdg1_2_pm       float   %8.0g                 Índice de Pobreza Multidimensional, 2012
+sdg1_4_ssb      float   %8.0g                 Acceso a los 3 servicios básicos, 2012 (% de
+                                                hogares)
+sdg2_2_dm       float   %8.0g                 Desnutrición crónica en niños (< 5 años), 2016
+                                                (%)
+sdg2_2_smu      float   %8.0g                 Sobrepeso en mujeres (15-49 años), 2016 (%)
+sdg2_4_su       float   %8.0g                 Superficie promedio por Unidad Productiva
+                                                Agropecuaria, 2013 (ha)
+sdg2_4_t        float   %8.0g                 Densidad de tractores, 2013 (por 1,000 UPAs)
+sdg3_1_p        float   %8.0g                 Cobertura de parto institucional, promedio
+                                                2008-2012 (%)
+sdg3_2_mi       float   %8.0g                 Tasa de mortalidad infantil (< 1 año), 2016
+                                                (por 1,000 nacidos vivos)
+sdg3_2_mn       float   %8.0g                 Tasa de mortalidad en niños (< 5 años), 2016
+                                                (por 1,000 nacidos vivos)
+sdg3_3_c        float   %8.0g                 Tasa de infestación de chagas, 2017 (% de
+                                                viviendas)
+sdg3_3_d        float   %8.0g                 Incidencia de dengue, 2018 (por 10,000
+                                                habitantes)
+sdg3_3_m        float   %8.0g                 Incidencia de malaria, promedio 2014-17 (por
+                                                1,000 habitantes)
+sdg3_3_t        float   %8.0g                 Incidencia de tuberculosis, 2017 (por 100,000
+                                                habitantes)
+sdg3_3_vih      float   %8.0g                 Incidencia de VIH, promedio 2014-17 (por
+                                                1,000,000 habitantes)
+sdg3_7_fa       float   %8.0g                 Tasa de fecundidad en adolescentes (15-19
+                                                años), 2012 (nacim. por 1,000 mujeres)
+sdg4_1_ash      float   %8.0g                 Tasa de abandono secundaria, hombres, 2017 (%
+                                                de matriculados)
+sdg4_1_asm      float   %8.0g                 Tasa de abandono secundaria, mujeres, 2017 (%
+                                                de matriculados)
+sdg4_4_es       float   %8.0g                 Población con educación superior (>= 19 años),
+                                                2012 (%)
+sdg4_6_alfab    float   %8.0g                 Tasa de alfabetización de (>= 15 años), 2012
+                                                (%)
+sdg4_c_pci      float   %8.0g                 Profesores calificados en el nivel inicial,
+                                                2016 (%)
+sdg4_c_pcs      float   %8.0g                 Profesores calificados en el nivel secundaria,
+                                                2016 (%)
+sdg5_1_paes     float   %8.0g                 Paridad de género en abandono escolar en
+                                                secundaria, 2017
+sdg5_1_pej      float   %8.0g                 Paridad de género en años de educación de
+                                                jóvenes (25-35 años), 2012
+sdg5_1_ppm      float   %8.0g                 Paridad de género en el Índice de Pobreza
+                                                Multidimensional, 2012
+sdg5_5_pp       float   %8.0g                 Paridad de género en la tasa global de
+                                                participación (>=10 años), 2012
+sdg6_1_ca       float   %8.0g                 Cobertura de agua potable, 2017 (% de
+                                                población)
+sdg6_2_cs       float   %8.0g                 Cobertura de saneamiento, 2017 (% de
+                                                población)
+sdg6_3_tar      float   %8.0g                 Tratamiento de aguas residuales, 2017 (% de
+                                                aguas servidas)
+sdg7_1_cee      float   %8.0g                 Cobertura de energía eléctrica, 2012 (% de
+                                                población)
+sdg7_1_cep      int     %8.0g                 Consumo de electricidad residencial per
+                                                cápita, 2016 (kWh/persona/año)
+sdg7_1_elc      float   %8.0g                 Energía limpia para cocinar, 2012 (% de
+                                                hogares)
+sdg7_3_ecep     float   %8.0g                 Emisiones de CO2 per cápita por energía, 2016
+                                                (tCO2/persona/año)
+sdg8_4_mcc      float   %8.0g                 Medidores eléctricos residenciales con consumo
+                                                cero, 2016 (%)
+sdg8_5_ph       float   %8.0g                 Tasa global de participación hombres (>= 10
+                                                años), 2012 (%)
+sdg8_5_pm       float   %8.0g                 Tasa global de participación mujeres (>= 10
+                                                años), 2012 (%)
+sdg8_6_hnn      float   %8.0g                 Hombres que no estudian,ni participan en el
+                                                mercado laboral(15-24 años),2012 (%)
+sdg8_6_mnn      float   %8.0g                 Mujeres que no estudian,ni participan en el
+                                                mercado laboral(15-24 años),2012 (%)
+sdg8_10_b       float   %8.0g                 Densidad de sucursales de bancos, 2018 (por
+                                                100,000 habitantes)
+sdg8_11_mm      float   %8.0g                 Índice de grado de intermediación en la
+                                                migración, 2012
+sdg9_1_rutas    byte    %8.0g                 Número de vías férreas/carreteras primarias
+                                                que entran/salen del municipio, 2019
+sdg9_5_c        float   %8.0g                 Computadores Kuaa entregadas, 2016 (por 100
+                                                hab. en edad escolar, 6-19 años)
+sdg9_5_pt       float   %8.0g                 Unidades educativas con pisos tecnológicos,
+                                                2016 (%)
+sdg9_c_crdm     float   %8.0g                 Cobertura de red fija y móvil, 2012 (% de
+                                                hogares)
+sdg9_c_rb       float   %8.0g                 Densidad de radio bases, 2016 (número de radio
+                                                bases por 1000 habitantes)
+sdg10_2_egini   float   %8.0g                 Coeficiente de GINI de años de educación, 2012
+sdg10_2_ge      int     %8.0g                 Desigualdad en el consumo de electricidad,
+                                                2016
+sdg10_2_nhe     float   %8.0g                 Población que no habla español (>= 3 años),
+                                                2012 (%)
+sdg11_1_h       float   %8.0g                 Tasa de hacinamiento, 2012 (% de hogares)
+sdg11_1_sss     float   %8.0g                 Hogares que no tienen servicio sanitario, baño
+                                                o letrina, 2012 (%)
+sdg11_2_atc     float   %8.0g                 Asientos disponibles de transporte colectivo,
+                                                2017 (por 1,000 habitantes)
+sdg13_1_vcc     float   %8.0g                 Índice de Vulnerabilidad al Cambio Climático,
+                                                2015
+sdg13_2_ectp    float   %8.0g                 Emisiones totales de CO2 per cápita, 2016
+                                                (tCO2/persona/año)
+sdg13_2_td      float   %8.0g                 Tasa de deforestación, promedio 2016-2018 (%
+                                                del área boscosa 2015)
+sdg15_1_ap      float   %8.0g                 Áreas protegidas, 2019 (% de la superficie del
+                                                municipio)
+sdg15_5_pb      float   %8.0g                 Índice de pérdida de biodiversidad por
+                                                deforestación, promedio 2016-2018
+sdg16_1_vh      float   %8.0g                 Tasa de homicidios registrados, promedio
+                                                2015-2017 (por 100,000 habitantes)
+sdg16_6_ce      float   %8.0g                 Capacidad de ejecución del presupuesto
+                                                programado, 2017 (%)
+sdg16_9_nrc     float   %8.0g                 Niños inscritos en el registro civil (< 5
+                                                años), 2012 (%)
+sdg17_1_il      float   %8.0g                 Proporción de ingresos municipales que
+                                                provienen de impuestos locales, 2017 (%)
+sdg17_5_ip      int     %8.0g                 Inversión pública per cápita, 2017
+                                                (Bs./persona)
+sdg1_1_ee_abs   long    %8.0g                 Num. viviendas que consumen <25% del límite de
+                                                Tarifa Dignidad(210 kWh/año),2016
+sdg1_1_nbi_abs  long    %8.0g                 Población con necesidades básicas
+                                                insatisfechas, 2012
+sdg1_2_pm_abs   long    %8.0g                 Número de hogares con falencias en 4 o más
+                                                dimensiones (de 9)
+sdg1_4_ssb_abs  long    %8.0g                 Num. hogares carecen 1/3 serv.
+                                                básicos(electricidad,agua y
+                                                saneamiento),2012
+sdg2_2_dm_abs   long    %8.0g                 Num.niños <5años con desnutrición
+                                                crónica,2016(ponderado por depart. y
+                                                pobreza)
+sdg2_2_smu_abs  long    %8.0g                 Num.mujeres de 15-49 años, con sobrepeso
+                                                (IMC>=30), 2016 (por depart. y pobreza)
+sdg2_4_su_abs   long    %8.0g                 Superficie total de Unidades Productivas
+                                                Agropecuarias, 2013 (ha)
+sdg2_4_t_abs    long    %8.0g                 Número de tractores en el municipio, 2013
+sdg3_1_p_abs    long    %8.0g                 Número de partos no atentidos en un
+                                                establecimiento de salud, 2012
+sdg3_2_mi_abs   int     %8.0g                 Número de niños fallecidos antes de cumplir 1
+                                                año, 2016
+sdg3_2_mn_abs   int     %8.0g                 Número de niños fallecidos antes de cumplir 5
+                                                años, 2016
+sdg3_3_c_abs    int     %8.0g                 Número de viviendas infestadas con chagas,
+                                                2017
+sdg3_3_d_abs    int     %8.0g                 Población con dengue, 2018
+sdg3_3_m_abs    int     %8.0g                 Número de casos notificados de malaria,
+                                                promedio 2014-2017
+sdg3_3_t_abs    int     %8.0g                 Número de casos de tuberculosis en todas sus
+                                                formas, nuevos y recaídas, 2017
+sdg3_3_vih_abs  int     %8.0g                 Número de casos de VIH, 2014-2017
+sdg3_7_fa_abs   long    %8.0g                 Número de nacimientos por mujeres de 15-19
+                                                años, promedio anual, 2008-2012
+sdg4_1_ash_abs  int     %8.0g                 Número de abandonos escolares de hombres en
+                                                secundaria, 2017
+sdg4_1_asm_abs  int     %8.0g                 Número de abandonos escolares de mujeres en
+                                                secundaria, 2017
+sdg4_4_es_abs   long    %8.0g                 Población de 19 años o más con nivel de
+                                                educación superior alcanzado, 2012
+sdg4_6_alfab_~s long    %8.0g                 Población de 15 años o más que no son
+                                                alfabetos, 2012
+sdg4_c_pci_abs  int     %8.0g                 Número de profesores no calificados en el
+                                                nivel inicial, 2016
+sdg4_c_pcs_abs  int     %8.0g                 Número de profesores no calificados en el
+                                                nivel secundaria, 2016
+sdg6_1_ca_abs   long    %8.0g                 Población sin cobertura de agua potable, 2017
+sdg6_2_cs_abs   long    %8.0g                 Población sin cobertura de saneamiento básico,
+                                                2017
+sdg7_1_cee_abs  long    %8.0g                 Población sin cobertura de energía eléctrica,
+                                                2012
+sdg7_1_cep_abs  double  %8.0g                 Consumo de electricidad residencial, 2016
+                                                (kWh)
+sdg7_1_elc_abs  long    %8.0g                 Número de hogares sin energía limpia para
+                                                cocinar, 2012
+sdg7_3_ecep_abs long    %8.0g                 Emisiones totales de CO2 por energía, 2016
+                                                (tCO2/año)
+sdg8_4_mcc_abs  long    %8.0g                 Medidores eléctricos residenciales con consumo
+                                                cero, 2016 (%)
+sdg8_5_ph_abs   long    %8.0g                 Tasa global de participación hombres (>= 10
+                                                años), 2012 (%)
+sdg8_5_pm_abs   long    %8.0g                 Tasa global de participación mujeres (>= 10
+                                                años), 2012 (%)
+sdg8_6_hnn_abs  long    %8.0g                 Hombres que no estudian,ni participan en el
+                                                mercado laboral(15-24 años), 2012(%)
+sdg8_6_mnn_abs  long    %8.0g                 Mujeres que no estudian,ni participan en el
+                                                mercado laboral(15-24 años), 2012(%)
+sdg8_10_b_abs   int     %8.0g                 Densidad de sucursales de bancos, 2018 (por
+                                                100,000 habitantes)
+sdg9_1_rutas_~s int     %8.0g                 Número de vías férreas/carreteras primarias
+                                                que entran/salen del municipio, 2019
+sdg9_5_c_abs    long    %8.0g                 Número de computadoras Kuaa entregadas, 2016
+sdg9_5_pt_abs   int     %8.0g                 Número de unidades educativas con pisos
+                                                tecnológicos, 2016
+sdg9_c_crdm_abs long    %8.0g                 Número de hogares sin cobertura de telefonía
+                                                fija o celular, 2012
+sdg9_c_rb_abs   long    %8.0g                 Número total de radio bases (ATT y Prontis),
+                                                2016
+sdg10_2_nhe_abs long    %8.0g                 Población>=3 años, no habla español (como
+                                                lengua materna,1er,2do idioma), 2012
+sdg11_1_h_abs   long    %8.0g                 Número de hogares con hacinamiento (más de 2
+                                                personas por habitación), 2012
+sdg11_1_sss_abs long    %8.0g                 Número de hogares que no tienen servicio
+                                                sanitario, 2012
+sdg11_2_atc_abs long    %8.0g                 Número de asientos disponibles en vehículos de
+                                                transporte colectivo, 2017
+sdg13_2_ectp_~s long    %8.0g                 Emisiones totales de CO2, 2016 (tCO2/año)
+sdg13_2_td_abs  long    %8.0g                 Deforestación anual, 2016-2018 (ha)
+sdg15_1_ap_abs  long    %8.0g                 Área protegida declarada
+                                                legalmente(Municipal,Departamental,
+                                                Nacional),2019(km2)
+sdg15_5_pb_abs  byte    %8.0g                 Pérdida de Riqueza Absoluta de Especies,
+                                                2016-2018 (% de la pérdida nacional)
+sdg16_1_vh_abs  int     %8.0g                 Número de homicidios registrados, 2015-2017
+sdg16_6_ce_abs  double  %8.0g                 Presupuesto Operativo Annual (POA) en Bs.,
+                                                2017
+sdg16_9_nrc_abs long    %8.0g                 Num.niños menores de 5 años que no están
+                                                registrados en un registro civil, 2012
+sdg17_5_ip_abs  double  %8.0g                 Inversión pública total, 2017 (Bs.)
+sdg1_1_ee_norm  float   %8.0g                 Normalizado (0-100): sdg1_1_ee
+sdg1_1_nbi_norm float   %8.0g                 Normalizado (0-100): sdg1_1_nbi
+sdg1_2_pm_norm  float   %8.0g                 Normalizado (0-100): sdg1_2_pm
+sdg1_4_ssb_norm float   %8.0g                 Normalizado (0-100): sdg1_4_ssb
+sdg2_2_dm_norm  float   %8.0g                 Normalizado (0-100): sdg2_2_dm
+sdg2_2_smu_norm float   %8.0g                 Normalizado (0-100): sdg2_2_smu
+sdg2_4_su_norm  float   %8.0g                 Normalizado (0-100): sdg2_4_su
+sdg2_4_t_norm   float   %8.0g                 Normalizado (0-100): sdg2_4_t
+sdg3_1_p_norm   float   %8.0g                 Normalizado (0-100): sdg3_1_p
+sdg3_2_mi_norm  float   %8.0g                 Normalizado (0-100):sdg3_2_mi
+sdg3_2_mn_norm  float   %8.0g                 Normalizado (0-100): sdg3_2_mn
+sdg3_3_c_norm   float   %8.0g                 Normalizado (0-100): sdg3_3_c
+sdg3_3_d_norm   float   %8.0g                 Normalizado (0-100): sdg3_3_d
+sdg3_3_m_norm   float   %8.0g                 Normalizado (0-100): sdg3_3_m
+sdg3_3_t_norm   float   %8.0g                 Normalizado (0-100): sdg3_3_t
+sdg3_3_vih_norm float   %8.0g                 Normalizado (0-100): sdg3_3_vih
+sdg3_7_fa_norm  float   %8.0g                 Normalizado (0-100): sdg3_7_fa
+sdg4_1_ash_norm float   %8.0g                 Normalizado (0-100): sdg4_1_ash
+sdg4_1_asm_norm float   %8.0g                 Normalizado (0-100): sdg4_1_asm
+sdg4_4_es_norm  float   %8.0g                 Normalizado (0-100): sdg4_4_es
+sdg4_6_alfab_~m float   %8.0g                 Normalizado (0-100): sdg4_6_alfab
+sdg4_c_pci_norm float   %8.0g                 Normalizado (0-100): sdg4_c_pci
+sdg4_c_pcs_norm float   %8.0g                 Normalizado (0-100): sdg4_c_pcs
+sdg5_1_paes_n~m float   %8.0g                 Normalizado (0-100): sdg5_1_paes
+sdg5_1_pej_norm float   %8.0g                 Normalizado (0-100): sdg5_1_pej
+sdg5_1_ppm_norm float   %8.0g                 Normalizado (0-100): sdg5_1_ppm
+sdg5_5_pp_norm  float   %8.0g                 Normalizado (0-100): sdg5_5_pp
+sdg6_1_ca_norm  float   %8.0g                 Normalizado (0-100): sdg6_1_ca
+sdg6_2_cs_norm  float   %8.0g                 Normalizado (0-100): sdg6_2_cs
+sdg6_3_tar_norm float   %8.0g                 Normalizado (0-100): sdg6_3_tar
+sdg7_1_cee_norm float   %8.0g                 Normalizado (0-100): sdg7_1_cee
+sdg7_1_cep_norm float   %8.0g                 Normalizado (0-100): sdg7_1_cep
+sdg7_1_elc_norm float   %8.0g                 Normalizado (0-100): sdg7_1_elc
+sdg7_3_ecep_n~m float   %8.0g                 Normalizado (0-100): sdg7_3_ecep
+sdg8_4_mcc_norm float   %8.0g                 Normalizado (0-100): sdg8_4_mcc
+sdg8_5_ph_norm  float   %8.0g                 Normalizado (0-100): sdg8_5_ph
+sdg8_5_pm_norm  float   %8.0g                 Normalizado (0-100): sdg8_5_pm
+sdg8_6_hnn_norm float   %8.0g                 Normalizado (0-100): sdg8_6_hnn
+sdg8_6_mnn_norm float   %8.0g                 Normalizado (0-100): sdg8_6_mnn
+sdg8_10_b_norm  float   %8.0g                 Normalizado (0-100): sdg8_10_b
+sdg8_11_mm_norm float   %8.0g                 Normalizado (0-100): sdg8_11_mm
+sdg9_1_rutas_~m float   %8.0g                 Normalizado (0-100): sdg9_1_rutas
+sdg9_5_c_norm   float   %8.0g                 Normalizado (0-100): sdg9_5_c
+sdg9_5_pt_norm  float   %8.0g                 Normalizado (0-100): sdg9_5_pt
+sdg9_c_crdm_n~m float   %8.0g                 Normalizado (0-100): sdg9_c_crdm
+sdg9_c_rb_norm  float   %8.0g                 Normalizado (0-100): sdg9_c_rb
+sdg10_2_egini~m float   %8.0g                 Normalizado (0-100): sdg10_2_egini
+sdg10_2_ge_norm float   %8.0g                 Normalizado (0-100): sdg10_2_ge
+sdg10_2_nhe_n~m float   %8.0g                 Normalizado (0-100): sdg10_2_nhe
+sdg11_1_h_norm  float   %8.0g                 Normalizado (0-100): sdg11_1_h
+sdg11_1_sss_n~m float   %8.0g                 Normalizado (0-100): sdg11_1_sss
+sdg11_2_atc_n~m float   %8.0g                 Normalizado (0-100): sdg11_2_atc
+sdg13_1_vcc_n~m float   %8.0g                 Normalizado (0-100): sdg13_1_vcc
+sdg13_2_ectp_~m float   %8.0g                 Normalizado (0-100): sdg13_2_ectp
+sdg13_2_td_norm float   %8.0g                 Normalizado (0-100): sdg13_2_td
+sdg15_1_ap_norm float   %8.0g                 Normalizado (0-100): sdg15_1_ap
+sdg15_5_pb_norm float   %8.0g                 Normalizado (0-100): sdg15_5_pb
+sdg16_1_vh_norm float   %8.0g                 Normalizado (0-100): sdg16_1_vh
+sdg16_6_ce_norm float   %8.0g                 Normalizado (0-100): sdg16_6_ce
+sdg16_9_nrc_n~m float   %8.0g                 Normalizado (0-100): sdg16_9_nrc
+sdg17_1_il_norm float   %8.0g                 Normalizado (0-100): sdg17_1_il
+sdg17_5_ip_norm float   %8.0g                 Normalizado (0-100): sdg17_5_ip
+indice_ods1     float   %8.0g                 Índice ODS1
+indice_ods2     float   %8.0g                 Índice ODS2
+indice_ods3     float   %8.0g                 Índice ODS3
+indice_ods4     float   %8.0g                 Índice ODS4
+indice_ods5     float   %8.0g                 Índice ODS5
+indice_ods6     float   %8.0g                 Índice ODS6
+indice_ods7     float   %8.0g                 Índice ODS7
+indice_ods8     float   %8.0g                 Índice ODS8
+indice_ods9     float   %8.0g                 Índice ODS9
+indice_ods10    float   %8.0g                 Índice ODS10
+indice_ods11    float   %8.0g                 Índice ODS11
+indice_ods13    float   %8.0g                 Índice ODS13
+indice_ods15    float   %8.0g                 Índice ODS15
+indice_ods16    float   %8.0g                 Índice ODS16
+indice_ods17    float   %8.0g                 Índice ODS17
+shapeName       str32   %32s                  Municipality name
+pop2001         float   %9.0g               * 2001 pop
+pop2002         float   %9.0g               * 2002 pop
+pop2003         float   %9.0g               * 2003 pop
+pop2004         float   %9.0g               * 2004 pop
+pop2005         float   %9.0g               * 2005 pop
+pop2006         float   %9.0g               * 2006 pop
+pop2007         float   %9.0g               * 2007 pop
+pop2008         float   %9.0g               * 2008 pop
+pop2009         float   %9.0g               * 2009 pop
+pop2010         float   %9.0g               * 2010 pop
+pop2011         float   %9.0g               * 2011 pop
+pop2012         float   %9.0g               * 2012 pop
+pop2013         float   %9.0g               * 2013 pop
+pop2014         float   %9.0g               * 2014 pop
+pop2015         float   %9.0g               * 2015 pop
+pop2016         float   %9.0g               * 2016 pop
+pop2017         float   %9.0g               * 2017 pop
+pop2018         float   %9.0g               * 2018 pop
+pop2019         float   %9.0g               * 2019 pop
+pop2020         float   %9.0g               * 2020 pop
+tr100_pop2001   float   %9.0g               * 2001 tr100_pop
+tr100_pop2002   float   %9.0g               * 2002 tr100_pop
+tr100_pop2003   float   %9.0g               * 2003 tr100_pop
+tr100_pop2004   float   %9.0g               * 2004 tr100_pop
+tr100_pop2005   float   %9.0g               * 2005 tr100_pop
+tr100_pop2006   float   %9.0g               * 2006 tr100_pop
+tr100_pop2007   float   %9.0g               * 2007 tr100_pop
+tr100_pop2008   float   %9.0g               * 2008 tr100_pop
+tr100_pop2009   float   %9.0g               * 2009 tr100_pop
+tr100_pop2010   float   %9.0g               * 2010 tr100_pop
+tr100_pop2011   float   %9.0g               * 2011 tr100_pop
+tr100_pop2012   float   %9.0g               * 2012 tr100_pop
+tr100_pop2013   float   %9.0g               * 2013 tr100_pop
+tr100_pop2014   float   %9.0g               * 2014 tr100_pop
+tr100_pop2015   float   %9.0g               * 2015 tr100_pop
+tr100_pop2016   float   %9.0g               * 2016 tr100_pop
+tr100_pop2017   float   %9.0g               * 2017 tr100_pop
+tr100_pop2018   float   %9.0g               * 2018 tr100_pop
+tr100_pop2019   float   %9.0g               * 2019 tr100_pop
+tr100_pop2020   float   %9.0g               * 2020 tr100_pop
+tr400_pop2001   float   %9.0g               * 2001 tr400_pop
+tr400_pop2002   float   %9.0g               * 2002 tr400_pop
+tr400_pop2003   float   %9.0g               * 2003 tr400_pop
+tr400_pop2004   float   %9.0g               * 2004 tr400_pop
+tr400_pop2005   float   %9.0g               * 2005 tr400_pop
+tr400_pop2006   float   %9.0g               * 2006 tr400_pop
+tr400_pop2007   float   %9.0g               * 2007 tr400_pop
+tr400_pop2008   float   %9.0g               * 2008 tr400_pop
+tr400_pop2009   float   %9.0g               * 2009 tr400_pop
+tr400_pop2010   float   %9.0g               * 2010 tr400_pop
+tr400_pop2011   float   %9.0g               * 2011 tr400_pop
+tr400_pop2012   float   %9.0g               * 2012 tr400_pop
+tr400_pop2013   float   %9.0g               * 2013 tr400_pop
+tr400_pop2014   float   %9.0g               * 2014 tr400_pop
+tr400_pop2015   float   %9.0g               * 2015 tr400_pop
+tr400_pop2016   float   %9.0g               * 2016 tr400_pop
+tr400_pop2017   float   %9.0g               * 2017 tr400_pop
+tr400_pop2018   float   %9.0g               * 2018 tr400_pop
+tr400_pop2019   float   %9.0g               * 2019 tr400_pop
+tr400_pop2020   float   %9.0g               * 2020 tr400_pop
+tr6_pop2001     float   %9.0g               * 2001 tr6_pop
+tr6_pop2002     float   %9.0g               * 2002 tr6_pop
+tr6_pop2003     float   %9.0g               * 2003 tr6_pop
+tr6_pop2004     float   %9.0g               * 2004 tr6_pop
+tr6_pop2005     float   %9.0g               * 2005 tr6_pop
+tr6_pop2006     float   %9.0g               * 2006 tr6_pop
+tr6_pop2007     float   %9.0g               * 2007 tr6_pop
+tr6_pop2008     float   %9.0g               * 2008 tr6_pop
+tr6_pop2009     float   %9.0g               * 2009 tr6_pop
+tr6_pop2010     float   %9.0g               * 2010 tr6_pop
+tr6_pop2011     float   %9.0g               * 2011 tr6_pop
+tr6_pop2012     float   %9.0g               * 2012 tr6_pop
+tr6_pop2013     float   %9.0g               * 2013 tr6_pop
+tr6_pop2014     float   %9.0g               * 2014 tr6_pop
+tr6_pop2015     float   %9.0g               * 2015 tr6_pop
+tr6_pop2016     float   %9.0g               * 2016 tr6_pop
+tr6_pop2017     float   %9.0g               * 2017 tr6_pop
+tr6_pop2018     float   %9.0g               * 2018 tr6_pop
+tr6_pop2019     float   %9.0g               * 2019 tr6_pop
+tr6_pop2020     float   %9.0g               * 2020 tr6_pop
+ln_NTLpc2012    float   %9.0g                 2012 ln_NTLpc
+ln_NTLpc2013    float   %9.0g                 2013 ln_NTLpc
+ln_NTLpc2014    float   %9.0g                 2014 ln_NTLpc
+ln_NTLpc2015    float   %9.0g                 2015 ln_NTLpc
+ln_NTLpc2016    float   %9.0g                 2016 ln_NTLpc
+ln_NTLpc2017    float   %9.0g                 2017 ln_NTLpc
+ln_NTLpc2018    float   %9.0g                 2018 ln_NTLpc
+ln_NTLpc2019    float   %9.0g                 2019 ln_NTLpc
+ln_NTLpc2020    float   %9.0g                 2020 ln_NTLpc
+ln_t100NTL~2012 float   %9.0g                 2012 ln_t100NTLpc
+ln_t100NTL~2013 float   %9.0g                 2013 ln_t100NTLpc
+ln_t100NTL~2014 float   %9.0g                 2014 ln_t100NTLpc
+ln_t100NTL~2015 float   %9.0g                 2015 ln_t100NTLpc
+ln_t100NTL~2016 float   %9.0g                 2016 ln_t100NTLpc
+ln_t100NTL~2017 float   %9.0g                 2017 ln_t100NTLpc
+ln_t100NTL~2018 float   %9.0g                 2018 ln_t100NTLpc
+ln_t100NTL~2019 float   %9.0g                 2019 ln_t100NTLpc
+ln_t100NTL~2020 float   %9.0g                 2020 ln_t100NTLpc
+ln_t400NTL~2012 float   %9.0g                 2012 ln_t400NTLpc
+ln_t400NTL~2013 float   %9.0g                 2013 ln_t400NTLpc
+ln_t400NTL~2014 float   %9.0g                 2014 ln_t400NTLpc
+ln_t400NTL~2015 float   %9.0g                 2015 ln_t400NTLpc
+ln_t400NTL~2016 float   %9.0g                 2016 ln_t400NTLpc
+ln_t400NTL~2017 float   %9.0g                 2017 ln_t400NTLpc
+ln_t400NTL~2018 float   %9.0g                 2018 ln_t400NTLpc
+ln_t400NTL~2019 float   %9.0g                 2019 ln_t400NTLpc
+ln_t400NTL~2020 float   %9.0g                 2020 ln_t400NTLpc
+ln_t6NTLpc2012  float   %9.0g                 2012 ln_t6NTLpc
+ln_t6NTLpc2013  float   %9.0g                 2013 ln_t6NTLpc
+ln_t6NTLpc2014  float   %9.0g                 2014 ln_t6NTLpc
+ln_t6NTLpc2015  float   %9.0g                 2015 ln_t6NTLpc
+ln_t6NTLpc2016  float   %9.0g                 2016 ln_t6NTLpc
+ln_t6NTLpc2017  float   %9.0g                 2017 ln_t6NTLpc
+ln_t6NTLpc2018  float   %9.0g                 2018 ln_t6NTLpc
+ln_t6NTLpc2019  float   %9.0g                 2019 ln_t6NTLpc
+ln_t6NTLpc2020  float   %9.0g                 2020 ln_t6NTLpc
+co2015          float   %9.0g               * 2015 co
+co2016          float   %9.0g               * 2016 co
+co2017          float   %9.0g               * 2017 co
+co2018          float   %9.0g               * 2018 co
+co2019          float   %9.0g               * 2019 co
+co2020          float   %9.0g               * 2020 co
+tr100_co2015    float   %9.0g               * 2015 tr100_co
+tr100_co2016    float   %9.0g               * 2016 tr100_co
+tr100_co2017    float   %9.0g               * 2017 tr100_co
+tr100_co2018    float   %9.0g               * 2018 tr100_co
+tr100_co2019    float   %9.0g               * 2019 tr100_co
+tr100_co2020    float   %9.0g               * 2020 tr100_co
+tr400_co2015    float   %9.0g               * 2015 tr400_co
+tr400_co2016    float   %9.0g               * 2016 tr400_co
+tr400_co2017    float   %9.0g               * 2017 tr400_co
+tr400_co2018    float   %9.0g               * 2018 tr400_co
+tr400_co2019    float   %9.0g               * 2019 tr400_co
+tr400_co2020    float   %9.0g               * 2020 tr400_co
+tr6_co2015      float   %9.0g               * 2015 tr6_co
+tr6_co2016      float   %9.0g               * 2016 tr6_co
+tr6_co2017      float   %9.0g               * 2017 tr6_co
+tr6_co2018      float   %9.0g               * 2018 tr6_co
+tr6_co2019      float   %9.0g               * 2019 tr6_co
+tr6_co2020      float   %9.0g               * 2020 tr6_co
+                                            * indicated variables have notes
+--------------------------------------------------------------------------------------------
+Sorted by: asdf_id
+
+. summarize
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     poly_id |        339         170     98.0051          1        339
+     asdf_id |        339         169     98.0051          0        338
+         mun |          0
+      mun_id |        339    42887.39    23669.93      10101      90503
+         dep |          0
+-------------+---------------------------------------------------------
+      dep_id |        339    4.890855    2.236704          1          9
+     dep_mun |          0
+     shapeID |          0
+        imds |        339    51.05044    6.771824       35.7       80.2
+   rank_imds |        339         170     98.0051          1        339
+-------------+---------------------------------------------------------
+poblaci~2020 |        339    34316.73    125307.5        546    1722480
+ urbano_2012 |        339     24.0944    30.69209          0        100
+   sdg1_1_ee |        315    62.26032    23.00444       10.6       97.7
+  sdg1_1_nbi |        339    70.36165    18.94605       14.3       97.9
+   sdg1_2_pm |        339    .1789912     .097806       .007        .52
+-------------+---------------------------------------------------------
+  sdg1_4_ssb |        339    34.42183    24.02405         .1       95.6
+   sdg2_2_dm |        339    23.66991    12.06665        7.6       52.6
+  sdg2_2_smu |        339    22.07257    6.454253       11.3       33.8
+   sdg2_4_su |        324    91.18549    233.2059         .1     1926.6
+    sdg2_4_t |        324    46.29383    110.3703          0      801.8
+-------------+---------------------------------------------------------
+    sdg3_1_p |        339    49.34956     21.8454        8.9         90
+   sdg3_2_mi |        339    30.44661    11.76588       10.9       70.3
+   sdg3_2_mn |        339    38.66726    16.29403       11.6       98.6
+    sdg3_3_c |        339     1.10295    3.906767          0       49.3
+    sdg3_3_d |        339    .7775811    6.857379          0      120.8
+-------------+---------------------------------------------------------
+    sdg3_3_m |        339     1.49941    8.518146          0       84.2
+    sdg3_3_t |        339    38.79971    45.99502          0      358.2
+  sdg3_3_vih |        339     41.4118    94.05095          0      686.1
+   sdg3_7_fa |        339    75.79086     36.8069          0      328.9
+  sdg4_1_ash |        339    5.001475    2.886968          0       21.2
+-------------+---------------------------------------------------------
+  sdg4_1_asm |        339    4.089676    2.847502          0       22.2
+   sdg4_4_es |        339    10.50501    6.479257        2.1       40.9
+sdg4_6_alfab |        339     91.8236    5.801303       68.1        100
+  sdg4_c_pci |        339    58.09056    32.54299          0        100
+  sdg4_c_pcs |        339    57.35251    16.53062          0        100
+-------------+---------------------------------------------------------
+ sdg5_1_paes |        339    1.538938    .8056127          0          7
+  sdg5_1_pej |        339    .8811209    .0941982         .6        1.1
+  sdg5_1_ppm |        339    1.007375    .2355377         .4          2
+   sdg5_5_pp |        338    .6893491    .1403858         .4          1
+   sdg6_1_ca |        339    73.60678     18.2825        8.8       99.9
+-------------+---------------------------------------------------------
+   sdg6_2_cs |        339     41.8941     21.8365        1.5       96.8
+  sdg6_3_tar |        339    6.232448    24.21793          0      210.6
+  sdg7_1_cee |        339    69.30649    18.60442       14.7       99.4
+  sdg7_1_cep |        339    105.1416    106.0954          0        761
+  sdg7_1_elc |        339    42.47316    24.71777        4.9       97.6
+-------------+---------------------------------------------------------
+ sdg7_3_ecep |        339    .5572271    1.166507          0       15.7
+  sdg8_4_mcc |        316    14.74494    9.837512          0       45.4
+   sdg8_5_ph |        339    72.60944    5.450837       36.5       83.6
+   sdg8_5_pm |        339    50.14543    10.99882       24.4       77.3
+  sdg8_6_hnn |        339    12.18319    6.446864        3.8       71.1
+-------------+---------------------------------------------------------
+  sdg8_6_mnn |        339    26.15605    8.102705        7.3       53.5
+   sdg8_10_b |        339     11.6941    13.40444          0       79.6
+  sdg8_11_mm |        339    .9884956    1.987554          0       15.1
+sdg9_1_rutas |        339    1.300885    1.105807          0          6
+    sdg9_5_c |        339      3.4059    4.705771          0       36.6
+-------------+---------------------------------------------------------
+   sdg9_5_pt |        323    14.76161    14.02762          0        100
+ sdg9_c_crdm |        339    43.08142    18.87159        2.8       89.4
+   sdg9_c_rb |        339    2.794985    1.998003          0       16.9
+sdg10_2_eg~i |        339    .3860177    .0812608         .2        .64
+  sdg10_2_ge |        315    71.38095    53.82445         10        304
+-------------+---------------------------------------------------------
+ sdg10_2_nhe |        339    15.10354    13.87617         .7       59.9
+   sdg11_1_h |        339    28.41947    11.40462        7.3       70.8
+ sdg11_1_sss |        339    52.22035    27.31529        3.5       98.8
+ sdg11_2_atc |        339    51.95516    171.5152          0     2026.5
+ sdg13_1_vcc |        339    1.544838    .6044178          0          3
+-------------+---------------------------------------------------------
+sdg13_2_ectp |        339    15.87345    46.43781          0      382.1
+  sdg13_2_td |        339    .4676106     1.44497          0      12.86
+  sdg15_1_ap |        339    11.97847    23.80268          0      101.6
+  sdg15_5_pb |        339    .1351091     .290148          0       1.98
+  sdg16_1_vh |        339    .9873156    2.334191          0       17.4
+-------------+---------------------------------------------------------
+  sdg16_6_ce |        339    70.85162    14.31267          0      111.9
+ sdg16_9_nrc |        339    88.38348    5.070307       67.9       98.2
+  sdg17_1_il |        339    3.460177    7.173037          0       52.3
+  sdg17_5_ip |        339    815.3599    602.3241          0       3994
+sdg1_1_ee_~s |        315    3634.848    7411.719        166      96160
+-------------+---------------------------------------------------------
+sdg1_1_nbi~s |        339    12900.81    26539.75        141     300390
+sdg1_2_pm_~s |        339    1508.876    1849.338          7      15273
+sdg1_4_ssb~s |        339    3188.003    5263.658        100      59801
+sdg2_2_dm_~s |        339    565.0118    1328.023         12      14673
+sdg2_2_smu~s |        339        2139    9848.789         26     149940
+-------------+---------------------------------------------------------
+sdg2_4_su_~s |        338    102409.8    217465.8         60    2084038
+sdg2_4_t_abs |        338    108.1716    338.5809          0       3786
+sdg3_1_p_abs |        337    194.7359    563.2417          0       6968
+sdg3_2_mi_~s |        339    15.31268    45.61827          0        597
+sdg3_2_mn_~s |        339    19.36283    57.41529          0        762
+-------------+---------------------------------------------------------
+sdg3_3_c_abs |        339    96.36873    547.6394          0       6913
+sdg3_3_d_abs |        339    3.876106     38.9519          0        640
+sdg3_3_m_abs |        339    72.11799    610.1332          0       8783
+sdg3_3_t_abs |        339    22.14159    121.6464          0       2057
+sdg3_3_vih~s |        339    27.93215    208.5605          0       3150
+-------------+---------------------------------------------------------
+sdg3_7_fa_~s |        339    99.84071    328.4259          0       5193
+sdg4_1_ash~s |        339    79.34808     276.291          0       3727
+sdg4_1_asm~s |        339    49.63127    168.1371          0       2414
+sdg4_4_es_~s |        339    3736.425    20427.69         14     244965
+sdg4_6_alf~s |        339    1037.478     1749.59          0      17365
+-------------+---------------------------------------------------------
+sdg4_c_pci~s |        339    11.24484    43.40864          0        494
+sdg4_c_pcs~s |        339    58.84366     165.031          0       2112
+sdg6_1_ca_~s |        339    4710.074    12550.14         34     205958
+sdg6_2_cs_~s |        339    13200.82    39558.58         84     666495
+sdg7_1_cee~s |        339    4466.676    4986.709         51      47166
+-------------+---------------------------------------------------------
+sdg7_1_cep~s |        339     9490607    6.11e+07        196   9.29e+08
+sdg7_1_elc~s |        339    2282.254    2190.817         41      17048
+sdg7_3_ece~s |        339    33987.18    134237.9         13    1397670
+sdg8_4_mcc~s |        316    577.8892    1802.325          0      22313
+sdg8_5_ph_~s |        339     3534.82    13410.56         47     167127
+-------------+---------------------------------------------------------
+sdg8_5_pm_~s |        339    5984.156    22452.07         81     293876
+sdg8_6_hnn~s |        339    351.7817    1245.396          3      15660
+sdg8_6_mnn~s |        339    668.9233    2361.623         12      34100
+sdg8_10_b_~s |        339    9.023599    47.80105          0        557
+sdg9_1_ru~bs |        339    1.300885    1.105807          0          6
+-------------+---------------------------------------------------------
+sdg9_5_c_abs |        339     410.295    1692.635          0      19307
+sdg9_5_pt_~s |        323    7.900929    18.52335          0        197
+sdg9_c_crd~s |        339    2886.749     4983.03         88      55834
+sdg9_c_rb_~s |        339    163.7198     911.929          0      12251
+sdg10_2_nh~s |        339    2690.678    4688.295          6      51531
+-------------+---------------------------------------------------------
+sdg11_1_h_~s |        339    2057.841     7076.52         24     106030
+sdg11_1_s~bs |        339    2462.381    3915.065         26      54313
+sdg11_2_at~s |        339    7898.313    51739.29          0     652334
+sdg13_2_ec~s |        339    287834.9     1056448         13   1.33e+07
+sdg13_2_td~s |        339     880.059     3738.25          0      40241
+-------------+---------------------------------------------------------
+sdg15_1_ap~s |        339    776.8142    3013.362          0      33745
+sdg15_5_pb~s |        339     .280236    1.107235          0         13
+sdg16_1_vh~s |        339    2.926254    21.56874          0        368
+sdg16_6_ce~s |        339    7.42e+07    2.70e+08    3506453   3.78e+09
+sdg16_9_nr~s |        339    419.9912    1594.816          2      27047
+-------------+---------------------------------------------------------
+sdg17_5_ip~s |        339    2.12e+07    6.86e+07          0   9.07e+08
+sdg1_1_ee_~m |        339    31.99587    24.93417          0      88.83
+sdg1_1_nbi~m |        339    27.24593    19.57223          0      85.19
+sdg1_2_pm_~m |        339    54.48608    24.24151          0      98.12
+sdg1_4_ssb~m |        339    34.42192    24.02255        .13      95.59
+-------------+---------------------------------------------------------
+sdg2_2_dm_~m |        339    54.99395    22.90673        .03      85.48
+sdg2_2_smu~m |        339    49.95233    29.94743          0        100
+sdg2_4_su_~m |        339    46.60885    41.36424          0        100
+sdg2_4_t_n~m |        339    6.514631    15.71972          0        100
+sdg3_1_p_n~m |        339    39.98074    25.80433          0      88.13
+-------------+---------------------------------------------------------
+sdg3_2_mi_~m |        339    61.68622    24.14264          0        100
+sdg3_2_mn_~m |        339    73.59283    27.22675          0        100
+sdg3_3_c_n~m |        339    91.96378    18.95171          0        100
+sdg3_3_d_n~m |        339    93.58041    20.40758          0        100
+sdg3_3_m_n~m |        339    96.52487    16.56109          0        100
+-------------+---------------------------------------------------------
+sdg3_3_t_n~m |        339    76.42897    25.20899          0        100
+sdg3_3_vih~m |        339     90.5182    20.23761          0        100
+sdg3_7_fa_~m |        339    52.57021    19.75909          0        100
+sdg4_1_ash~m |        339    49.96425    25.39625          0        100
+sdg4_1_asm~m |        339    59.34687    23.95303          0        100
+-------------+---------------------------------------------------------
+sdg4_4_es_~m |        339    22.56522     18.7127          0        100
+sdg4_6_alf~m |        339    72.17124    20.05218          0        100
+sdg4_c_pci~m |        339      58.091    32.54258          0        100
+sdg4_c_pcs~m |        339    57.35147    16.52993          0        100
+sdg5_1_pae~m |        339    93.81416    17.94716          0        100
+-------------+---------------------------------------------------------
+sdg5_1_pej~m |        339    69.69873    21.46687       1.79        100
+sdg5_1_ppm~m |        339    77.85997    28.81268          0        100
+sdg5_5_pp_~m |        339    50.68912    25.54275          0        100
+sdg6_1_ca_~m |        339    63.43882    24.65894          0      99.86
+sdg6_2_cs_~m |        339    38.42386    23.08498          0      96.61
+-------------+---------------------------------------------------------
+sdg6_3_tar~m |        339    5.549734    20.28228          0        100
+sdg7_1_cee~m |        339    58.98381    24.38032          0      99.24
+sdg7_1_cep~m |        339    17.24124    18.44713          0        100
+sdg7_1_elc~m |        339    39.50501    27.38552          0        100
+sdg7_3_ece~m |        339    93.28888    11.48368          0      99.92
+-------------+---------------------------------------------------------
+sdg8_4_mcc~m |        339     58.6436    28.83053          0        100
+sdg8_5_ph_~m |        339    52.79788    23.02732          0        100
+sdg8_5_pm_~m |        339    43.98858    24.22162          0        100
+sdg8_6_hnn~m |        339     86.4877    17.06953          0        100
+sdg8_6_mnn~m |        339    44.13097    23.29615          0        100
+-------------+---------------------------------------------------------
+sdg8_10_b_~m |        339    19.39652    21.91943          0        100
+sdg8_11_mm~m |        339    7.300354    14.42185          0        100
+sdg9_1_rut~m |        339    55.75221    38.89309          0        100
+sdg9_5_c_n~m |        339    42.73723    24.92563          0        100
+sdg9_5_pt_~m |        339    17.35979    16.31182          0        100
+-------------+---------------------------------------------------------
+sdg9_c_cr~rm |        339    37.92044    20.48723          0      88.39
+sdg9_c_rb_~m |        339    22.36676    17.07767          0        100
+sdg10_2_eg~m |        339    52.85215    21.77274          0        100
+sdg10_2_ge~m |        339    67.44619     29.4095          0        100
+sdg10_2_nh~m |        339    72.55053    26.85968          0        100
+-------------+---------------------------------------------------------
+sdg11_1_h_~m |        339    59.27767    24.63089          0        100
+sdg11_1_ss~m |        339    47.71729    30.49797          0        100
+sdg11_2_at~m |        339    5.612537    15.76566          0        100
+sdg13_1_vc~m |        339    48.03209    20.26468          0        100
+sdg13_2_ec~m |        339    76.04319    36.83168          0        100
+-------------+---------------------------------------------------------
+sdg13_2_td~m |        339    92.57383    19.26214          0        100
+sdg15_1_ap~m |        339    19.17077     34.2435          0        100
+sdg15_5_pb~m |        339    88.61743    22.62649          0        100
+sdg16_1_vh~m |        339    89.08032    23.39223          0        100
+sdg16_6_ce~m |        339    55.66991    20.35288          0        100
+-------------+---------------------------------------------------------
+sdg16_9_nr~m |        339    76.76463     10.1378       35.8      96.34
+sdg17_1_il~m |        339     8.42531    16.99351          0        100
+sdg17_5_ip~m |        339    19.58572    17.12125          0        100
+ indice_ods1 |        339    37.45817    20.94538        .06      90.46
+ indice_ods2 |        339    40.68097    11.05274      21.44      71.37
+-------------+---------------------------------------------------------
+ indice_ods3 |        339    75.20513    7.357252      50.23      89.05
+ indice_ods4 |        339    53.24855    12.10919      12.37      85.82
+ indice_ods5 |        339    73.06407    9.722203      37.79      93.54
+ indice_ods6 |        339    35.80383    16.22987          0      95.01
+ indice_ods7 |        339    52.25504    14.93232      24.94      96.53
+-------------+---------------------------------------------------------
+ indice_ods8 |        339    44.97587    10.50932      14.95      72.51
+ indice_ods9 |        339    35.52844    15.20465        .62      78.86
+indice_ods10 |        339    66.05351    14.22344      10.26      95.71
+indice_ods11 |        339    37.53572    12.52466       3.05      94.81
+indice_ods13 |        339     72.2164    15.48793       11.9      99.77
+-------------+---------------------------------------------------------
+indice_ods15 |        339    53.89434     18.8185          0        100
+indice_ods16 |        339    73.83826     9.68108      32.72      93.66
+indice_ods17 |        339    14.00522    11.60921          0      65.25
+   shapeName |          0
+     pop2001 |        339    24436.67    87126.26   219.5939    1100910
+-------------+---------------------------------------------------------
+     pop2002 |        339    24840.61    88617.68    237.515    1127900
+     pop2003 |        339    25259.27    90277.65   261.9886    1155505
+     pop2004 |        339    25690.72    91877.22   280.7339    1183557
+     pop2005 |        339    26138.39    93285.53   304.8908    1208395
+     pop2006 |        339    26602.64    95140.61   325.3436    1240269
+-------------+---------------------------------------------------------
+     pop2007 |        339    27080.17    96833.97    354.985    1267908
+     pop2008 |        339    27574.08    98650.57   379.6332    1296906
+     pop2009 |        339    28078.82    100556.9   412.5431    1330029
+     pop2010 |        339    28602.76    102482.5   440.7266    1362528
+     pop2011 |        339    29149.45      104150   476.7716    1387944
+-------------+---------------------------------------------------------
+     pop2012 |        339    29725.21    106567.2   518.9156    1429553
+     pop2013 |        339    30310.05      108932   559.2823    1468142
+     pop2014 |        339    30912.69    111007.1   594.9893    1500294
+     pop2015 |        339    31535.45    113426.1   611.1754    1538835
+     pop2016 |        339    32186.12    115445.6   638.6938    1570342
+-------------+---------------------------------------------------------
+     pop2017 |        339    32858.76    117649.3   661.8224    1604458
+     pop2018 |        339    33559.27    120157.7    657.392    1643086
+     pop2019 |        339    34284.56    122641.2   636.0154    1681318
+     pop2020 |        339    35037.36    125250.6   621.4688    1721638
+tr100_p~2001 |        339    24431.28    87141.76   221.3703    1101349
+-------------+---------------------------------------------------------
+tr100_p~2002 |        339    24838.18    88636.57   239.3684    1127626
+tr100_p~2003 |        339    25258.06    90180.36   258.8089    1154524
+tr100_p~2004 |        339    25691.46    91773.92   279.7615    1182059
+tr100_p~2005 |        339    26138.94     93419.1   302.3271    1210251
+tr100_p~2006 |        339    26601.11    95118.86   326.6227    1239141
+-------------+---------------------------------------------------------
+tr100_p~2007 |        339    27078.59    96874.93   352.8022    1268754
+tr100_p~2008 |        339    27572.04    98689.36   381.0231    1299124
+tr100_p~2009 |        339    28082.21      100564   411.4832    1330282
+tr100_p~2010 |        339    28609.86    102500.2   444.3889    1362234
+tr100_p~2011 |        339    29155.83    104499.5   479.9833    1394986
+-------------+---------------------------------------------------------
+tr100_p~2012 |        339    29720.85      106563   518.4965    1428541
+tr100_p~2013 |        339    30305.66    108688.3    560.142    1462833
+tr100_p~2014 |        339    30911.08    110872.5   597.2993    1497796
+tr100_p~2015 |        339    31537.99    113115.1   616.0437    1533412
+tr100_p~2016 |        339    32187.37    115416.8   635.6312    1569686
+-------------+---------------------------------------------------------
+tr100_p~2017 |        339    32860.18    117781.6   655.9737    1606679
+tr100_p~2018 |        339    33557.44    120214.2   664.1104    1644466
+tr100_p~2019 |        339    34280.22    122718.5   636.6932    1683106
+tr100_p~2020 |        339    35029.65    125297.8   610.5161    1722643
+tr400_p~2001 |        339    24426.75    87131.99   221.6266    1101311
+-------------+---------------------------------------------------------
+tr400_p~2002 |        339    24834.83    88630.46   239.4947    1127629
+tr400_p~2003 |        339    25255.87    90178.16   258.7975    1154574
+tr400_p~2004 |        339    25690.39    91776.26   279.6375    1182161
+tr400_p~2005 |        339    26138.94    93426.17   302.1314    1210409
+tr400_p~2006 |        339     26602.1    95129.55   326.4075    1239338
+-------------+---------------------------------------------------------
+tr400_p~2007 |        339    27080.47    96887.82   352.6117    1268965
+tr400_p~2008 |        339    27574.69    98702.46   380.8994    1299310
+tr400_p~2009 |        339    28085.46      100575   411.4461    1330394
+tr400_p~2010 |        339    28613.49    102506.6   444.4404    1362225
+tr400_p~2011 |        339    29159.51    104498.7   480.0909    1394817
+-------------+---------------------------------------------------------
+tr400_p~2012 |        339    29724.31    106552.6   518.6144    1428180
+tr400_p~2013 |        339    30308.64    108668.7   560.2376    1462309
+tr400_p~2014 |        339    30913.33    110847.4    598.569    1497198
+tr400_p~2015 |        339    31539.28    113089.9   616.7974    1532856
+tr400_p~2016 |        339    32187.39    115397.6   635.7139    1569301
+-------------+---------------------------------------------------------
+tr400_p~2017 |        339    32858.66    117773.2   655.2969    1606564
+tr400_p~2018 |        339    33554.07    120219.2   666.7592    1644679
+tr400_p~2019 |        339    34274.75    122738.6   639.7825    1683687
+tr400_p~2020 |        339    35021.85    125334.1   613.9162    1723612
+ tr6_pop2001 |        339    24434.94    87148.81   220.2197    1101459
+-------------+---------------------------------------------------------
+ tr6_pop2002 |        339    24840.48    88652.53   239.0014    1127892
+ tr6_pop2003 |        339    25259.28    90201.76   259.2668    1154867
+ tr6_pop2004 |        339    25691.92    91788.15   280.7141    1182300
+ tr6_pop2005 |        339    26138.99    93415.27   303.4221    1210203
+ tr6_pop2006 |        339    26600.89    95101.24   327.4877    1238806
+-------------+---------------------------------------------------------
+ tr6_pop2007 |        339    27077.87    96843.25   353.2992    1268048
+ tr6_pop2008 |        339     27570.5    98645.18   380.9505    1298111
+ tr6_pop2009 |        339    28079.68    100510.4   410.8486    1329170
+ tr6_pop2010 |        339     28606.8    102443.7   443.2523    1361212
+ tr6_pop2011 |        339    29153.19    104457.9   478.7741    1394366
+-------------+---------------------------------------------------------
+ tr6_pop2012 |        339    29719.35    106572.6   517.7002    1428990
+ tr6_pop2013 |        339    30304.96    108756.8   559.9642    1464395
+ tr6_pop2014 |        339    30910.51    110975.2   595.4657    1499916
+ tr6_pop2015 |        339    31537.25    113218.7   615.2995    1535449
+ tr6_pop2016 |        339     32186.8    115482.6   636.3769    1570945
+-------------+---------------------------------------------------------
+ tr6_pop2017 |        339    32860.41    117796.8   657.8694    1606922
+ tr6_pop2018 |        339    33559.21    120187.7   659.4788    1643844
+ tr6_pop2019 |        339    34284.06    122659.4   636.2559    1681804
+ tr6_pop2020 |        339     35035.9    125211.1   614.8959    1720778
+ln_NTLpc2012 |        324    13.09995    1.399603   8.398978   17.13558
+-------------+---------------------------------------------------------
+ln_NTLpc2013 |        326    13.29733    1.333199   8.408302    16.9727
+ln_NTLpc2014 |        332    13.28456    1.376073   8.909474    17.2625
+ln_NTLpc2015 |        332    13.46111    1.332617   8.461764   16.61294
+ln_NTLpc2016 |        332     13.5486    1.330892   9.538962   18.32956
+ln_NTLpc2017 |        333    13.88008    1.180749   9.064386   17.06423
+-------------+---------------------------------------------------------
+ln_NTLpc2018 |        334    13.91262    1.136464   10.47412    17.3031
+ln_NTLpc2019 |        337    13.84609    1.249546   8.402213   17.53452
+ln_NTLpc2020 |        334    13.90724    1.184608   10.54978    17.9122
+ln_t100~2012 |        339    13.02683    1.673638   .8562111   17.07579
+ln_t100~2013 |        339    13.15842    1.577974   2.259869   16.88655
+-------------+---------------------------------------------------------
+ln_t100~2014 |        339    13.28937    1.489376   3.663456   16.69809
+ln_t100~2015 |        339    13.41939    1.408936   5.066966    16.7341
+ln_t100~2016 |        339     13.5476    1.337986   6.470398   16.89408
+ln_t100~2017 |        339    13.67315    1.277871   7.873766   17.02691
+ln_t100~2018 |        339    13.79489    1.230374   9.277094   17.14022
+-------------+---------------------------------------------------------
+ln_t100~2019 |        339    13.91355    1.196667   10.30658   17.40162
+ln_t100~2020 |        339    14.03096    1.177136   10.53566   18.07757
+ln_t400~2012 |        339    13.03303    1.671621   .8560951   17.07105
+ln_t400~2013 |        339    13.16062    1.577157   2.259632   16.88564
+ln_t400~2014 |        339    13.28802    1.489338   3.663153   16.70042
+-------------+---------------------------------------------------------
+ln_t400~2015 |        339    13.41512    1.409365   5.066654   16.69552
+ln_t400~2016 |        339    13.54169    1.338629   6.470133   16.84626
+ln_t400~2017 |        339    13.66752    1.278602   7.873595   16.98964
+ln_t400~2018 |        339    13.79231    1.230873   9.277044   17.12765
+ln_t400~2019 |        339    13.91629    1.196792   10.28612     17.394
+-------------+---------------------------------------------------------
+ln_t400~2020 |        339    14.03993    1.177322    10.4881    18.0634
+ln_t6NT~2012 |        339    12.98879    1.689015   .8570069   17.10881
+ln_t6NT~2013 |        339    13.14061    1.585235   2.260941   16.89071
+ln_t6NT~2014 |        339    13.28945    1.494944   3.664545   16.67784
+ln_t6NT~2015 |        339    13.43946    1.413672   5.067895   17.00129
+-------------+---------------------------------------------------------
+ln_t6NT~2016 |        339    13.58544    1.339332   6.471003   17.23719
+ln_t6NT~2017 |        339    13.71965     1.27195   7.873938   17.27631
+ln_t6NT~2018 |        339    13.82326    1.222475   9.276839   17.21144
+ln_t6NT~2019 |        339    13.90017    1.195369   10.46314   17.47144
+ln_t6NT~2020 |        339    13.96721    1.184808   10.35156   18.13531
+-------------+---------------------------------------------------------
+      co2015 |        339     398.735    1.111346   394.2218   402.4441
+      co2016 |        339    401.8463    1.050866   398.2344   404.4392
+      co2017 |        339    403.5944    1.232606   400.0459   406.2261
+      co2018 |        339    406.1151    1.083935   403.3114   409.9291
+      co2019 |        339     408.822     1.19856   405.4501   413.2233
+-------------+---------------------------------------------------------
+      co2020 |        339    410.7122    1.071433   407.7056   414.2792
+tr100_co2015 |        339    399.0362     .963371   396.0784   401.5903
+tr100_co2016 |        339    401.3942    .8842252   398.6325   403.3751
+tr100_co2017 |        339    403.7632    .8399442   401.2065   405.6858
+tr100_co2018 |        339    406.1447    .8358431   403.8105   408.5001
+-------------+---------------------------------------------------------
+tr100_co2019 |        339    408.5385    .8739286   406.4423   411.3218
+tr100_co2020 |        339    410.9442    .9505815   408.5455   414.1475
+tr400_co2015 |        339    399.0388    .9639382   396.0675   401.5824
+tr400_co2016 |        339    401.3934    .8840349   398.6335    403.374
+tr400_co2017 |        339    403.7613    .8386707   401.2169    405.681
+-------------+---------------------------------------------------------
+tr400_co2018 |        339    406.1428    .8345793   403.8205   408.4908
+tr400_co2019 |        339    408.5379    .8737933   406.4437    411.317
+tr400_co2020 |        339    410.9467    .9523272   408.5587   414.1588
+  tr6_co2015 |        339    398.9978    .9636105   396.2348   401.7073
+  tr6_co2016 |        339    401.4077    .8877457   398.6234   403.4044
+-------------+---------------------------------------------------------
+  tr6_co2017 |        339    403.7896    .8662045   401.0569   405.7413
+  tr6_co2018 |        339    406.1709    .8603836   403.6666   408.6404
+  tr6_co2019 |        339    408.5478    .8760083   406.4227   411.4089
+  tr6_co2020 |        339    410.9074    .9345015   408.3544   413.9744
+
+. 
+. 
+. ** Translate labels and rename variables of the SDG database
+. 
+. *Change variables labels
+. label variable imds             "Municipal Sustainable Development Index"
+
+. label variable rank_imds        "Bolivia Index Ranking"
+
+. label variable poblacion_2020   "Population 2020"
+
+. label variable urbano_2012      "Urbanization rate, 2012 (% of population)"
+
+. 
+. label variable sdg1_1_ee        "Extreme energy poverty rate, 2016 (% of houses)"
+
+. label variable sdg1_1_nbi       "Unsatisfied basic needs, 2012 (% of population)"
+
+. label variable sdg1_2_pm        "Multidimensional poverty index, 2012"
+
+. label variable sdg1_4_ssb       "Access to the 3 basic services, 2012 (% of households)"
+
+. 
+. label variable sdg2_2_dm        "Chronic malnutrition in children (< 5 years), 2016 (%)"
+
+. label variable sdg2_2_smu       "Obesity in women (15-49 years), 2016 (%)"
+
+. label variable sdg2_4_su        "Average area per Production Unit Agriculture and Livestoc
+> k, 2013 (ha)"
+
+. label variable sdg2_4_t         "Tractor density, 2013 (per 1,000 UPAs)"
+
+. 
+. label variable sdg3_1_p         "Institutional childbirth coverage, average 2008-2012 (%)"
+
+. label variable sdg3_2_mi        "Infant mortality rate (< 1 year), 2016 (per. 1,000 live b
+> irths)"
+
+. label variable sdg3_2_mn        "Children mortality rate in (< 5 years), 2016 (per. 1,000 
+> live births)"
+
+. label variable sdg3_3_c         "Chagas disease infestation rate, 2017 (% of households)"
+
+. label variable sdg3_3_d         "Dengue incidence, 2018 (per 10,000 population)"
+
+. label variable sdg3_3_m         "Malaria incidence, average 2014-17 (per 1,000 population)
+> "
+
+. label variable sdg3_3_t         "Tuberculosis incidence, 2017 (per 100,000 population)"
+
+. label variable sdg3_3_vih       "HIV incidence, average 2014-17 (per 1,000,00 population)"
+
+. label variable sdg3_7_fa        "Adolescent fertility rate (15-19 years), 2012 (births per
+>  1,000 women)"
+
+. 
+. label variable sdg4_1_ash       "Secondary school dropout rate, male, 2017 (% of enrolled)
+> "
+
+. label variable sdg4_1_asm       "Secondary school dropout rate, females, 2017 (% of enroll
+> ed)"
+
+. label variable sdg4_4_es        "Population with higher education (>= 19 years), 2012 (%)"
+
+. label variable sdg4_6_alfab     "Literacy rate for (>= 15 years), 2012 (%)"
+
+. label variable sdg4_c_pci       "Qualified teachers at the initial level, 2016 (%)"
+
+. label variable sdg4_c_pcs       "Qualified teachers at the secondary level, 2016"
+
+. 
+. label variable sdg5_1_paes      "Gender parity in school dropouts in  secondary school, 20
+> 17"
+
+. label variable sdg5_1_pej       "Gender parity in years of education of young people (25-3
+> 5 years old), 2012. (25-35 years), 2012"
+note: label truncated to 80 characters
+
+. label variable sdg5_1_ppm       "Gender Parity in the Multidimensional Poverty Index, 2012
+> "
+
+. label variable sdg5_5_pp        "Gender parity in the overall participation rate (>=10 yea
+> rs), 2012"
+
+. 
+. label variable sdg6_1_ca        "Drinking water coverage, 2017 (% of population)"
+
+. label variable sdg6_2_cs        "Sanitation coverage, 2017 (% of population)"
+
+. label variable sdg6_3_tar       "Wastewater treatment, 2017 (% of wastewater) wastewater)"
+
+. 
+. label variable sdg7_1_cee       "Electricity coverage, 2012 (% of population) population)"
+
+. label variable sdg7_1_cep       "Residential electricity consumption per capita, 2016 (kWh
+> /person/year)"
+
+. label variable sdg7_1_elc       "Clean cooking energy, 2012 (% of households)"
+
+. label variable sdg7_3_ecep      "CO2 emissions per capita by energy, 2016. (tCO2/person/ye
+> ar)"
+
+. 
+. label variable sdg8_4_mcc       "Residential electric meters with zero consumption, 2016 (
+> %)"
+
+. label variable sdg8_5_ph        "Overall participation rate males (>= 10 years), 2012 (%)"
+
+. label variable sdg8_5_pm        "Overall female participation rate (>= 10 years), 2012 (%)
+> "
+
+. label variable sdg8_6_hnn       "Men who do not study or participate in the labor market (
+> 15-24 years), 2012 (%)"
+
+. label variable sdg8_6_mnn       "Women who do not study or participate in the labor market
+>  (15-24 years),2012 (%),2012 (%)"
+note: label truncated to 80 characters
+
+. label variable sdg8_10_b        "Density of bank branches, 2018 (per 100,000 inhabitants)"
+
+. label variable sdg8_11_mm       "Index of the degree of intermediation in migration, 2012"
+
+. 
+. label variable sdg9_1_rutas     "Number of railways/primary roads entering/leaving the mun
+> icipality, 2019"
+
+. label variable sdg9_5_c         "Kuaa computers delivered, 2016 (per 100 school-age popula
+> tion, 6-19 years)"
+
+. label variable sdg9_5_pt        "Educational units with technological floors, 2016 (%)"
+
+. label variable sdg9_c_crdm      "Fixed and mobile network coverage, 2012 (% of households)
+> "
+
+. label variable sdg9_c_rb        "Density of radio bases, 2016 (number of radio bases per 1
+> 000 inhabitants)"
+
+. 
+. label variable sdg10_2_egini    "GINI coefficient of years of education, 2012"
+
+. label variable sdg10_2_ge       "Inequality in electricity consumption, 2016"
+
+. label variable sdg10_2_nhe      "Non-Spanish speaking population (>= 3 years), 2012 (%)"
+
+. 
+. label variable sdg11_1_h        "Overcrowding rate, 2012 (% of households)"
+
+. label variable sdg11_1_sss      "Households that do not have a toilet, bathroom or latrine
+> , 2012 (%) latrine, 2012 (%)"
+note: label truncated to 80 characters
+
+. label variable sdg11_2_atc      "Seats available for mass transit, 2017 (per 1,000 inhabit
+> ants)"
+
+. 
+. label variable sdg13_1_vcc      "Climate change vulnerability Index, 2015"
+
+. label variable sdg13_2_ectp     "Total CO2 emissions per capita, 2016 (tCO2/person/year)"
+
+. label variable sdg13_2_td       "Deforestation rate, average 2016-2018 (% of forest area 2
+> 015)"
+
+. label variable sdg15_1_ap       "Protected areas, 2019 (% of the municipality's land area)
+>  municipality)"
+
+. label variable sdg15_5_pb       "Biodiversity loss rate due to deforestation deforestation
+> , average 2016-2018"
+
+. 
+. label variable sdg16_1_vh       "Registered homicide rate, average 2015-2017. (per 100,000
+>  inhabitants)"
+
+. label variable sdg16_6_ce       "Programmed budget execution capacity, 2017 (%)"
+
+. label variable sdg16_9_nrc      "Children registered in the civil registry (< 5 years), 20
+> 12 (%)"
+
+. 
+. label variable sdg17_1_il       "Proportion of municipal revenues that come from local tax
+> es, 2017 (%)"
+
+. label variable sdg17_5_ip       "Public investment per capita, 2017 (Bs./person)"
+
+. 
+. label variable sdg1_1_ee_abs    "Number of homes consuming <25% of the Dignity Tariff limi
+> t (210 kWh/year), 2016."
+
+. label variable sdg1_1_nbi_abs   "Population with unsatisfied basic needs, 2012"
+
+. label variable sdg1_2_pm_abs    "Number of households with deficiencies in 4 or more dimen
+> sions (out of 9)"
+
+. label variable sdg1_4_ssb_abs   "Number of households lacking 1/3 basic services (electric
+> ity, water and sanitation),2012"
+note: label truncated to 80 characters
+
+. 
+. label variable sdg2_2_dm_abs    "Num.children <5years with chronic malnutrition,2016(weigh
+> ted by dept. and poverty)"
+note: label truncated to 80 characters
+
+. label variable sdg2_2_smu_abs   "Num.women aged 15-49 years, overweight (BMI>=30), 2016 (b
+> y dept. and poverty)"
+
+. label variable sdg2_4_su_abs    "Total area of agricultural production units, 2013 (ha)"
+
+. label variable sdg2_4_t_abs     "Number of tractors in the municipality, 2013"
+
+. 
+. label variable sdg3_1_p_abs     "Number of unattended deliveries in a health facility, 201
+> 2"
+
+. label variable sdg3_2_mi_abs    "Number of children who died before their first birthday, 
+> 2016"
+
+. label variable sdg3_2_mn_abs    "Number of children who died before their fifth birthday, 
+> 2016"
+
+. label variable sdg3_3_c_abs     "Number of households infested with Chagas disease, 2017"
+
+. label variable sdg3_3_d_abs     "Population with dengue, 2018"
+
+. label variable sdg3_3_m_abs     "Number of reported malaria cases, average 2014-2017"
+
+. label variable sdg3_3_t_abs     "Number of cases of tuberculosis in all forms, new and rel
+> apsed, 2017"
+
+. label variable sdg3_3_vih_abs   "Number of HIV cases, 2014-2017"
+
+. label variable sdg3_7_fa_abs    "Number of births per women aged 15-19 years, annual avera
+> ge, 2008-2012"
+
+. 
+. label variable sdg4_1_ash_abs   "Number of male high school dropouts, 2017"
+
+. label variable sdg4_1_asm_abs   "Number of female high school dropouts, 2017"
+
+. label variable sdg4_4_es_abs    "Population aged 19 years and older with higher education 
+> attained, 2012"
+
+. label variable sdg4_6_alfab_~s  "Population aged 15 and over who are not literate, 2012"
+
+. label variable sdg4_c_pci_abs   "Number of unqualified teachers at the initial level, 2016
+> "
+
+. label variable sdg4_c_pcs_abs   "Number of unqualified teachers at the secondary level, 20
+> 16"
+
+. 
+. label variable sdg6_1_ca_abs    "Population without drinking water coverage, 2017"
+
+. label variable sdg6_2_cs_abs    "Population without basic sanitation coverage, 2017"
+
+. 
+. label variable sdg7_1_cee_abs   "Population without electricity coverage, 2012"
+
+. label variable sdg7_1_cep_abs   "Residential electricity consumption, 2016 (kWh)"
+
+. label variable sdg7_1_elc_abs   "Number of households without clean energy for cooking, 20
+> 12"
+
+. label variable sdg7_3_ecep_abs  "Total CO2 emissions by energy, 2016 (tCO2/year)"
+
+. 
+. label variable sdg8_4_mcc_abs   "Residential electric meters with zero consumption, 2016 (
+> %)"
+
+. label variable sdg8_5_ph_abs    "Overall male participation rate (>= 10 years), 2012 (%)"
+
+. label variable sdg8_5_pm_abs    "Overall female participation rate (>= 10 years), 2012 (%)
+> "
+
+. label variable sdg8_6_hnn_abs   "Men neither studying nor participating in the labor marke
+> t (15-24 years), 2012(%)"
+note: label truncated to 80 characters
+
+. label variable sdg8_6_mnn_abs   "Women neither studying nor participating in the labor mar
+> ket(15-24 years), 2012(%)"
+note: label truncated to 80 characters
+
+. label variable sdg8_10_b_abs    "Density of bank branches, 2018 (per 100,000 inhabitants)"
+
+. 
+. label variable sdg9_1_rutas_~s  "Number of railways/primary roads entering/leaving the mun
+> icipality, 2019"
+
+. label variable sdg9_5_c_abs     "Number of Kuaa computers delivered, 2016"
+
+. label variable sdg9_5_pt_abs    "Number of educational units with technological floors, 20
+> 16"
+
+. label variable sdg9_c_crdm_abs  "Number of households without fixed or cellular telephony 
+> coverage, 2012"
+
+. label variable sdg9_c_rb_abs    "Total number of radio bases (ATT and Prontis), 2016"
+
+. 
+. label variable sdg10_2_nhe_abs  "Population>=3 years old, do not speak Spanish (as mother 
+> tongue,1st,2nd language), 2012."
+note: label truncated to 80 characters
+
+. 
+. label variable sdg11_1_h_abs    "Number of households with overcrowding (more than 2 perso
+> ns per room), 2012"
+
+. label variable sdg11_1_sss_abs  "Number of households without sanitation services, 2012"
+
+. label variable sdg11_2_atc_abs  "Number of seats available in mass transit vehicles, 2017.
+> "
+
+. 
+. label variable sdg13_2_ectp_~s  "Total CO2 emissions, 2016 (tCO2/year)"
+
+. label variable sdg13_2_td_abs   "Annual deforestation, 2016-2018 (ha)"
+
+. 
+. label variable sdg15_1_ap_abs   "Legally declared protected area(Municipal,Departmental, N
+> ational),2019(km2)"
+
+. label variable sdg15_5_pb_abs   "Absolute Species Richness Loss, 2016-2018 (% of national 
+> loss)"
+
+. 
+. label variable sdg16_1_vh_abs   "Number of registered homicides, 2015-2017"
+
+. label variable sdg16_6_ce_abs   "Annual Operating Budget (POA) in Bs., 2017"
+
+. label variable sdg16_9_nrc_abs  "Number of children under 5 years of age not registered in
+>  a civil registry, 2012"
+
+. 
+. label variable sdg17_5_ip_abs   "Total public investment, 2017 (Bs.)"
+
+. 
+. label variable sdg1_1_ee_norm   "Normalized (0-100): sdg1_1_eepr"
+
+. label variable sdg1_1_nbi_norm  "Normalized (0-100): sdg1_1_ubn"
+
+. label variable sdg1_2_pm_norm   "Normalized (0-100): sdg1_2_mpi"
+
+. label variable sdg1_4_ssb_norm  "Normalized (0-100): sdg1_4_abs"
+
+. 
+. label variable sdg2_2_dm_norm   "Normalized (0-100): sdg2_2_cmc"
+
+. label variable sdg2_2_smu_norm  "Normalized (0-100): sdg2_2_oww"
+
+. label variable sdg2_4_su_norm   "Normalized (0-100): sdg2_4_pual"
+
+. label variable sdg2_4_t_norm    "Normalized (0-100): sdg2_2_td"
+
+. 
+. label variable sdg3_1_p_norm    "Normalized (0-100): sdg3_1_idca"
+
+. label variable sdg3_2_mi_norm   "Normalized (0-100): sdg3_2_imr"
+
+. label variable sdg3_2_mn_norm   "Normalized (0-100): sdg3_2_mrc"
+
+. label variable sdg3_3_c_norm    "Normalized (0-100): sdg3_3_cdir"
+
+. label variable sdg3_3_d_norm    "Normalized (0-100): sdg3_3_di"
+
+. label variable sdg3_3_m_norm    "Normalized (0-100): sdg3_3_imr"
+
+. label variable sdg3_3_t_norm    "Normalized (0-100): sdg3_3_ti"
+
+. label variable sdg3_3_vih_norm  "Normalized (0-100): sdg3_3_hivi"
+
+. label variable sdg3_7_fa_norm   "Normalized (0-100): sdg3_7_afr"
+
+. 
+. label variable sdg4_1_ash_norm  "Normalized (0-100): sdg4_1_ssdrm"
+
+. label variable sdg4_1_asm_norm  "Normalized (0-100): sdg4_1_ssdrf"
+
+. label variable sdg4_4_es_norm   "Normalized (0-100): sdg4_4_phe"
+
+. label variable sdg4_6_alfab_~m  "Normalized (0-100): sdg4_6_lr"
+
+. label variable sdg4_c_pci_norm  "Normalized (0-100): sdg4_c_qti"
+
+. label variable sdg4_c_pcs_norm  "Normalized (0-100): sdg4_c_qts"
+
+. 
+. label variable sdg5_1_paes_n~m  "Normalized (0-100): sdg5_1_gpsd"
+
+. label variable sdg5_1_pej_norm  "Normalized (0-100): sdg5_1_gpyp"
+
+. label variable sdg5_1_ppm_norm  "Normalized (0-100): sdg5_1_gpmpi"
+
+. label variable sdg5_5_pp_norm   "Normalized (0-100): sdg5_5_gpop"
+
+. 
+. label variable sdg6_1_ca_norm   "Normalized (0-100): sdg6_1_dwc"
+
+. label variable sdg6_2_cs_norm   "Normalized (0-100): sdg6_2_sc"
+
+. label variable sdg6_3_tar_norm  "Normalized (0-100): sdg6_3_wwt"
+
+. 
+. label variable sdg7_1_cee_norm "Normalized (0-100): sdg7_1_ec"
+
+. label variable sdg7_1_cep_norm "Normalized (0-100): sdg7_1_rec"
+
+. label variable sdg7_1_elc_norm "Normalized (0-100): sdg7_1_cce"
+
+. label variable sdg7_3_ecep_n~m "Normalized (0-100): sdg7_3_co2epc"  
+
+. 
+. label variable sdg8_4_mcc_norm  "Normalized (0-100): sdg8_4_rem"
+
+. label variable sdg8_5_ph_norm   "Normalized (0-100): sdg8_5_oprm"
+
+. label variable sdg8_5_pm_norm   "Normalized (0-100): sdg8_5_ofrm"
+
+. label variable sdg8_6_hnn_norm  "Normalized (0-100): sdg8_6_mlm"
+
+. label variable sdg8_6_mnn_norm  "Normalized (0-100): sdg8_6_mlw"
+
+. label variable sdg8_10_b_norm   "Normalized (0-100): sdg8_10_dbb"
+
+. label variable sdg8_11_mm_norm  "Normalized (0-100): sdg8_11_idi"
+
+. 
+. label variable sdg9_1_rutas_~m  "Normalized (0-100): sdg9_1_routes"
+
+. label variable sdg9_5_c_norm    "Normalized (0-100): sdg9_5_cd"
+
+. label variable sdg9_5_pt_norm   "Normalized (0-100): sdg9_5_eutf"
+
+. label variable sdg9_c_crdm_n~m  "Normalized (0-100): sdg9_5_mnc"
+
+. label variable sdg9_c_rb_norm   "Normalized (0-100): sdg9_c_drb"
+
+. 
+. label variable sdg10_2_egini~m "Normalized (0-100): sdg10_2_gyce"
+
+. label variable sdg10_2_ge_norm "Normalized (0-100): sdg10_2_iec"
+
+. label variable sdg10_2_nhe_n~m "Normalized (0-100): sdg10_2_nssp" 
+
+. 
+. label variable sdg11_1_h_norm "Normalized (0-100): sdg11_1_hocr"
+
+. label variable sdg11_1_sss_n~m "Normalized (0-100): sdg11_1_hno"
+
+. label variable sdg11_2_atc_n~m "Normalized (0-100): sdg11_2_samt"
+
+. 
+. label variable sdg13_1_vcc_n~m "Normalized (0-100): sdg13_1_ccvi"
+
+. label variable sdg13_2_ectp_~m "Normalized (0-100): sdg13_2_tco2e"
+
+. label variable sdg13_2_td_norm "Normalized (0-100): sdg13_2_dra"
+
+. 
+. label variable sdg15_1_ap_norm "Normalized (0-100): sdg15_1_pa"
+
+. label variable sdg15_5_pb_norm "Normalized (0-100): sdg15_5_blr"
+
+. 
+. label variable sdg16_1_vh_norm "Normalized (0-100): sdg16_1_rhr"
+
+. label variable sdg16_6_ce_norm "Normalized (0-100): sdg16_6_pbec"
+
+. label variable sdg16_9_nrc_n~m "Normalized (0-100): sdg16_9_cr"
+
+. 
+. label variable sdg17_1_il_norm "Normalized (0-100): sdg17_1_pmtax"
+
+. label variable sdg17_5_ip_norm "Normalized (0-100): sdg17_5_pipc"
+
+. 
+. label variable indice_ods1 "SDG1 Index"
+
+. label variable indice_ods2 "SDG2 Index"
+
+. label variable indice_ods3 "SDG3 Index"
+
+. label variable indice_ods4 "SDG4 Index"
+
+. label variable indice_ods5 "SDG5 Index"
+
+. label variable indice_ods6 "SDG6 Index"
+
+. label variable indice_ods7 "SDG7 Index"
+
+. label variable indice_ods8 "SDG8 Index"
+
+. label variable indice_ods9 "SDG9 Index"
+
+. label variable indice_ods10 "SDG10 Index"
+
+. label variable indice_ods11 "SDG11 Index"
+
+. label variable indice_ods13 "SDG13 Index"
+
+. label variable indice_ods15 "SDG15 Index"
+
+. label variable indice_ods16 "SDG16 Index"
+
+. label variable indice_ods17 "SDG17 Index" 
+
+. 
+. *Rename variables name
+. rename poblacion_2020 population_2020
+
+. 
+. rename sdg1_1_ee    sdg1_1_eepr
+
+. rename sdg1_1_nbi   sdg1_1_ubn
+
+. rename sdg1_2_pm    sdg1_2_mpi
+
+. rename sdg1_4_ssb   sdg1_4_abs
+
+. 
+. rename sdg2_2_dm    sdg2_2_cmc
+
+. rename sdg2_2_smu   sdg2_2_oww
+
+. rename sdg2_4_su    sdg2_4_pual
+
+. rename sdg2_4_t     sdg2_4_td
+
+. 
+. rename sdg3_1_p     sdg3_1_idca
+
+. rename sdg3_2_mi    sdg3_2_imr
+
+. rename sdg3_2_mn    sdg3_2_mrc
+
+. rename sdg3_3_c     sdg3_3_cdir
+
+. rename sdg3_3_d     sdg3_3_di
+
+. rename sdg3_3_m     sdg3_3_imr
+
+. rename sdg3_3_t     sdg3_3_ti 
+
+. rename sdg3_3_vih   sdg3_3_hivi
+
+. rename sdg3_7_fa    sdg3_7_afr 
+
+. 
+. rename sdg4_1_ash   sdg4_1_ssdrm
+
+. rename sdg4_1_asm   sdg4_1_ssdrf
+
+. rename sdg4_4_es    sdg4_4_phe
+
+. rename sdg4_6_alfab sdg4_6_lr
+
+. rename sdg4_c_pci   sdg4_c_qti
+
+. rename sdg4_c_pcs   sdg4_c_qts
+
+. 
+. rename sdg5_1_paes  sdg5_1_gpsd
+
+. rename sdg5_1_pej   sdg5_1_gpyp
+
+. rename sdg5_1_ppm   sdg5_1_gpmpi
+
+. rename sdg5_5_pp    sdg5_5_gpop
+
+. rename sdg6_1_ca    sdg6_1_dwc
+
+. rename sdg6_2_cs    sdg6_2_sc
+
+. rename sdg6_3_tar   sdg6_3_wwt
+
+. 
+. rename sdg7_1_cee   sdg7_1_ec
+
+. rename sdg7_1_cep   sdg7_1_rec
+
+. rename sdg7_1_elc   sdg7_1_cce
+
+. rename sdg7_3_ecep  sdg7_3_co2epc 
+
+. 
+. rename sdg8_4_mcc   sdg8_4_rem
+
+. rename sdg8_5_ph    sdg8_5_oprm
+
+. rename sdg8_5_pm    sdg8_5_ofrm
+
+. rename sdg8_6_hnn   sdg8_6_mlm
+
+. rename sdg8_6_mnn   sdg8_6_wlm
+
+. rename sdg8_10_b    sdg8_10_dbb
+
+. rename sdg8_11_mm   sdg8_11_idi
+
+. 
+. rename sdg9_1_rutas  sdg9_1_routes
+
+. rename sdg9_5_c      sdg9_5_cd
+
+. rename sdg9_5_pt     sdg9_5_eutf
+
+. rename sdg9_c_crdm   sdg9_c_mnc
+
+. rename sdg9_c_rb     sdg9_c_drb
+
+. 
+. rename sdg10_2_egini sdg10_2_gcye 
+
+. rename sdg10_2_ge    sdg10_2_iec
+
+. rename sdg10_2_nhe   sdg10_2_nssp 
+
+. 
+. rename sdg11_1_h     sdg11_1_hocr
+
+. rename sdg11_1_sss   sdg11_1_hno
+
+. rename sdg11_2_atc   sdg11_2_samt
+
+. 
+. rename sdg13_1_vcc   sdg13_1_ccvi
+
+. rename sdg13_2_ectp  sdg13_2_tco2e
+
+. rename sdg13_2_td    sdg13_2_dra
+
+. 
+. rename sdg15_1_ap    sdg15_1_pa
+
+. rename sdg15_5_pb    sdg15_5_blr
+
+. 
+. rename sdg16_1_vh    sdg16_1_rhr
+
+. rename sdg16_6_ce    sdg16_6_pbec
+
+. rename sdg16_9_nrc   sdg16_9_cr
+
+. 
+. rename sdg17_1_il    sdg17_1_pmtax
+
+. rename sdg17_5_ip    sdg17_5_pipc
+
+. 
+. ** Variables in absolute terms
+. 
+. rename sdg1_1_ee_abs sdg1_1_dtl_abs
+
+. rename sdg1_1_nbi_abs sdg1_1_pubn_abs
+
+. rename sdg1_2_pm_abs sdg1_2_dd_abs
+
+. rename sdg1_4_ssb_abs sdg1_4_ebs_abs
+
+. 
+. rename sdg2_2_dm_abs sdg2_2_cm_abs
+
+. rename sdg2_2_smu_abs sdg2_2_wow_abs
+
+. rename sdg2_4_su_abs sdg2_4_apu_abs
+
+. rename sdg2_4_t_abs sdg2_4_tm_abs
+
+. 
+. rename sdg3_1_p_ab sdg3_1_udhf_ab
+
+. rename sdg3_2_mi_abs sdg3_2_fb_abs
+
+. rename sdg3_2_mn_abs sdg3_2_ffb_abs
+
+. rename sdg3_3_c_abs sdg3_3_cd_abs
+
+. rename sdg3_3_d_abs sdg3_3_pd_abs
+
+. rename sdg3_3_m_abs sdg3_3_mc_abs
+
+. rename sdg3_3_t_abs sdg3_3_tc_abs
+
+. rename sdg3_3_vih_abs sdg3_3_vih_abs 
+  (all newnames==oldnames)
+
+. rename sdg3_7_fa_abs sdg3_7_bpw_abs
+
+. rename sdg4_1_ash_abs sdg4_1_mhs_abs
+
+. rename sdg4_1_asm_abs sdg4_1_fhs_abs
+
+. rename sdg4_4_es_abs sdg4_4_heu_abs
+
+. rename sdg4_6_alfab_~s sdg4_6_pnl_abs
+
+. rename sdg4_c_pci_abs sdg4_c_uti_abs
+
+. rename sdg4_c_pcs_abs sdg4_c_uts_abs
+
+. 
+. rename sdg6_1_ca_abs sdg6_1_wdc_abs
+
+. rename sdg6_2_cs_abs sdg6_2_bsc_abs
+
+. 
+. rename sdg7_1_cee_abs sdg7_1_wec_abs
+
+. rename sdg7_1_cep_abs sdg7_1_rec_abs
+
+. rename sdg7_1_elc_abs sdg7_1_cec_abs
+
+. rename sdg7_3_ecep_abs sdg7_3_tee_abs
+
+. 
+. rename sdg8_4_mcc_abs sdg8_4_rem_abs
+
+. rename sdg8_5_ph_abs sdg8_5_ompr_abs
+
+. rename sdg8_5_pm_abs sdg8_5_ofpr_abs
+
+. rename sdg8_6_hnn_abs sdg8_6_mlm_abs
+
+. rename sdg8_6_mnn_abs sdg8_6_wlm_abs
+
+. rename sdg8_10_b_abs sdg8_10_dbb_abs
+
+. 
+. rename sdg9_1_rutas_~s sdg9_1_rmun_abs
+
+. rename sdg9_5_c_abs sdg9_5_kcd_abs
+
+. rename sdg9_5_pt_abs sdg9_5_eutf_abs
+
+. rename sdg9_c_crdm_abs sdg9_c_hf_abs
+
+. rename sdg9_c_rb_abs sdg9_c_tr_abs
+
+. 
+. rename sdg10_2_nhe_abs sdg10_2_dss_abs 
+
+. 
+. rename sdg11_1_h_abs sdg11_1_ho_abs
+
+. rename sdg11_1_sss_abs sdg11_1_wos_abs
+
+. rename sdg11_2_atc_abs sdg11_2_mtv_abs
+
+. 
+. rename sdg13_2_ectp_~s sdg13_2_tco2_abs
+
+. rename sdg13_2_td_abs sdg13_2_ad_abs
+
+. 
+. rename sdg15_1_ap_abs sdg15_1_pa_abs
+
+. rename sdg15_5_pb_abs sdg15_5_rl_abs
+
+. 
+. rename sdg16_1_vh_abs sdg16_1_rh_abs 
+
+. rename sdg16_6_ce_abs sdg16_6_aob_abs
+
+. rename sdg16_9_nrc_abs sdg16_9_ncr_abs
+
+. 
+. rename sdg17_5_ip_abs sdg17_5_tpi_abs
+
+. 
+. * Variables in normalized scale
+. 
+. rename sdg1_1_ee_norm sdg1_1_eepr_norm
+
+. rename sdg1_1_nbi_norm sdg1_1_ubn_norm
+
+. rename sdg1_2_pm_norm sdg1_2_mpi_norm
+
+. rename sdg1_4_ssb_norm sdg1_4_abs_norm
+
+. 
+. rename sdg2_2_dm_norm sdg2_2_cmc_norm
+
+. rename sdg2_2_smu_norm sdg2_2_oww_norm
+
+. rename sdg2_4_su_norm sdg2_4_pual_norm
+
+. rename sdg2_4_t_norm sdg2_4_td_norm
+
+. 
+. rename sdg3_1_p_norm sdg3_1_idca_norm
+
+. rename sdg3_2_mi_norm sdg3_2_imr_norm
+
+. rename sdg3_2_mn_norm sdg3_2_mrc_norm
+
+. rename sdg3_3_c_norm sdg3_3_cdir_norm
+
+. rename sdg3_3_d_norm sdg3_3_di_norm
+
+. rename sdg3_3_m_norm sdg3_3_imr_norm
+
+. rename sdg3_3_t_norm sdg3_3_ti_norm
+
+. rename sdg3_3_vih_norm sdg3_3_hivi_norm
+
+. rename sdg3_7_fa_norm sdg3_7_afr_norm
+
+. 
+. rename sdg4_1_ash_norm sdg4_1_ssdrm_norm 
+
+. rename sdg4_4_es_norm sdg4_4_ssdrf_norm
+
+. rename sdg4_6_alfab_~m sdg4_6_lr_norm
+
+. rename sdg4_c_pci_norm sdg4_c_qti_norm
+
+. rename sdg4_c_pcs_norm sdg4_c_qts_norm
+
+. 
+. rename sdg5_1_paes_n~m sdg5_1_gpsd_norm
+
+. rename sdg5_1_pej_norm sdg5_1_gpyd_norm
+
+. rename sdg5_1_ppm_norm sdg5_1_gpmpi_norm
+
+. rename sdg5_5_pp_norm sdg5_5_gpop_norm
+
+. 
+. rename sdg6_1_ca_norm sdg6_1_dwc_norm
+
+. rename sdg6_2_cs_norm sdg6_2_sc_norm
+
+. rename sdg6_3_tar_norm sdg6_3_wwt_norm
+
+. 
+. rename sdg7_1_cee_norm sdg7_1_ec_norm
+
+. rename sdg7_1_cep_norm sdg7_1_rec_norm
+
+. rename sdg7_1_elc_norm sdg7_1_cce_norm
+
+. rename sdg7_3_ecep_n~m sdg7_3_co2epc_norm
+
+. 
+. rename sdg8_4_mcc_norm sdg8_4_rem_norm
+
+. rename sdg8_5_ph_norm sdg8_5_oprm_norm
+
+. rename sdg8_5_pm_norm sdg8_5_ofrm_norm
+
+. rename sdg8_6_hnn_norm sdg8_6_mlm_norm
+
+. rename sdg8_6_mnn_norm sdg8_6_wlm_norm
+
+. rename sdg8_10_b_norm sdg8_10_dbb_norm
+
+. rename sdg8_11_mm_norm sdg8_11_idi_norm
+
+. 
+. rename sdg9_1_rutas_norm sdg9_1_routes_norm 
+
+. rename sdg9_5_c_norm sdg9_5_cd_norm
+
+. rename sdg9_5_pt_norm sdg9_5_eutf_norm
+
+. rename sdg9_c_crdm_n~m sdg9_c_mnc_norm
+
+. rename sdg9_c_rb_norm sdg9_c_drb_norm
+
+. 
+. rename sdg10_2_egini~m sdg10_2_gcye_norm
+
+. rename sdg10_2_ge_norm sdg10_2_iec_norm
+
+. rename sdg10_2_nhe_n~m sdg10_2_nssp_norm
+
+. 
+. rename sdg11_1_h_norm sdg11_1_hocr_norm
+
+. rename sdg11_1_sss_n~m sdg11_1_hno_norm
+
+. rename sdg11_2_atc_n~m sdg11_2_samt_norm
+
+. 
+. rename sdg13_1_vcc_n~m sdg13_1_ccvi_norm
+
+. rename sdg13_2_ectp_~m sdg13_2_tco2e_norm
+
+. rename sdg13_2_td_norm sdg13_2_dra_norm
+
+. 
+. rename sdg15_1_ap_norm sdg15_1_pa_norm
+
+. rename sdg15_5_pb_norm sdg15_5_blr_norm
+
+. 
+. rename sdg16_1_vh_norm sdg16_1_rhr_norm
+
+. rename sdg16_6_ce_norm sdg16_6_pbec_norm
+
+. rename sdg16_9_nrc_n~m sdg16_9_cr_norm
+
+. 
+. rename sdg17_1_il_norm sdg17_1_pmtax_norm
+
+. rename sdg17_5_ip_norm sdg17_5_pipc_norm
+
+. 
+. * SDG index
+. 
+. rename indice_ods1 index_sdg1
+
+. rename indice_ods2 index_sdg2
+
+. rename indice_ods3 index_sdg3
+
+. rename indice_ods4 index_sdg4
+
+. rename indice_ods5 index_sdg5
+
+. rename indice_ods6 index_sdg6
+
+. rename indice_ods7 index_sdg7
+
+. rename indice_ods8 index_sdg8
+
+. rename indice_ods9 index_sdg9
+
+. rename indice_ods10 index_sdg10
+
+. rename indice_ods11 index_sdg11
+
+. rename indice_ods13 index_sdg13
+
+. rename indice_ods15 index_sdg15
+
+. rename indice_ods16 index_sdg16
+
+. rename indice_ods17 index_sdg17
+
+. 
+. 
+. 
+. ** Drop unnecesary variables 
+. *** Form SDG databse: variables in absolute terms and normalized variables
+. *** From QuaRCS database:  6.25 HP trends, 400 HP trends
+. 
+. drop sdg1_1_dtl_abs-sdg17_5_tpi_abs
+
+. drop sdg1_1_eepr_norm-sdg17_5_pipc_norm
+
+. 
+. drop tr6_pop2001-tr6_pop2020
+
+. drop tr100_pop2001-tr100_pop2020
+
+. drop tr400_pop2001-tr400_pop2020
+
+. 
+. drop ln_t6NTLpc2012-ln_t6NTLpc2020
+
+. drop ln_t100NTLpc2012-ln_t100NTLpc2020
+
+. 
+. drop tr6_co2015-tr6_co2020
+
+. drop tr100_co2015-tr100_co2020
+
+. 
+. 
+. drop shapeName
+
+. 
+. * Add lables to population variables 
+. label variable pop2001 "Estimated population in 2001"
+
+. label variable pop2002 "Estimated population in 2002"
+
+. label variable pop2003 "Estimated population in 2003"
+
+. label variable pop2004 "Estimated population in 2004"
+
+. label variable pop2005 "Estimated population in 2005"
+
+. label variable pop2006 "Estimated population in 2006"
+
+. label variable pop2007 "Estimated population in 2007"
+
+. label variable pop2008 "Estimated population in 2008"
+
+. label variable pop2009 "Estimated population in 2009"
+
+. label variable pop2010 "Estimated population in 2010"
+
+. label variable pop2011 "Estimated population in 2011"
+
+. label variable pop2012 "Estimated population in 2012"
+
+. label variable pop2013 "Estimated population in 2013"
+
+. label variable pop2014 "Estimated population in 2014"
+
+. label variable pop2015 "Estimated population in 2015"
+
+. label variable pop2016 "Estimated population in 2016"
+
+. label variable pop2017 "Estimated population in 2017"
+
+. label variable pop2018 "Estimated population in 2018"
+
+. label variable pop2019 "Estimated population in 2019"
+
+. label variable pop2020 "Estimated population in 2020"
+
+. 
+. 
+. * Add labels to NTL variables
+. label variable ln_NTLpc2012 "Log NTL per capita in 2012"
+
+. label variable ln_NTLpc2013 "Log NTL per capita in 2013"
+
+. label variable ln_NTLpc2014 "Log NTL per capita in 2014"
+
+. label variable ln_NTLpc2015 "Log NTL per capita in 2015"
+
+. label variable ln_NTLpc2016 "Log NTL per capita in 2016"
+
+. label variable ln_NTLpc2017 "Log NTL per capita in 2017"
+
+. label variable ln_NTLpc2018 "Log NTL per capita in 2018"
+
+. label variable ln_NTLpc2019 "Log NTL per capita in 2019"
+
+. label variable ln_NTLpc2020 "Log NTL per capita in 2020"
+
+. 
+. 
+. 
+. label variable ln_t400NTLpc2012 "Trend log NTL per capita in 2012"
+
+. label variable ln_t400NTLpc2013 "Trend log NTL per capita in 2013"
+
+. label variable ln_t400NTLpc2014 "Trend log NTL per capita in 2014"
+
+. label variable ln_t400NTLpc2015 "Trend log NTL per capita in 2015"
+
+. label variable ln_t400NTLpc2016 "Trend log NTL per capita in 2016"
+
+. label variable ln_t400NTLpc2017 "Trend log NTL per capita in 2017"
+
+. label variable ln_t400NTLpc2018 "Trend log NTL per capita in 2018"
+
+. label variable ln_t400NTLpc2019 "Trend log NTL per capita in 2019"
+
+. label variable ln_t400NTLpc2020 "Trend log NTL per capita in 2020"
+
+. 
+. 
+. * Add labels to CO2 variables
+. label variable co2015 "Estimated carbon dioxide in 2015"
+
+. label variable co2016 "Estimated carbon dioxide in 2016"
+
+. label variable co2017 "Estimated carbon dioxide in 2017"
+
+. label variable co2018 "Estimated carbon dioxide in 2018"
+
+. label variable co2019 "Estimated carbon dioxide in 2019"
+
+. label variable co2020 "Estimated carbon dioxide in 2020"
+
+. 
+. label variable tr400_co2015 "Trend estimated carbon dioxide in 2015"
+
+. label variable tr400_co2016 "Trend estimated carbon dioxide in 2016"
+
+. label variable tr400_co2017 "Trend estimated carbon dioxide in 2017"
+
+. label variable tr400_co2018 "Trend estimated carbon dioxide in 2018"
+
+. label variable tr400_co2019 "Trend estimated carbon dioxide in 2019"
+
+. label variable tr400_co2020 "Trend estimated carbon dioxide in 2020"
+
+. 
+. 
+. 
+. 
+. save              "../data/GeoDS4Bolivia.dta", replace
+file ../data/GeoDS4Bolivia.dta saved
+
+. export delimited  "../data/GeoDS4Bolivia.csv", replace
+file ../data/GeoDS4Bolivia.csv saved
+
+. 
+. 
+end of do-file
+
+. use "/Users/carlosmendez/Documents/GitHub/project2021o/data/GeoDS4Bolivia.dta"
+
+. describe
+
+Contains data from /Users/carlosmendez/Documents/GitHub/project2021o/data/GeoDS4Bolivia.dta
+ Observations:           339                  
+    Variables:           139                  21 Aug 2022 13:40
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+poly_id         int     %8.0g                 Polygon ID
+asdf_id         int     %8.0g                 ASDF ID
+mun             str24   %24s                  Municipality
+mun_id          long    %8.0g                 Municipality ID
+dep             str10   %10s                  Department
+dep_id          float   %9.0g                 Department ID
+dep_mun         str35   %35s                  Department-municipality
+shapeID         str26   %26s                  Municipality Geoquery Polygon ID
+imds            float   %8.0g                 Municipal Sustainable Development Index
+rank_imds       int     %8.0g                 Bolivia Index Ranking
+population_2020 long    %8.0g                 Population 2020
+urbano_2012     float   %8.0g                 Urbanization rate, 2012 (% of population)
+sdg1_1_eepr     float   %8.0g                 Extreme energy poverty rate, 2016 (% of houses)
+sdg1_1_ubn      float   %8.0g                 Unsatisfied basic needs, 2012 (% of population)
+sdg1_2_mpi      float   %8.0g                 Multidimensional poverty index, 2012
+sdg1_4_abs      float   %8.0g                 Access to the 3 basic services, 2012 (% of households)
+sdg2_2_cmc      float   %8.0g                 Chronic malnutrition in children (< 5 years), 2016 (%)
+sdg2_2_oww      float   %8.0g                 Obesity in women (15-49 years), 2016 (%)
+sdg2_4_pual     float   %8.0g                 Average area per Production Unit Agriculture and Livestock, 2013 (ha)
+sdg2_4_td       float   %8.0g                 Tractor density, 2013 (per 1,000 UPAs)
+sdg3_1_idca     float   %8.0g                 Institutional childbirth coverage, average 2008-2012 (%)
+sdg3_2_imr      float   %8.0g                 Infant mortality rate (< 1 year), 2016 (per. 1,000 live births)
+sdg3_2_mrc      float   %8.0g                 Children mortality rate in (< 5 years), 2016 (per. 1,000 live births)
+sdg3_3_cdir     float   %8.0g                 Chagas disease infestation rate, 2017 (% of households)
+sdg3_3_di       float   %8.0g                 Dengue incidence, 2018 (per 10,000 population)
+sdg3_3_imr      float   %8.0g                 Malaria incidence, average 2014-17 (per 1,000 population)
+sdg3_3_ti       float   %8.0g                 Tuberculosis incidence, 2017 (per 100,000 population)
+sdg3_3_hivi     float   %8.0g                 HIV incidence, average 2014-17 (per 1,000,00 population)
+sdg3_7_afr      float   %8.0g                 Adolescent fertility rate (15-19 years), 2012 (births per 1,000 women)
+sdg4_1_ssdrm    float   %8.0g                 Secondary school dropout rate, male, 2017 (% of enrolled)
+sdg4_1_ssdrf    float   %8.0g                 Secondary school dropout rate, females, 2017 (% of enrolled)
+sdg4_4_phe      float   %8.0g                 Population with higher education (>= 19 years), 2012 (%)
+sdg4_6_lr       float   %8.0g                 Literacy rate for (>= 15 years), 2012 (%)
+sdg4_c_qti      float   %8.0g                 Qualified teachers at the initial level, 2016 (%)
+sdg4_c_qts      float   %8.0g                 Qualified teachers at the secondary level, 2016
+sdg5_1_gpsd     float   %8.0g                 Gender parity in school dropouts in secondary school, 2017
+sdg5_1_gpyp     float   %8.0g                 Gender parity in years of education of young people (25-35 years old), 2012. (25
+sdg5_1_gpmpi    float   %8.0g                 Gender Parity in the Multidimensional Poverty Index, 2012
+sdg5_5_gpop     float   %8.0g                 Gender parity in the overall participation rate (>=10 years), 2012
+sdg6_1_dwc      float   %8.0g                 Drinking water coverage, 2017 (% of population)
+sdg6_2_sc       float   %8.0g                 Sanitation coverage, 2017 (% of population)
+sdg6_3_wwt      float   %8.0g                 Wastewater treatment, 2017 (% of wastewater) wastewater)
+sdg7_1_ec       float   %8.0g                 Electricity coverage, 2012 (% of population) population)
+sdg7_1_rec      int     %8.0g                 Residential electricity consumption per capita, 2016 (kWh/person/year)
+sdg7_1_cce      float   %8.0g                 Clean cooking energy, 2012 (% of households)
+sdg7_3_co2epc   float   %8.0g                 CO2 emissions per capita by energy, 2016. (tCO2/person/year)
+sdg8_4_rem      float   %8.0g                 Residential electric meters with zero consumption, 2016 (%)
+sdg8_5_oprm     float   %8.0g                 Overall participation rate males (>= 10 years), 2012 (%)
+sdg8_5_ofrm     float   %8.0g                 Overall female participation rate (>= 10 years), 2012 (%)
+sdg8_6_mlm      float   %8.0g                 Men who do not study or participate in the labor market (15-24 years), 2012 (%)
+sdg8_6_wlm      float   %8.0g                 Women who do not study or participate in the labor market (15-24 years),2012 (%)
+sdg8_10_dbb     float   %8.0g                 Density of bank branches, 2018 (per 100,000 inhabitants)
+sdg8_11_idi     float   %8.0g                 Index of the degree of intermediation in migration, 2012
+sdg9_1_routes   byte    %8.0g                 Number of railways/primary roads entering/leaving the municipality, 2019
+sdg9_5_cd       float   %8.0g                 Kuaa computers delivered, 2016 (per 100 school-age population, 6-19 years)
+sdg9_5_eutf     float   %8.0g                 Educational units with technological floors, 2016 (%)
+sdg9_c_mnc      float   %8.0g                 Fixed and mobile network coverage, 2012 (% of households)
+sdg9_c_drb      float   %8.0g                 Density of radio bases, 2016 (number of radio bases per 1000 inhabitants)
+sdg10_2_gcye    float   %8.0g                 GINI coefficient of years of education, 2012
+sdg10_2_iec     int     %8.0g                 Inequality in electricity consumption, 2016
+sdg10_2_nssp    float   %8.0g                 Non-Spanish speaking population (>= 3 years), 2012 (%)
+sdg11_1_hocr    float   %8.0g                 Overcrowding rate, 2012 (% of households)
+sdg11_1_hno     float   %8.0g                 Households that do not have a toilet, bathroom or latrine, 2012 (%) latrine, 201
+sdg11_2_samt    float   %8.0g                 Seats available for mass transit, 2017 (per 1,000 inhabitants)
+sdg13_1_ccvi    float   %8.0g                 Climate change vulnerability Index, 2015
+sdg13_2_tco2e   float   %8.0g                 Total CO2 emissions per capita, 2016 (tCO2/person/year)
+sdg13_2_dra     float   %8.0g                 Deforestation rate, average 2016-2018 (% of forest area 2015)
+sdg15_1_pa      float   %8.0g                 Protected areas, 2019 (% of the municipality's land area) municipality)
+sdg15_5_blr     float   %8.0g                 Biodiversity loss rate due to deforestation deforestation, average 2016-2018
+sdg16_1_rhr     float   %8.0g                 Registered homicide rate, average 2015-2017. (per 100,000 inhabitants)
+sdg16_6_pbec    float   %8.0g                 Programmed budget execution capacity, 2017 (%)
+sdg16_9_cr      float   %8.0g                 Children registered in the civil registry (< 5 years), 2012 (%)
+sdg17_1_pmtax   float   %8.0g                 Proportion of municipal revenues that come from local taxes, 2017 (%)
+sdg17_5_pipc    int     %8.0g                 Public investment per capita, 2017 (Bs./person)
+index_sdg1      float   %8.0g                 SDG1 Index
+index_sdg2      float   %8.0g                 SDG2 Index
+index_sdg3      float   %8.0g                 SDG3 Index
+index_sdg4      float   %8.0g                 SDG4 Index
+index_sdg5      float   %8.0g                 SDG5 Index
+index_sdg6      float   %8.0g                 SDG6 Index
+index_sdg7      float   %8.0g                 SDG7 Index
+index_sdg8      float   %8.0g                 SDG8 Index
+index_sdg9      float   %8.0g                 SDG9 Index
+index_sdg10     float   %8.0g                 SDG10 Index
+index_sdg11     float   %8.0g                 SDG11 Index
+index_sdg13     float   %8.0g                 SDG13 Index
+index_sdg15     float   %8.0g                 SDG15 Index
+index_sdg16     float   %8.0g                 SDG16 Index
+index_sdg17     float   %8.0g                 SDG17 Index
+pop2001         float   %9.0g               * Estimated population in 2001
+pop2002         float   %9.0g               * Estimated population in 2002
+pop2003         float   %9.0g               * Estimated population in 2003
+pop2004         float   %9.0g               * Estimated population in 2004
+pop2005         float   %9.0g               * Estimated population in 2005
+pop2006         float   %9.0g               * Estimated population in 2006
+pop2007         float   %9.0g               * Estimated population in 2007
+pop2008         float   %9.0g               * Estimated population in 2008
+pop2009         float   %9.0g               * Estimated population in 2009
+pop2010         float   %9.0g               * Estimated population in 2010
+pop2011         float   %9.0g               * Estimated population in 2011
+pop2012         float   %9.0g               * Estimated population in 2012
+pop2013         float   %9.0g               * Estimated population in 2013
+pop2014         float   %9.0g               * Estimated population in 2014
+pop2015         float   %9.0g               * Estimated population in 2015
+pop2016         float   %9.0g               * Estimated population in 2016
+pop2017         float   %9.0g               * Estimated population in 2017
+pop2018         float   %9.0g               * Estimated population in 2018
+pop2019         float   %9.0g               * Estimated population in 2019
+pop2020         float   %9.0g               * Estimated population in 2020
+ln_NTLpc2012    float   %9.0g                 Log NTL per capita in 2012
+ln_NTLpc2013    float   %9.0g                 Log NTL per capita in 2013
+ln_NTLpc2014    float   %9.0g                 Log NTL per capita in 2014
+ln_NTLpc2015    float   %9.0g                 Log NTL per capita in 2015
+ln_NTLpc2016    float   %9.0g                 Log NTL per capita in 2016
+ln_NTLpc2017    float   %9.0g                 Log NTL per capita in 2017
+ln_NTLpc2018    float   %9.0g                 Log NTL per capita in 2018
+ln_NTLpc2019    float   %9.0g                 Log NTL per capita in 2019
+ln_NTLpc2020    float   %9.0g                 Log NTL per capita in 2020
+ln_t400NTL~2012 float   %9.0g                 Trend log NTL per capita in 2012
+ln_t400NTL~2013 float   %9.0g                 Trend log NTL per capita in 2013
+ln_t400NTL~2014 float   %9.0g                 Trend log NTL per capita in 2014
+ln_t400NTL~2015 float   %9.0g                 Trend log NTL per capita in 2015
+ln_t400NTL~2016 float   %9.0g                 Trend log NTL per capita in 2016
+ln_t400NTL~2017 float   %9.0g                 Trend log NTL per capita in 2017
+ln_t400NTL~2018 float   %9.0g                 Trend log NTL per capita in 2018
+ln_t400NTL~2019 float   %9.0g                 Trend log NTL per capita in 2019
+ln_t400NTL~2020 float   %9.0g                 Trend log NTL per capita in 2020
+co2015          float   %9.0g               * Estimated carbon dioxide in 2015
+co2016          float   %9.0g               * Estimated carbon dioxide in 2016
+co2017          float   %9.0g               * Estimated carbon dioxide in 2017
+co2018          float   %9.0g               * Estimated carbon dioxide in 2018
+co2019          float   %9.0g               * Estimated carbon dioxide in 2019
+co2020          float   %9.0g               * Estimated carbon dioxide in 2020
+tr400_co2015    float   %9.0g               * Trend estimated carbon dioxide in 2015
+tr400_co2016    float   %9.0g               * Trend estimated carbon dioxide in 2016
+tr400_co2017    float   %9.0g               * Trend estimated carbon dioxide in 2017
+tr400_co2018    float   %9.0g               * Trend estimated carbon dioxide in 2018
+tr400_co2019    float   %9.0g               * Trend estimated carbon dioxide in 2019
+tr400_co2020    float   %9.0g               * Trend estimated carbon dioxide in 2020
+                                            * indicated variables have notes
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Sorted by: asdf_id
+
+. describe, replace
+
+. list
+
+     +-----------------------------------------------------------------------------------------------------------------------------------------------------+
+     | position               name    type   isnume~c   format   vallab                                                                             varlab |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+  1. |        1            poly_id     int          1    %8.0g                                                                                  Polygon ID |
+  2. |        2            asdf_id     int          1    %8.0g                                                                                     ASDF ID |
+  3. |        3                mun   str24          0     %24s                                                                                Municipality |
+  4. |        4             mun_id    long          1    %8.0g                                                                             Municipality ID |
+  5. |        5                dep   str10          0     %10s                                                                                  Department |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+  6. |        6             dep_id   float          1    %9.0g                                                                               Department ID |
+  7. |        7            dep_mun   str35          0     %35s                                                                     Department-municipality |
+  8. |        8            shapeID   str26          0     %26s                                                            Municipality Geoquery Polygon ID |
+  9. |        9               imds   float          1    %8.0g                                                     Municipal Sustainable Development Index |
+ 10. |       10          rank_imds     int          1    %8.0g                                                                       Bolivia Index Ranking |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+ 11. |       11    population_2020    long          1    %8.0g                                                                             Population 2020 |
+ 12. |       12        urbano_2012   float          1    %8.0g                                                   Urbanization rate, 2012 (% of population) |
+ 13. |       13        sdg1_1_eepr   float          1    %8.0g                                             Extreme energy poverty rate, 2016 (% of houses) |
+ 14. |       14         sdg1_1_ubn   float          1    %8.0g                                             Unsatisfied basic needs, 2012 (% of population) |
+ 15. |       15         sdg1_2_mpi   float          1    %8.0g                                                        Multidimensional poverty index, 2012 |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+ 16. |       16         sdg1_4_abs   float          1    %8.0g                                      Access to the 3 basic services, 2012 (% of households) |
+ 17. |       17         sdg2_2_cmc   float          1    %8.0g                                      Chronic malnutrition in children (< 5 years), 2016 (%) |
+ 18. |       18         sdg2_2_oww   float          1    %8.0g                                                    Obesity in women (15-49 years), 2016 (%) |
+ 19. |       19        sdg2_4_pual   float          1    %8.0g                       Average area per Production Unit Agriculture and Livestock, 2013 (ha) |
+ 20. |       20          sdg2_4_td   float          1    %8.0g                                                      Tractor density, 2013 (per 1,000 UPAs) |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+ 21. |       21        sdg3_1_idca   float          1    %8.0g                                    Institutional childbirth coverage, average 2008-2012 (%) |
+ 22. |       22         sdg3_2_imr   float          1    %8.0g                             Infant mortality rate (< 1 year), 2016 (per. 1,000 live births) |
+ 23. |       23         sdg3_2_mrc   float          1    %8.0g                       Children mortality rate in (< 5 years), 2016 (per. 1,000 live births) |
+ 24. |       24        sdg3_3_cdir   float          1    %8.0g                                     Chagas disease infestation rate, 2017 (% of households) |
+ 25. |       25          sdg3_3_di   float          1    %8.0g                                              Dengue incidence, 2018 (per 10,000 population) |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+ 26. |       26         sdg3_3_imr   float          1    %8.0g                                   Malaria incidence, average 2014-17 (per 1,000 population) |
+ 27. |       27          sdg3_3_ti   float          1    %8.0g                                       Tuberculosis incidence, 2017 (per 100,000 population) |
+ 28. |       28        sdg3_3_hivi   float          1    %8.0g                                    HIV incidence, average 2014-17 (per 1,000,00 population) |
+ 29. |       29         sdg3_7_afr   float          1    %8.0g                      Adolescent fertility rate (15-19 years), 2012 (births per 1,000 women) |
+ 30. |       30       sdg4_1_ssdrm   float          1    %8.0g                                   Secondary school dropout rate, male, 2017 (% of enrolled) |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+ 31. |       31       sdg4_1_ssdrf   float          1    %8.0g                                Secondary school dropout rate, females, 2017 (% of enrolled) |
+ 32. |       32         sdg4_4_phe   float          1    %8.0g                                    Population with higher education (>= 19 years), 2012 (%) |
+ 33. |       33          sdg4_6_lr   float          1    %8.0g                                                   Literacy rate for (>= 15 years), 2012 (%) |
+ 34. |       34         sdg4_c_qti   float          1    %8.0g                                           Qualified teachers at the initial level, 2016 (%) |
+ 35. |       35         sdg4_c_qts   float          1    %8.0g                                             Qualified teachers at the secondary level, 2016 |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+ 36. |       36        sdg5_1_gpsd   float          1    %8.0g                                 Gender parity in school dropouts in  secondary school, 2017 |
+ 37. |       37        sdg5_1_gpyp   float          1    %8.0g            Gender parity in years of education of young people (25-35 years old), 2012. (25 |
+ 38. |       38       sdg5_1_gpmpi   float          1    %8.0g                                   Gender Parity in the Multidimensional Poverty Index, 2012 |
+ 39. |       39        sdg5_5_gpop   float          1    %8.0g                          Gender parity in the overall participation rate (>=10 years), 2012 |
+ 40. |       40         sdg6_1_dwc   float          1    %8.0g                                             Drinking water coverage, 2017 (% of population) |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+ 41. |       41          sdg6_2_sc   float          1    %8.0g                                                 Sanitation coverage, 2017 (% of population) |
+ 42. |       42         sdg6_3_wwt   float          1    %8.0g                                    Wastewater treatment, 2017 (% of wastewater) wastewater) |
+ 43. |       43          sdg7_1_ec   float          1    %8.0g                                    Electricity coverage, 2012 (% of population) population) |
+ 44. |       44         sdg7_1_rec     int          1    %8.0g                      Residential electricity consumption per capita, 2016 (kWh/person/year) |
+ 45. |       45         sdg7_1_cce   float          1    %8.0g                                                Clean cooking energy, 2012 (% of households) |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+ 46. |       46      sdg7_3_co2epc   float          1    %8.0g                                CO2 emissions per capita by energy, 2016. (tCO2/person/year) |
+ 47. |       47         sdg8_4_rem   float          1    %8.0g                                 Residential electric meters with zero consumption, 2016 (%) |
+ 48. |       48        sdg8_5_oprm   float          1    %8.0g                                    Overall participation rate males (>= 10 years), 2012 (%) |
+ 49. |       49        sdg8_5_ofrm   float          1    %8.0g                                   Overall female participation rate (>= 10 years), 2012 (%) |
+ 50. |       50         sdg8_6_mlm   float          1    %8.0g             Men who do not study or participate in the labor market (15-24 years), 2012 (%) |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+ 51. |       51         sdg8_6_wlm   float          1    %8.0g            Women who do not study or participate in the labor market (15-24 years),2012 (%) |
+ 52. |       52        sdg8_10_dbb   float          1    %8.0g                                    Density of bank branches, 2018 (per 100,000 inhabitants) |
+ 53. |       53        sdg8_11_idi   float          1    %8.0g                                    Index of the degree of intermediation in migration, 2012 |
+ 54. |       54      sdg9_1_routes    byte          1    %8.0g                    Number of railways/primary roads entering/leaving the municipality, 2019 |
+ 55. |       55          sdg9_5_cd   float          1    %8.0g                  Kuaa computers delivered, 2016 (per 100 school-age population, 6-19 years) |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+ 56. |       56        sdg9_5_eutf   float          1    %8.0g                                       Educational units with technological floors, 2016 (%) |
+ 57. |       57         sdg9_c_mnc   float          1    %8.0g                                   Fixed and mobile network coverage, 2012 (% of households) |
+ 58. |       58         sdg9_c_drb   float          1    %8.0g                   Density of radio bases, 2016 (number of radio bases per 1000 inhabitants) |
+ 59. |       59       sdg10_2_gcye   float          1    %8.0g                                                GINI coefficient of years of education, 2012 |
+ 60. |       60        sdg10_2_iec     int          1    %8.0g                                                 Inequality in electricity consumption, 2016 |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+ 61. |       61       sdg10_2_nssp   float          1    %8.0g                                      Non-Spanish speaking population (>= 3 years), 2012 (%) |
+ 62. |       62       sdg11_1_hocr   float          1    %8.0g                                                   Overcrowding rate, 2012 (% of households) |
+ 63. |       63        sdg11_1_hno   float          1    %8.0g            Households that do not have a toilet, bathroom or latrine, 2012 (%) latrine, 201 |
+ 64. |       64       sdg11_2_samt   float          1    %8.0g                              Seats available for mass transit, 2017 (per 1,000 inhabitants) |
+ 65. |       65       sdg13_1_ccvi   float          1    %8.0g                                                    Climate change vulnerability Index, 2015 |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+ 66. |       66      sdg13_2_tco2e   float          1    %8.0g                                     Total CO2 emissions per capita, 2016 (tCO2/person/year) |
+ 67. |       67        sdg13_2_dra   float          1    %8.0g                               Deforestation rate, average 2016-2018 (% of forest area 2015) |
+ 68. |       68         sdg15_1_pa   float          1    %8.0g                     Protected areas, 2019 (% of the municipality's land area) municipality) |
+ 69. |       69        sdg15_5_blr   float          1    %8.0g                Biodiversity loss rate due to deforestation deforestation, average 2016-2018 |
+ 70. |       70        sdg16_1_rhr   float          1    %8.0g                      Registered homicide rate, average 2015-2017. (per 100,000 inhabitants) |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+ 71. |       71       sdg16_6_pbec   float          1    %8.0g                                              Programmed budget execution capacity, 2017 (%) |
+ 72. |       72         sdg16_9_cr   float          1    %8.0g                             Children registered in the civil registry (< 5 years), 2012 (%) |
+ 73. |       73      sdg17_1_pmtax   float          1    %8.0g                       Proportion of municipal revenues that come from local taxes, 2017 (%) |
+ 74. |       74       sdg17_5_pipc     int          1    %8.0g                                             Public investment per capita, 2017 (Bs./person) |
+ 75. |       75         index_sdg1   float          1    %8.0g                                                                                  SDG1 Index |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+ 76. |       76         index_sdg2   float          1    %8.0g                                                                                  SDG2 Index |
+ 77. |       77         index_sdg3   float          1    %8.0g                                                                                  SDG3 Index |
+ 78. |       78         index_sdg4   float          1    %8.0g                                                                                  SDG4 Index |
+ 79. |       79         index_sdg5   float          1    %8.0g                                                                                  SDG5 Index |
+ 80. |       80         index_sdg6   float          1    %8.0g                                                                                  SDG6 Index |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+ 81. |       81         index_sdg7   float          1    %8.0g                                                                                  SDG7 Index |
+ 82. |       82         index_sdg8   float          1    %8.0g                                                                                  SDG8 Index |
+ 83. |       83         index_sdg9   float          1    %8.0g                                                                                  SDG9 Index |
+ 84. |       84        index_sdg10   float          1    %8.0g                                                                                 SDG10 Index |
+ 85. |       85        index_sdg11   float          1    %8.0g                                                                                 SDG11 Index |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+ 86. |       86        index_sdg13   float          1    %8.0g                                                                                 SDG13 Index |
+ 87. |       87        index_sdg15   float          1    %8.0g                                                                                 SDG15 Index |
+ 88. |       88        index_sdg16   float          1    %8.0g                                                                                 SDG16 Index |
+ 89. |       89        index_sdg17   float          1    %8.0g                                                                                 SDG17 Index |
+ 90. |       90            pop2001   float          1    %9.0g                                                                Estimated population in 2001 |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+ 91. |       91            pop2002   float          1    %9.0g                                                                Estimated population in 2002 |
+ 92. |       92            pop2003   float          1    %9.0g                                                                Estimated population in 2003 |
+ 93. |       93            pop2004   float          1    %9.0g                                                                Estimated population in 2004 |
+ 94. |       94            pop2005   float          1    %9.0g                                                                Estimated population in 2005 |
+ 95. |       95            pop2006   float          1    %9.0g                                                                Estimated population in 2006 |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+ 96. |       96            pop2007   float          1    %9.0g                                                                Estimated population in 2007 |
+ 97. |       97            pop2008   float          1    %9.0g                                                                Estimated population in 2008 |
+ 98. |       98            pop2009   float          1    %9.0g                                                                Estimated population in 2009 |
+ 99. |       99            pop2010   float          1    %9.0g                                                                Estimated population in 2010 |
+100. |      100            pop2011   float          1    %9.0g                                                                Estimated population in 2011 |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+101. |      101            pop2012   float          1    %9.0g                                                                Estimated population in 2012 |
+102. |      102            pop2013   float          1    %9.0g                                                                Estimated population in 2013 |
+103. |      103            pop2014   float          1    %9.0g                                                                Estimated population in 2014 |
+104. |      104            pop2015   float          1    %9.0g                                                                Estimated population in 2015 |
+105. |      105            pop2016   float          1    %9.0g                                                                Estimated population in 2016 |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+106. |      106            pop2017   float          1    %9.0g                                                                Estimated population in 2017 |
+107. |      107            pop2018   float          1    %9.0g                                                                Estimated population in 2018 |
+108. |      108            pop2019   float          1    %9.0g                                                                Estimated population in 2019 |
+109. |      109            pop2020   float          1    %9.0g                                                                Estimated population in 2020 |
+110. |      110       ln_NTLpc2012   float          1    %9.0g                                                                  Log NTL per capita in 2012 |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+111. |      111       ln_NTLpc2013   float          1    %9.0g                                                                  Log NTL per capita in 2013 |
+112. |      112       ln_NTLpc2014   float          1    %9.0g                                                                  Log NTL per capita in 2014 |
+113. |      113       ln_NTLpc2015   float          1    %9.0g                                                                  Log NTL per capita in 2015 |
+114. |      114       ln_NTLpc2016   float          1    %9.0g                                                                  Log NTL per capita in 2016 |
+115. |      115       ln_NTLpc2017   float          1    %9.0g                                                                  Log NTL per capita in 2017 |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+116. |      116       ln_NTLpc2018   float          1    %9.0g                                                                  Log NTL per capita in 2018 |
+117. |      117       ln_NTLpc2019   float          1    %9.0g                                                                  Log NTL per capita in 2019 |
+118. |      118       ln_NTLpc2020   float          1    %9.0g                                                                  Log NTL per capita in 2020 |
+119. |      119   ln_t400NTLpc2012   float          1    %9.0g                                                            Trend log NTL per capita in 2012 |
+120. |      120   ln_t400NTLpc2013   float          1    %9.0g                                                            Trend log NTL per capita in 2013 |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+121. |      121   ln_t400NTLpc2014   float          1    %9.0g                                                            Trend log NTL per capita in 2014 |
+122. |      122   ln_t400NTLpc2015   float          1    %9.0g                                                            Trend log NTL per capita in 2015 |
+123. |      123   ln_t400NTLpc2016   float          1    %9.0g                                                            Trend log NTL per capita in 2016 |
+124. |      124   ln_t400NTLpc2017   float          1    %9.0g                                                            Trend log NTL per capita in 2017 |
+125. |      125   ln_t400NTLpc2018   float          1    %9.0g                                                            Trend log NTL per capita in 2018 |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+126. |      126   ln_t400NTLpc2019   float          1    %9.0g                                                            Trend log NTL per capita in 2019 |
+127. |      127   ln_t400NTLpc2020   float          1    %9.0g                                                            Trend log NTL per capita in 2020 |
+128. |      128             co2015   float          1    %9.0g                                                            Estimated carbon dioxide in 2015 |
+129. |      129             co2016   float          1    %9.0g                                                            Estimated carbon dioxide in 2016 |
+130. |      130             co2017   float          1    %9.0g                                                            Estimated carbon dioxide in 2017 |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+131. |      131             co2018   float          1    %9.0g                                                            Estimated carbon dioxide in 2018 |
+132. |      132             co2019   float          1    %9.0g                                                            Estimated carbon dioxide in 2019 |
+133. |      133             co2020   float          1    %9.0g                                                            Estimated carbon dioxide in 2020 |
+134. |      134       tr400_co2015   float          1    %9.0g                                                      Trend estimated carbon dioxide in 2015 |
+135. |      135       tr400_co2016   float          1    %9.0g                                                      Trend estimated carbon dioxide in 2016 |
+     |-----------------------------------------------------------------------------------------------------------------------------------------------------|
+136. |      136       tr400_co2017   float          1    %9.0g                                                      Trend estimated carbon dioxide in 2017 |
+137. |      137       tr400_co2018   float          1    %9.0g                                                      Trend estimated carbon dioxide in 2018 |
+138. |      138       tr400_co2019   float          1    %9.0g                                                      Trend estimated carbon dioxide in 2019 |
+139. |      139       tr400_co2020   float          1    %9.0g                                                      Trend estimated carbon dioxide in 2020 |
+     +-----------------------------------------------------------------------------------------------------------------------------------------------------+
+
+. export delimited using "/Users/carlosmendez/Downloads/DataDefinitions.csv", replace
+(file /Users/carlosmendez/Downloads/DataDefinitions.csv not found)
+file /Users/carlosmendez/Downloads/DataDefinitions.csv saved
+

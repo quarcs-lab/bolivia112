@@ -1,0 +1,158 @@
+================================================================================
+PREDICTING PROVINCIAL SUSTAINABLE DEVELOPMENT INDEX (IMDS)
+Using Satellite Embeddings from Google Earth Engine
+================================================================================
+
+
+[1/7] Loading datasets...
+  ✓ SDG data loaded: 112 provinces
+  ✓ Satellite embeddings loaded: 112 provinces
+  ✓ Region names loaded: 112 provinces
+
+[2/7] Preparing data...
+  • Missing IMDS values: 0
+  • Valid provinces for analysis: 112
+  • Feature matrix shape: (112, 64)
+  • Target variable shape: (112,)
+  • IMDS range: [37.41, 73.70]
+  • IMDS mean: 52.04 ± 7.03
+
+[3/7] Splitting data into train and test sets...
+  • Training set: 89 provinces
+  • Test set: 23 provinces
+
+[4/7] Configuring Random Forest model...
+  Using standard hyperparameters (memory-efficient)...
+
+  Hyperparameters:
+    • n_estimators: 100
+    • max_depth: 20
+    • min_samples_split: 5
+    • min_samples_leaf: 2
+    • max_features: sqrt
+
+[5/7] Performing 5-fold cross-validation...
+  • Cross-validation R² scores: ['0.3698', '0.3716', '0.2776', '0.4271', '-0.1007']
+  • Mean CV R²: 0.2691 (±0.1910)
+
+[6/7] Training final model and evaluating...
+  ✓ Training complete
+
+  PERFORMANCE METRICS:
+  --------------------------------------------------
+  Training Set:
+    • R² Score:  0.8382
+    • RMSE:      2.6770
+    • MAE:       1.9743
+
+  Test Set:
+    • R² Score:  -0.0642
+    • RMSE:      8.5963
+    • MAE:       6.3497
+  --------------------------------------------------
+
+[7/7] Analyzing feature importance...
+
+  TOP 20 MOST IMPORTANT FEATURES:
+  ------------------------------------------------------------
+  Rank   Feature    Importance   Cumulative %
+  ------------------------------------------------------------
+  1      A57        0.038262     3.83%
+  2      A42        0.037548     7.58%
+  3      A30        0.034375     11.02%
+  4      A52        0.033817     14.40%
+  5      A13        0.032828     17.68%
+  6      A48        0.032121     20.90%
+  7      A21        0.031642     24.06%
+  8      A06        0.030007     27.06%
+  9      A47        0.027999     29.86%
+  10     A33        0.027597     32.62%
+  11     A17        0.023878     35.01%
+  12     A63        0.021555     37.16%
+  13     A11        0.021048     39.27%
+  14     A28        0.020927     41.36%
+  15     A36        0.019888     43.35%
+  16     A44        0.019868     45.34%
+  17     A02        0.019711     47.31%
+  18     A59        0.018964     49.20%
+  19     A43        0.017003     50.90%
+  20     A16        0.016943     52.60%
+  ------------------------------------------------------------
+
+  • Features needed for 80% importance: 41/64 (64.1%)
+
+PROVINCES WITH LARGEST PREDICTION ERRORS:
+================================================================================
+
+Top 10 OVERPREDICTED (Model predicts higher development than actual):
+--------------------------------------------------------------------------------
+  Bolívar, Cochabamba
+    Actual: 42.20 | Predicted: 54.85 | Error: -12.65
+  Alonso de Ibáñez, Potosí
+    Actual: 42.60 | Predicted: 51.70 | Error: -9.10
+  Chayanta, Potosí
+    Actual: 39.97 | Predicted: 48.87 | Error: -8.90
+  Tapacarí, Cochabamba
+    Actual: 39.40 | Predicted: 47.16 | Error: -7.76
+  Mizque, Cochabamba
+    Actual: 43.94 | Predicted: 50.91 | Error: -6.97
+  Saucarí, Oruro
+    Actual: 45.60 | Predicted: 51.71 | Error: -6.11
+  Pacajes, La Paz
+    Actual: 47.27 | Predicted: 51.95 | Error: -4.67
+  Eduardo Avaroa, Oruro
+    Actual: 51.02 | Predicted: 52.85 | Error: -1.82
+  Moxos, Beni
+    Actual: 48.90 | Predicted: 50.29 | Error: -1.39
+  Ladislao Cabrera, Oruro
+    Actual: 48.96 | Predicted: 50.13 | Error: -1.17
+
+Top 10 UNDERPREDICTED (Model predicts lower development than actual):
+--------------------------------------------------------------------------------
+  Murillo, La Paz
+    Actual: 72.72 | Predicted: 50.96 | Error: 21.76
+  Oropeza, Chuquisaca
+    Actual: 67.18 | Predicted: 45.51 | Error: 21.67
+  Sud Chichas, Potosí
+    Actual: 59.20 | Predicted: 49.76 | Error: 9.44
+  Gran Chaco, Tarija
+    Actual: 62.97 | Predicted: 55.11 | Error: 7.86
+  Capinota, Cochabamba
+    Actual: 52.97 | Predicted: 46.81 | Error: 6.16
+  Germán Busch, Santa Cruz
+    Actual: 59.50 | Predicted: 53.61 | Error: 5.88
+  Vallegrande, Santa Cruz
+    Actual: 59.02 | Predicted: 54.55 | Error: 4.47
+  Antonio Quijarro, Potosí
+    Actual: 53.86 | Predicted: 50.70 | Error: 3.16
+  Campero, Cochabamba
+    Actual: 52.36 | Predicted: 50.52 | Error: 1.84
+  Omasuyos, La Paz
+    Actual: 53.33 | Predicted: 52.10 | Error: 1.23
+
+================================================================================
+
+Generating visualizations...
+  ✓ Visualization saved: code/imds_prediction_results.png
+
+Saving detailed results...
+  ✓ Test predictions saved: code/imds_test_predictions.csv
+  ✓ Feature importances saved: code/imds_feature_importance.csv
+  ✓ Model summary saved: code/imds_model_summary.csv
+
+================================================================================
+ANALYSIS COMPLETE!
+================================================================================
+
+Key Findings:
+  • The model explains -6.42% of variance in IMDS
+  • Average prediction error: ±6.35 IMDS points
+  • Only 41 out of 64 features (64.1%) account for 80% of predictive power
+  • Cross-validation R²: 0.2691 (±0.1910)
+
+Files generated:
+  1. imds_prediction_results.png - Comprehensive visualization
+  2. imds_test_predictions.csv - Detailed predictions for test set
+  3. imds_feature_importance.csv - Feature importance rankings
+  4. imds_model_summary.csv - Model configuration and performance
+

@@ -1,0 +1,2317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bolivia112 — Province-Level Spatial Data Science Repository</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="bolivia112: Open-source province-level spatial data science repository for studying geospatial development in Bolivia. Explore SDG indices, satellite embeddings, night-time lights, and population data for 112 provinces.">
+    <link rel="canonical" href="https://quarcs-lab.github.io/bolivia112/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="bolivia112 — Province-Level Spatial Data Science Repository">
+    <meta property="og:description" content="Open-source repository for studying geospatial development in Bolivia. SDG indices, satellite embeddings, night-time lights, and population data for 112 provinces.">
+    <meta property="og:url" content="https://quarcs-lab.github.io/bolivia112/">
+    <meta property="og:image" content="https://quarcs-lab.github.io/bolivia112/images/app01-carousel/app01_01.jpeg">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="bolivia112 — Province-Level Spatial Data Science Repository">
+    <meta name="twitter:description" content="Open-source repository for studying geospatial development in Bolivia. SDG indices, satellite embeddings, and more for 112 provinces.">
+    <meta name="twitter:image" content="https://quarcs-lab.github.io/bolivia112/images/app01-carousel/app01_01.jpeg">
+
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone@7.23.10/babel.min.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <!-- Custom Tailwind Config for Animations -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                        'fade-in': 'fadeIn 0.6s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translate3d(0, 30px, 0)' },
+                            '100%': { opacity: '1', transform: 'translate3d(0, 0, 0)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html { scroll-behavior: smooth; }
+        body { -webkit-font-smoothing: antialiased; }
+        .contributor-avatar {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .contributor-avatar:hover,
+        .contributor-avatar:focus-visible {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.4);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #22d3ee, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .nav-link-underline {
+            position: relative;
+        }
+        .nav-link-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #22d3ee, #818cf8);
+            transition: width 0.3s ease;
+        }
+        .nav-link-underline:hover::after,
+        .nav-link-underline.active::after {
+            width: 100%;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        .typing-cursor {
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .float-slow { animation: float 8s ease-in-out infinite; }
+        .float-slower { animation: float 12s ease-in-out infinite; }
+        :focus-visible {
+            outline: 2px solid #22d3ee;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body class="bg-slate-950">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useCallback, useMemo } = React;
+
+        // --- Icon Components (Replacing Lucide-React imports for standalone usage) ---
+        const IconWrapper = ({ size = 24, className = "", children }) => (
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width={size}
+                height={size}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={className}
+            >
+                {children}
+            </svg>
+        );
+
+        const MapIcon = (props) => (
+            <IconWrapper {...props}>
+                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
+                <line x1="8" y1="2" x2="8" y2="18" />
+                <line x1="16" y1="6" x2="16" y2="22" />
+            </IconWrapper>
+        );
+
+        const Database = (props) => (
+            <IconWrapper {...props}>
+                <ellipse cx="12" cy="5" rx="9" ry="3" />
+                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+            </IconWrapper>
+        );
+
+        const Terminal = (props) => (
+            <IconWrapper {...props}>
+                <polyline points="4 17 10 11 4 5" />
+                <line x1="12" y1="19" x2="20" y2="19" />
+            </IconWrapper>
+        );
+
+        const BarChart2 = (props) => (
+            <IconWrapper {...props}>
+                <line x1="18" y1="20" x2="18" y2="10" />
+                <line x1="12" y1="20" x2="12" y2="4" />
+                <line x1="6" y1="20" x2="6" y2="14" />
+            </IconWrapper>
+        );
+
+        const Globe = (props) => (
+            <IconWrapper {...props}>
+                <circle cx="12" cy="12" r="10" />
+                <line x1="2" y1="12" x2="22" y2="12" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+            </IconWrapper>
+        );
+
+        const BookOpen = (props) => (
+            <IconWrapper {...props}>
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+            </IconWrapper>
+        );
+
+        const Github = (props) => (
+            <IconWrapper {...props}>
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+            </IconWrapper>
+        );
+
+        const ExternalLink = (props) => (
+            <IconWrapper {...props}>
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+            </IconWrapper>
+        );
+
+        const Copy = (props) => (
+            <IconWrapper {...props}>
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </IconWrapper>
+        );
+
+        const Check = (props) => (
+            <IconWrapper {...props}>
+                <polyline points="20 6 9 17 4 12" />
+            </IconWrapper>
+        );
+
+        const Menu = (props) => (
+            <IconWrapper {...props}>
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+            </IconWrapper>
+        );
+
+        const X = (props) => (
+            <IconWrapper {...props}>
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+            </IconWrapper>
+        );
+
+        const ChevronLeft = (props) => (
+            <IconWrapper {...props}>
+                <polyline points="15 18 9 12 15 6" />
+            </IconWrapper>
+        );
+
+        const ChevronRight = (props) => (
+            <IconWrapper {...props}>
+                <polyline points="9 18 15 12 9 6" />
+            </IconWrapper>
+        );
+
+        const Search = (props) => (
+            <IconWrapper {...props}>
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </IconWrapper>
+        );
+
+        const Layers = (props) => (
+            <IconWrapper {...props}>
+                <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                <polyline points="2 17 12 22 22 17" />
+                <polyline points="2 12 12 17 22 12" />
+            </IconWrapper>
+        );
+
+        const FileText = (props) => (
+            <IconWrapper {...props}>
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+                <polyline points="10 9 9 9 8 9" />
+            </IconWrapper>
+        );
+
+        // --- Custom Hooks ---
+
+        const useInView = (options = {}) => {
+          const { threshold = 0.1, once = true } = options;
+          const ref = useRef(null);
+          const [isInView, setIsInView] = useState(false);
+
+          useEffect(() => {
+            const element = ref.current;
+            if (!element) return;
+
+            const observer = new IntersectionObserver(
+              ([entry]) => {
+                if (entry.isIntersecting) {
+                  setIsInView(true);
+                  if (once) observer.unobserve(element);
+                } else if (!once) {
+                  setIsInView(false);
+                }
+              },
+              { threshold }
+            );
+
+            observer.observe(element);
+            return () => observer.disconnect();
+          }, [threshold, once]);
+
+          return [ref, isInView];
+        };
+
+        const useActiveSection = (sectionIds) => {
+          const [activeId, setActiveId] = useState('');
+
+          useEffect(() => {
+            const observers = [];
+            sectionIds.forEach((id) => {
+              const el = document.getElementById(id);
+              if (!el) return;
+              const observer = new IntersectionObserver(
+                ([entry]) => {
+                  if (entry.isIntersecting) setActiveId(id);
+                },
+                { threshold: 0.3, rootMargin: '-80px 0px -50% 0px' }
+              );
+              observer.observe(el);
+              observers.push(observer);
+            });
+            return () => observers.forEach((o) => o.disconnect());
+          }, []);
+
+          return activeId;
+        };
+
+        const useTypingEffect = (phrases, typingSpeed = 80, deletingSpeed = 40, pauseDuration = 2000) => {
+          const [text, setText] = useState('');
+          const [phraseIndex, setPhraseIndex] = useState(0);
+          const [isDeleting, setIsDeleting] = useState(false);
+
+          useEffect(() => {
+            const currentPhrase = phrases[phraseIndex];
+            let timeout;
+
+            if (!isDeleting && text === currentPhrase) {
+              timeout = setTimeout(() => setIsDeleting(true), pauseDuration);
+            } else if (isDeleting && text === '') {
+              setIsDeleting(false);
+              setPhraseIndex((prev) => (prev + 1) % phrases.length);
+            } else {
+              timeout = setTimeout(() => {
+                setText(currentPhrase.substring(0, text.length + (isDeleting ? -1 : 1)));
+              }, isDeleting ? deletingSpeed : typingSpeed);
+            }
+
+            return () => clearTimeout(timeout);
+          }, [text, isDeleting, phraseIndex, phrases]);
+
+          return text;
+        };
+
+        // --- Animation Wrapper Components ---
+
+        const AnimateIn = ({ children, delay = 0, className = '' }) => {
+          const [ref, isInView] = useInView({ threshold: 0.1 });
+
+          return (
+            <div
+              ref={ref}
+              className={className}
+              style={{
+                opacity: isInView ? 1 : 0,
+                transform: isInView ? 'translateY(0)' : 'translateY(30px)',
+                transition: `opacity 0.6s ease-out ${delay}ms, transform 0.6s ease-out ${delay}ms`,
+              }}
+            >
+              {children}
+            </div>
+          );
+        };
+
+        // --- Image Carousel ---
+        const ImageCarousel = ({ images, interval = 4000 }) => {
+          const [current, setCurrent] = React.useState(0);
+          const timerRef = React.useRef(null);
+
+          const resetTimer = () => {
+            if (timerRef.current) clearInterval(timerRef.current);
+            timerRef.current = setInterval(() => {
+              setCurrent(prev => (prev + 1) % images.length);
+            }, interval);
+          };
+
+          React.useEffect(() => {
+            resetTimer();
+            return () => clearInterval(timerRef.current);
+          }, [images.length, interval]);
+
+          const go = (idx) => {
+            setCurrent(idx);
+            resetTimer();
+          };
+
+          const prev = () => go((current - 1 + images.length) % images.length);
+          const next = () => go((current + 1) % images.length);
+
+          return (
+            <div className="relative">
+              {/* Images */}
+              <div className="relative w-full overflow-hidden" style={{ paddingBottom: '56.25%' }}>
+                {images.map((src, i) => (
+                  <img
+                    key={src}
+                    src={src}
+                    alt={`App preview ${i + 1}`}
+                    loading={i === 0 ? "eager" : "lazy"}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    style={{
+                      opacity: i === current ? 1 : 0,
+                      transition: 'opacity 0.5s ease-in-out',
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Prev / Next arrows */}
+              <button
+                onClick={prev}
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center text-white opacity-70 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+                aria-label="Previous image"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                onClick={next}
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center text-white opacity-70 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+                aria-label="Next image"
+              >
+                <ChevronRight size={20} />
+              </button>
+
+              {/* Dot indicators */}
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+                {images.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => go(i)}
+                    className={`w-2.5 h-2.5 rounded-full transition-colors ${
+                      i === current ? 'bg-cyan-400' : 'bg-white/40 hover:bg-white/70'
+                    }`}
+                    aria-label={`Go to image ${i + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        };
+
+        // --- i18n ---
+        const LanguageContext = React.createContext('en');
+        const useLanguage = () => React.useContext(LanguageContext);
+        const t = (lang, key) => translations[lang]?.[key] ?? translations.en[key] ?? key;
+
+        const translations = {
+          en: {
+            // Nav
+            "nav.dashboards": "Apps",
+            "nav.resources": "Resources",
+            "nav.examples": "How to use",
+            "nav.people": "People",
+            "nav.community": "Community",
+            "nav.events": "Events",
+            "nav.citation": "Citation",
+            "nav.github": "GitHub",
+            "nav.viewOnGithub": "View on GitHub",
+            // Hero
+            "hero.subtitle": "A Data Science Repository to Study Regional Development across",
+            "hero.subtitle.bold": "112 Provinces in Bolivia",
+            "hero.builtFor": "Built for",
+            "hero.typing.1": "Regional Development Monitoring",
+            "hero.typing.2": "Spatial Econometrics Modeling",
+            "hero.typing.3": "Machine Learning Analyses",
+            "hero.cta.dashboards": "Explore Apps",
+            "hero.cta.coding": "Start Coding",
+            // Mission
+            "mission.eyebrow": "Our Mission",
+            "mission.heading": "Bridging Spatial Analysis & Sustainable Development",
+            "mission.description": "bolivia112 is the province-level aggregation of DS4Bolivia — spatial and socio-economic data, interactive apps, and computational notebooks to study regional development across 112 provinces in Bolivia (population-weighted).",
+            "mission.card1.title": "Sustainable Development",
+            "mission.card1.desc": "Tracking SDG indicators at a granular local level to inform policy and monitor progress.",
+            "mission.card2.title": "Spatial Econometrics",
+            "mission.card2.desc": "Understanding regional disparities, growth patterns, and clustering effects across administrative boundaries.",
+            "mission.card3.title": "Spatial Machine Learning",
+            "mission.card3.desc": "Utilizing Earth Observation satellite imagery for predictive modeling of development indices.",
+            // Apps
+            "dash.eyebrow": "Interactive Apps",
+            "dash.heading": "Explore Space-Time Dynamics of Regional Development",
+            "dash.description": "No code required. Visualize the evolution of population density, night-time lights, land cover changes, and GDP estimates across Bolivian provinces (2013-2019).",
+            "dash.bullet.1": "Population Density Maps",
+            "dash.bullet.2": "Night-time Lights Analysis",
+            "dash.bullet.3": "Land Cover Changes",
+            "dash.bullet.4": "GDP Estimates",
+            "dash.launch": "Launch App",
+            // Resources
+            "res.eyebrow": "Resources",
+            "res.heading": "Notebooks, Apps & Datasets",
+            "res.description": "Explore computational notebooks, interactive apps, and spatially-explicit datasets.",
+            "res.filter.all": "All",
+            "res.filter.notebooks": "Notebooks",
+            "res.filter.apps": "Apps",
+            "res.filter.datasets": "Datasets",
+            "res.clearTags": "Clear tags",
+            "res.searchPlaceholder": "Search resources...",
+            "res.showLess": "Show less",
+            "res.viewAll": "View all {count} resources",
+            "res.empty": "No content matches your filters.",
+            "res.pinned": "Pinned",
+            "res.rows": "rows",
+            "res.cols": "cols",
+            // Card types
+            "type.notebook": "notebook",
+            "type.app": "app",
+            "type.dataset": "dataset",
+            // Card link labels
+            "link.openInColab": "Open in Colab",
+            "link.github": "GitHub",
+            "link.launchDashboard": "Launch App",
+            "link.sourceCode": "Source Code",
+            "link.viewCsv": "View CSV",
+            "link.viewGeojson": "View GeoJSON",
+            // Dataset table
+            "table.title": "Dataset Architecture & Identifiers",
+            "table.subtitle": "The datasets are linked by the unique identifier",
+            "table.col.category": "Category",
+            "table.col.filePath": "File Path",
+            "table.col.description": "Description",
+            "table.col.joinKey": "Join Key",
+            "table.cat.regionNames": "Region Names",
+            "table.cat.sdgIndices": "SDG Indices",
+            "table.cat.sdgVariables": "SDG Variables",
+            "table.cat.ntl": "Night-Time Lights",
+            "table.cat.population": "Population",
+            "table.cat.satelliteEmb": "Satellite Embeddings",
+            "table.cat.boundaries": "Province Boundaries",
+            "table.desc.regionNames": "Province & department metadata",
+            "table.desc.sdgIndices": "15 composite SDG indices (0\u2013100 scale)",
+            "table.desc.sdgVariables": "64 granular SDG indicators",
+            "table.desc.ntl": "NTL per capita (2012\u20132020)",
+            "table.desc.population": "Annual province estimates (2001\u20132020)",
+            "table.desc.satelliteEmb": "64-dim features from satellite imagery",
+            "table.desc.boundaries": "Optimized GeoJSON polygons (112 provinces)",
+            "table.cat.gdp": "GDP per Capita",
+            "table.desc.gdp": "Province GDP per capita (1990-2024)",
+            "table.note": "The primary key is",
+            "table.note.1": "— the first 3 digits of the INE",
+            "table.note.2": ". Always treat",
+            "table.note.3": "as an",
+            "table.note.4": "or",
+            "table.note.5": "consistently before merging.",
+            "table.importantNote": "Important Note:",
+            // Examples
+            "ex.sectionEyebrow": "How To Use",
+            "ex.sectionHeading": "Explore Data & Build Datasets",
+            "ex.sectionDescription": "Browse the available datasets, then construct your own custom dataset using the code examples below.",
+            "ex.part1": "Dataset Architecture & Identifiers",
+            "ex.part2": "Construct Your Own Dataset",
+            "ex.eyebrow": "How To Use",
+            "ex.heading": "Construct your own dataset",
+            "ex.description": "Run these examples immediately in Google Colab. No local setup required.",
+            "ex.1.title": "Integrating Attribute Data",
+            "ex.1.desc": "Merge datasets and visualize development vs nighttime lights.",
+            "ex.2.title": "Integrating Spatial and Attribute Data",
+            "ex.2.desc": "Attach merged attributes to province geometries (GeoJSON) for analysis.",
+            "copy": "Copy",
+            "copied": "Copied",
+            // People
+            "people.heading": "People",
+            "people.coordinators": "Project Coordinators",
+            "people.contributors": "Contributors",
+            "people.visitWebsite": "Visit Website",
+            // Community
+            "community.heading": "Community",
+            "community.intro": "We're using GitHub Discussions as a place to connect with other members of our community. We hope that you:",
+            "community.bullet.1": "Ask questions you're wondering about.",
+            "community.bullet.2": "Share ideas.",
+            "community.bullet.3": "Share your notebooks.",
+            "community.bullet.4": "Engage with other community members.",
+            "community.bullet.5": "Welcome others and are open-minded. Remember that this is a community we build together.",
+            "community.cta": "Join the Discussion",
+            // Events
+            "events.heading": "Events",
+            "events.intro": "We invite community members and newcomers to participate in our public events. Join us to learn, collaborate, and build together:",
+            "events.bullet.1": "Attend training sessions on data science methods and tools.",
+            "events.bullet.2": "Design and prototype computational notebooks and apps.",
+            "events.bullet.3": "Collaborate with researchers and practitioners from diverse backgrounds.",
+            "events.bullet.4": "Subscribe on Luma to get notified when new events are announced.",
+            "events.cta": "Subscribe on Luma",
+            // Citation
+            "cite.heading": "How to cite this project",
+            "cite.apa": "APA Format",
+            // Footer
+            "footer.tagline": "Open source geospatial intelligence for sustainable development.",
+            "footer.prompt1": "Find an error? Have a suggestion? Want to contribute? Submit an",
+            "footer.issue": "issue",
+            "footer.prompt2": "or join the",
+            "footer.discussion": "discussion",
+            "footer.prompt3": "via GitHub.",
+          },
+          es: {
+            // Nav
+            "nav.dashboards": "Apps",
+            "nav.resources": "Recursos",
+            "nav.examples": "Cómo usar",
+            "nav.people": "Personas",
+            "nav.community": "Comunidad",
+            "nav.events": "Eventos",
+            "nav.citation": "Citar",
+            "nav.github": "GitHub",
+            "nav.viewOnGithub": "Ver en GitHub",
+            // Hero
+            "hero.subtitle": "Un Repositorio de Ciencia de Datos para Estudiar el Desarrollo Regional en",
+            "hero.subtitle.bold": "112 Provincias de Bolivia",
+            "hero.builtFor": "Desarrollado para",
+            "hero.typing.1": "Monitoreo del Desarrollo Regional",
+            "hero.typing.2": "Modelado de Econometr\u00eda Espacial",
+            "hero.typing.3": "An\u00e1lisis de Machine Learning",
+            "hero.cta.dashboards": "Explorar Apps",
+            "hero.cta.coding": "Empezar a Programar",
+            // Mission
+            "mission.eyebrow": "Nuestra Misi\u00f3n",
+            "mission.heading": "Conectando el An\u00e1lisis Espacial y el Desarrollo Sostenible",
+            "mission.description": "bolivia112 es la agregación provincial (ponderada por población) de DS4Bolivia: conjuntos de datos espaciales y socioecon\u00f3micos, apps interactivas y flujos de trabajo computacionales para las 112 provincias de Bolivia.",
+            "mission.card1.title": "Desarrollo Sostenible",
+            "mission.card1.desc": "Seguimiento de indicadores ODS a nivel local granular para informar pol\u00edticas y monitorear el progreso.",
+            "mission.card2.title": "Econometr\u00eda Espacial",
+            "mission.card2.desc": "Comprensi\u00f3n de disparidades regionales, patrones de crecimiento y efectos de agrupamiento a trav\u00e9s de l\u00edmites administrativos.",
+            "mission.card3.title": "Machine Learning Espacial",
+            "mission.card3.desc": "Uso de im\u00e1genes satelitales de observaci\u00f3n terrestre para el modelado predictivo de \u00edndices de pobreza y desarrollo.",
+            // Apps
+            "dash.eyebrow": "Aplicaciones Interactivas",
+            "dash.heading": "Explora las Din\u00e1micas Espacio-Temporales del Desarrollo Regional",
+            "dash.description": "No se requiere c\u00f3digo. Visualiza la evoluci\u00f3n de la densidad poblacional, luces nocturnas, cambios de cobertura terrestre y estimaciones del PIB en las provincias de Bolivia (2013-2019).",
+            "dash.bullet.1": "Mapas de Densidad Poblacional",
+            "dash.bullet.2": "An\u00e1lisis de Luces Nocturnas",
+            "dash.bullet.3": "Cambios de Cobertura Terrestre",
+            "dash.bullet.4": "Estimaciones del PIB",
+            "dash.launch": "Abrir App",
+            // Resources
+            "res.eyebrow": "Recursos",
+            "res.heading": "Notebooks, Apps y Datasets",
+            "res.description": "Explora notebooks computacionales, apps interactivas y conjuntos de datos espaciales.",
+            "res.filter.all": "Todos",
+            "res.filter.notebooks": "Notebooks",
+            "res.filter.apps": "Apps",
+            "res.filter.datasets": "Datasets",
+            "res.clearTags": "Limpiar filtros",
+            "res.searchPlaceholder": "Buscar recursos...",
+            "res.showLess": "Mostrar menos",
+            "res.viewAll": "Ver los {count} recursos",
+            "res.empty": "Ning\u00fan contenido coincide con tus filtros.",
+            "res.pinned": "Fijado",
+            "res.rows": "filas",
+            "res.cols": "cols",
+            // Card types
+            "type.notebook": "notebook",
+            "type.app": "app",
+            "type.dataset": "dataset",
+            // Card link labels
+            "link.openInColab": "Abrir en Colab",
+            "link.github": "GitHub",
+            "link.launchDashboard": "Abrir App",
+            "link.sourceCode": "C\u00f3digo Fuente",
+            "link.viewCsv": "Ver CSV",
+            "link.viewGeojson": "Ver GeoJSON",
+            // Dataset table
+            "table.title": "Arquitectura de Datos e Identificadores",
+            "table.subtitle": "Los conjuntos de datos est\u00e1n vinculados por el identificador \u00fanico",
+            "table.col.category": "Categor\u00eda",
+            "table.col.filePath": "Ruta del Archivo",
+            "table.col.description": "Descripci\u00f3n",
+            "table.col.joinKey": "Clave de Uni\u00f3n",
+            "table.cat.regionNames": "Nombres de Regiones",
+            "table.cat.sdgIndices": "\u00cdndices ODS",
+            "table.cat.sdgVariables": "Variables ODS",
+            "table.cat.ntl": "Luces Nocturnas",
+            "table.cat.population": "Poblaci\u00f3n",
+            "table.cat.satelliteEmb": "Embeddings Satelitales",
+            "table.cat.boundaries": "L\u00edmites Provinciales",
+            "table.desc.regionNames": "Metadatos de provincias y departamentos",
+            "table.desc.sdgIndices": "15 \u00edndices compuestos ODS (escala 0\u2013100)",
+            "table.desc.sdgVariables": "64 indicadores ODS granulares",
+            "table.desc.ntl": "LN per c\u00e1pita (2012\u20132020)",
+            "table.desc.population": "Estimaciones provinciales anuales (2001\u20132020)",
+            "table.desc.satelliteEmb": "Caracter\u00edsticas de 64 dimensiones de im\u00e1genes satelitales",
+            "table.desc.boundaries": "Pol\u00edgonos GeoJSON optimizados (112 provincias)",
+            "table.cat.gdp": "PIB per cápita",
+            "table.desc.gdp": "PIB per cápita por provincia (1990-2024)",
+            "table.note": "La clave primaria es",
+            "table.note.1": "— los primeros 3 dígitos del código INE",
+            "table.note.2": ". Trata siempre",
+            "table.note.3": "como",
+            "table.note.4": "o",
+            "table.note.5": "de forma consistente antes de unir.",
+            "table.importantNote": "Nota Importante:",
+            // Examples
+            "ex.sectionEyebrow": "C\u00f3mo Usar",
+            "ex.sectionHeading": "Explora Datos y Construye Datasets",
+            "ex.sectionDescription": "Explora los conjuntos de datos disponibles, luego construye tu propio dataset personalizado con los ejemplos de c\u00f3digo.",
+            "ex.part1": "Arquitectura de Datos e Identificadores",
+            "ex.part2": "Construye Tu Propio Dataset",
+            "ex.eyebrow": "C\u00f3mo Usar",
+            "ex.heading": "Construye tu propio dataset",
+            "ex.description": "Ejecuta estos ejemplos directamente en Google Colab. No requiere instalaci\u00f3n local.",
+            "ex.1.title": "Integrando Datos de Atributos",
+            "ex.1.desc": "Integra datos y visualiza desarrollo vs luces nocturnas.",
+            "ex.2.title": "Integrando Datos Espaciales y de Atributos",
+            "ex.2.desc": "Adjunta atributos combinados a geometr\u00edas provinciales (GeoJSON) para an\u00e1lisis.",
+            "copy": "Copiar",
+            "copied": "Copiado",
+            // People
+            "people.heading": "Personas",
+            "people.coordinators": "Coordinadores del Proyecto",
+            "people.contributors": "Colaboradores",
+            "people.visitWebsite": "Visitar Sitio Web",
+            // Community
+            "community.heading": "Comunidad",
+            "community.intro": "Usamos las Discusiones de GitHub como espacio para conectar con otros miembros de nuestra comunidad. Esperamos que:",
+            "community.bullet.1": "Hagas preguntas sobre lo que te interesa.",
+            "community.bullet.2": "Compartas ideas.",
+            "community.bullet.3": "Compartas tus notebooks.",
+            "community.bullet.4": "Interact\u00faes con otros miembros de la comunidad.",
+            "community.bullet.5": "Des la bienvenida a otros y seas de mente abierta. Recuerda que esta es una comunidad que construimos juntos.",
+            "community.cta": "\u00danete a la Discusi\u00f3n",
+            // Events
+            "events.heading": "Eventos",
+            "events.intro": "Invitamos a miembros de la comunidad y nuevos participantes a nuestros eventos p\u00fablicos. \u00danete para aprender, colaborar y construir juntos:",
+            "events.bullet.1": "Asiste a sesiones de capacitaci\u00f3n sobre m\u00e9todos y herramientas de ciencia de datos.",
+            "events.bullet.2": "Dise\u00f1a y prototipa notebooks computacionales y apps.",
+            "events.bullet.3": "Colabora con investigadores y profesionales de diversos contextos.",
+            "events.bullet.4": "Suscr\u00edbete en Luma para recibir notificaciones de nuevos eventos.",
+            "events.cta": "Suscribirse en Luma",
+            // Citation
+            "cite.heading": "C\u00f3mo citar este proyecto",
+            "cite.apa": "Formato APA",
+            // Footer
+            "footer.tagline": "Inteligencia geoespacial de c\u00f3digo abierto para el desarrollo sostenible.",
+            "footer.prompt1": "¿Encontraste un error? ¿Tienes una sugerencia? ¿Quieres contribuir? Envía un",
+            "footer.issue": "issue",
+            "footer.prompt2": "o únete a la",
+            "footer.discussion": "discusión",
+            "footer.prompt3": "en GitHub.",
+          },
+        };
+
+        // --- Content Registry ---
+        const CONTENT_REGISTRY = [
+          // Notebooks
+          {
+            id: "esda",
+            type: "notebook",
+            title: "Exploratory Spatial Data Analysis (ESDA)",
+            title_es: "An\u00e1lisis Exploratorio de Datos Espaciales (ESDA)",
+            description: "Interactive tutorial: Global Moran's I, LISA statistics, spatial clustering, choropleth mapping, and spatial weights matrices.",
+            description_es: "Tutorial interactivo: I de Moran global, estad\u00edsticas LISA, agrupamiento espacial, mapas coropl\u00e9ticos y matrices de pesos espaciales.",
+            tags: ["spatial-analysis", "pysal", "geopandas"],
+            color: "cyan",
+            icon: "BookOpen",
+            date: "2025-01-15",
+            pinned: false,
+            links: [
+              { label_key: "link.openInColab", url: "https://colab.research.google.com/github/quarcs-lab/bolivia112/blob/main/notebooks/esda.ipynb", type: "colab" },
+              { label_key: "link.github", url: "https://github.com/quarcs-lab/bolivia112/blob/main/notebooks/esda.ipynb", type: "github" },
+            ],
+          },
+          {
+            id: "eda",
+            type: "notebook",
+            title: "Exploratory Data Analysis (EDA)",
+            title_es: "An\u00e1lisis Exploratorio de Datos (EDA)",
+            description: "Descriptive statistics, regional comparisons, population treemaps, and nighttime lights vs development across 112 provinces.",
+            description_es: "Estad\u00edsticas descriptivas, comparaciones regionales, treemaps de poblaci\u00f3n y luces nocturnas vs desarrollo en 112 provincias.",
+            tags: ["eda", "plotly", "geopandas"],
+            color: "cyan",
+            icon: "BookOpen",
+            date: "2025-01-15",
+            pinned: false,
+            links: [
+              { label_key: "link.openInColab", url: "https://colab.research.google.com/github/quarcs-lab/bolivia112/blob/main/notebooks/eda.ipynb", type: "colab" },
+              { label_key: "link.github", url: "https://github.com/quarcs-lab/bolivia112/blob/main/notebooks/eda.ipynb", type: "github" },
+            ],
+          },
+          {
+            id: "esda-dependence",
+            type: "notebook",
+            title: "Spatial Distribution & Dependence",
+            title_es: "Distribuci\u00f3n y Dependencia Espacial",
+            description: "Map classification schemes (BoxPlot, Fisher-Jenks), spatial weights, Global Moran's I, and LISA cluster analysis.",
+            description_es: "Esquemas de clasificaci\u00f3n de mapas (BoxPlot, Fisher-Jenks), pesos espaciales, I de Moran global y an\u00e1lisis de cl\u00fasteres LISA.",
+            tags: ["spatial-analysis", "pysal", "moran"],
+            color: "cyan",
+            icon: "BookOpen",
+            date: "2026-02-22",
+            pinned: true,
+            links: [
+              { label_key: "link.openInColab", url: "https://colab.research.google.com/github/quarcs-lab/bolivia112/blob/main/notebooks/esda_dependence.ipynb", type: "colab" },
+              { label_key: "link.github", url: "https://github.com/quarcs-lab/bolivia112/blob/main/notebooks/esda_dependence.ipynb", type: "github" },
+            ],
+          },
+          {
+            id: "esda-inequality",
+            type: "notebook",
+            title: "Spatial Inequality",
+            title_es: "Desigualdad Espacial",
+            description: "Theil index with between/within decomposition, Gini coefficient, and Spatial Gini index for development indicators.",
+            description_es: "\u00cdndice de Theil con descomposici\u00f3n entre/dentro, coeficiente de Gini e \u00edndice de Gini espacial para indicadores de desarrollo.",
+            tags: ["spatial-analysis", "inequality", "theil", "gini"],
+            color: "cyan",
+            icon: "BookOpen",
+            date: "2026-02-22",
+            pinned: true,
+            links: [
+              { label_key: "link.openInColab", url: "https://colab.research.google.com/github/quarcs-lab/bolivia112/blob/main/notebooks/esda_inequality.ipynb", type: "colab" },
+              { label_key: "link.github", url: "https://github.com/quarcs-lab/bolivia112/blob/main/notebooks/esda_inequality.ipynb", type: "github" },
+            ],
+          },
+          {
+            id: "esda-heterogeneity",
+            type: "notebook",
+            title: "Spatial Heterogeneity (GWR & MGWR)",
+            title_es: "Heterogeneidad Espacial (GWR y MGWR)",
+            description: "Geographically Weighted Regression and Multiscale GWR to detect spatially varying relationships between nighttime lights and development.",
+            description_es: "Regresi\u00f3n Geogr\u00e1ficamente Ponderada y MGWR multiescala para detectar relaciones espacialmente variables entre luces nocturnas y desarrollo.",
+            tags: ["spatial-analysis", "gwr", "mgwr"],
+            color: "cyan",
+            icon: "BookOpen",
+            date: "2026-02-22",
+            pinned: true,
+            links: [
+              { label_key: "link.openInColab", url: "https://colab.research.google.com/github/quarcs-lab/bolivia112/blob/main/notebooks/esda_heterogeneity.ipynb", type: "colab" },
+              { label_key: "link.github", url: "https://github.com/quarcs-lab/bolivia112/blob/main/notebooks/esda_heterogeneity.ipynb", type: "github" },
+            ],
+          },
+          {
+            id: "eda-esda",
+            type: "notebook",
+            title: "Extended EDA + Spatial Analysis",
+            title_es: "EDA Extendido + An\u00e1lisis Espacial",
+            description: "Comprehensive notebook combining traditional exploratory data analysis with advanced spatial methods, visualizations, and statistical summaries.",
+            description_es: "Notebook integral que combina an\u00e1lisis exploratorio tradicional con m\u00e9todos espaciales avanzados, visualizaciones y res\u00famenes estad\u00edsticos.",
+            tags: ["spatial-analysis", "eda", "pysal", "geopandas"],
+            color: "cyan",
+            icon: "BookOpen",
+            date: "2026-02-22",
+            pinned: false,
+            links: [
+              { label_key: "link.openInColab", url: "https://colab.research.google.com/github/quarcs-lab/bolivia112/blob/main/notebooks/eda_esda.ipynb", type: "colab" },
+              { label_key: "link.github", url: "https://github.com/quarcs-lab/bolivia112/blob/main/notebooks/eda_esda.ipynb", type: "github" },
+            ],
+          },
+          // Apps
+          {
+            id: "geoexplorer-v1",
+            type: "app",
+            title: "GeoExplorer v1.0 \u2014 Bolivia",
+            title_es: "GeoExplorer v1.0 \u2014 Bolivia",
+            description: "Interactive app: population density, night-time lights, land cover, and GDP estimates across 112 provinces (2013-2019). No coding required.",
+            description_es: "App interactiva: densidad poblacional, luces nocturnas, cobertura terrestre y estimaciones del PIB en 112 provincias (2013-2019). No requiere programaci\u00f3n.",
+            tags: ["earth-engine", "app", "ntl", "population"],
+            color: "amber",
+            icon: "Globe",
+            date: "2024-06-01",
+            pinned: true,
+            links: [
+              { label_key: "link.launchDashboard", url: "https://carlos-mendez.projects.earthengine.app/view/geoexplorer1v100bolivia", type: "external" },
+              { label_key: "link.sourceCode", url: "https://github.com/quarcs-lab/bolivia112/blob/main/apps/geoexplorer1v100bolivia.js", type: "github" },
+            ],
+          },
+          // Datasets
+          {
+            id: "sdgs-satellite-embeddings-2017",
+            type: "dataset",
+            title: "SDGs + Satellite Embeddings (2017)",
+            title_es: "ODS + Embeddings Satelitales (2017)",
+            description: "Pre-merged dataset: 15 SDG indices + 64-dimensional satellite embedding feature vectors for 112 provinces. Ready for ML.",
+            description_es: "Dataset pre-combinado: 15 \u00edndices ODS + vectores de caracter\u00edsticas de embeddings satelitales de 64 dimensiones para 112 provincias. Listo para ML.",
+            tags: ["sdg", "satellite-embeddings", "machine-learning", "merged"],
+            color: "violet",
+            icon: "Database",
+            date: "2025-06-01",
+            pinned: false,
+            links: [
+              { label_key: "link.viewCsv", url: "https://github.com/quarcs-lab/bolivia112/blob/main/datasets/sdgs_satelliteEmbeddings2017.csv", type: "github" },
+            ],
+            rows: 112,
+            columns: 85,
+          },
+          {
+            id: "region-names",
+            type: "dataset",
+            title: "Region Names & Administrative Metadata",
+            title_es: "Nombres de Regiones y Metadatos Administrativos",
+            description: "Province names, capitals, department names and official IDs for all 112 provinces.",
+            description_es: "Nombres de provincias, capitales, departamentos e IDs oficiales para las 112 provincias.",
+            tags: ["administrative", "metadata"],
+            color: "violet",
+            icon: "Database",
+            date: "2024-01-15",
+            pinned: false,
+            links: [
+              { label_key: "link.viewCsv", url: "https://github.com/quarcs-lab/bolivia112/blob/main/regionNames/regionNames.csv", type: "github" },
+            ],
+            rows: 112,
+            columns: 9,
+          },
+          {
+            id: "sdg-indices",
+            type: "dataset",
+            title: "SDG Composite Indices",
+            title_es: "\u00cdndices Compuestos ODS",
+            description: "15 composite SDG indices (0-100 scale) plus the Sustainable Development Index (IMDS) for 112 provinces.",
+            description_es: "15 \u00edndices compuestos ODS (escala 0-100) m\u00e1s el \u00cdndice de Desarrollo Sostenible (IMDS) para 112 provincias.",
+            tags: ["sdg", "socio-economic"],
+            color: "violet",
+            icon: "Database",
+            date: "2024-01-15",
+            pinned: false,
+            links: [
+              { label_key: "link.viewCsv", url: "https://github.com/quarcs-lab/bolivia112/blob/main/sdg/sdg.csv", type: "github" },
+            ],
+            rows: 112,
+            columns: 17,
+          },
+          {
+            id: "sdg-variables",
+            type: "dataset",
+            title: "SDG Detailed Variables (64 indicators)",
+            title_es: "Variables Detalladas ODS (64 indicadores)",
+            description: "Granular SDG indicators across poverty, hunger, health, education, gender, water, energy, and more.",
+            description_es: "Indicadores ODS granulares de pobreza, hambre, salud, educaci\u00f3n, g\u00e9nero, agua, energ\u00eda y m\u00e1s.",
+            tags: ["sdg", "socio-economic", "granular"],
+            color: "violet",
+            icon: "Database",
+            date: "2024-01-15",
+            pinned: false,
+            links: [
+              { label_key: "link.viewCsv", url: "https://github.com/quarcs-lab/bolivia112/blob/main/sdgVariables/sdgVariables.csv", type: "github" },
+            ],
+            rows: 112,
+            columns: 65,
+          },
+          {
+            id: "satellite-embeddings",
+            type: "dataset",
+            title: "Satellite Embeddings (2017)",
+            title_es: "Embeddings Satelitales (2017)",
+            description: "64-dimensional feature vectors from Google Earth Engine deep learning model, aggregated to province boundaries at 10m resolution.",
+            description_es: "Vectores de caracter\u00edsticas de 64 dimensiones del modelo de deep learning de Google Earth Engine, agregados a l\u00edmites provinciales a resoluci\u00f3n de 10m.",
+            tags: ["satellite-embeddings", "earth-engine", "remote-sensing"],
+            color: "violet",
+            icon: "Database",
+            date: "2024-01-15",
+            pinned: false,
+            links: [
+              { label_key: "link.viewCsv", url: "https://github.com/quarcs-lab/bolivia112/blob/main/satelliteEmbeddings/satelliteEmbeddings2017.csv", type: "github" },
+            ],
+            rows: 112,
+            columns: 65,
+          },
+          {
+            id: "ntl",
+            type: "dataset",
+            title: "Night-Time Lights (2012-2020)",
+            title_es: "Luces Nocturnas (2012-2020)",
+            description: "Log-transformed NTL per capita and HP-filtered trend components from VIIRS satellite imagery. Economic activity proxy.",
+            description_es: "NTL per c\u00e1pita transformada logar\u00edtmicamente y componentes de tendencia filtrados HP de im\u00e1genes satelitales VIIRS. Proxy de actividad econ\u00f3mica.",
+            tags: ["ntl", "remote-sensing", "time-series"],
+            color: "violet",
+            icon: "Database",
+            date: "2024-01-15",
+            pinned: false,
+            links: [
+              { label_key: "link.viewCsv", url: "https://github.com/quarcs-lab/bolivia112/blob/main/ntl/ln_NTLpc.csv", type: "github" },
+            ],
+            rows: 112,
+            columns: 19,
+          },
+          {
+            id: "population",
+            type: "dataset",
+            title: "Population Estimates (2001-2020)",
+            title_es: "Estimaciones de Poblaci\u00f3n (2001-2020)",
+            description: "Annual province population estimates across 20 years from census projections and satellite-based models.",
+            description_es: "Estimaciones anuales de poblaci\u00f3n provincial a lo largo de 20 a\u00f1os a partir de proyecciones censales y modelos satelitales.",
+            tags: ["population", "demographics", "time-series"],
+            color: "violet",
+            icon: "Database",
+            date: "2024-01-15",
+            pinned: false,
+            links: [
+              { label_key: "link.viewCsv", url: "https://github.com/quarcs-lab/bolivia112/blob/main/pop/pop.csv", type: "github" },
+            ],
+            rows: 112,
+            columns: 21,
+          },
+          {
+            id: "geojson-boundaries",
+            type: "dataset",
+            title: "Province Boundaries (GeoJSON)",
+            title_es: "L\u00edmites Provinciales (GeoJSON)",
+            description: "Optimized GeoJSON polygons for 112 provinces. Use for choropleth maps and spatial joins.",
+            description_es: "Pol\u00edgonos GeoJSON optimizados para 112 provincias. Usar para mapas coropl\u00e9ticos y uniones espaciales.",
+            tags: ["spatial", "geojson", "boundaries"],
+            color: "violet",
+            icon: "MapIcon",
+            date: "2024-01-15",
+            pinned: false,
+            links: [
+              { label_key: "link.viewGeojson", url: "https://github.com/quarcs-lab/bolivia112/blob/main/maps/bolivia112provincesOpt.geojson", type: "github" },
+            ],
+            rows: 112,
+          },
+          // GDP per capita
+          {
+            id: "gdp-per-capita",
+            type: "dataset",
+            title: "GDP per Capita (1990-2024)",
+            title_es: "PIB per cápita (1990-2024)",
+            description: "Province-level GDP per capita time series for 1990-2024 (35 years), derived from the GADM ADM2 GeoPackage.",
+            description_es: "Serie temporal de PIB per cápita por provincia para 1990-2024 (35 años), derivada del GeoPackage GADM ADM2.",
+            tags: ["gdp", "economic", "time-series"],
+            color: "violet",
+            icon: "Database",
+            date: "2026-06-22",
+            pinned: false,
+            links: [
+              { label_key: "link.viewCsv", url: "https://github.com/quarcs-lab/bolivia112/blob/main/gdp/gdp_perCapita_1990_2024.csv", type: "github" },
+            ],
+            rows: 112,
+            columns: 39,
+          },
+          // Master wide table
+          {
+            id: "master-table",
+            type: "dataset",
+            title: "Master Table — All Variables",
+            title_es: "Tabla Maestra — Todas las Variables",
+            description: "All 342 aggregated variables in one wide table (112 provinces × 347 columns), with an accompanying variable dictionary.",
+            description_es: "Las 342 variables agregadas en una tabla ancha (112 provincias × 347 columnas), con un diccionario de variables.",
+            tags: ["master", "merged", "dictionary"],
+            color: "violet",
+            icon: "Database",
+            date: "2026-06-22",
+            pinned: false,
+            links: [
+              { label_key: "link.viewCsv", url: "https://github.com/quarcs-lab/bolivia112/blob/main/bolivia112_v20260622.csv", type: "github" },
+              { label_key: "link.viewCsv", url: "https://github.com/quarcs-lab/bolivia112/blob/main/definitions_bolivia112_v20260622.csv", type: "github" },
+            ],
+            rows: 112,
+            columns: 347,
+          },
+          // Province aggregation report
+          {
+            id: "aggregation-report",
+            type: "dataset",
+            title: "Province Aggregation Report",
+            title_es: "Informe de Agregación Provincial",
+            description: "Methodology: how the 339 municipalities were aggregated to 112 provinces — population-weighted means for intensive variables, sums for extensive ones.",
+            description_es: "Metodología: cómo los 339 municipios se agregaron a 112 provincias — medias ponderadas por población para variables intensivas, sumas para las extensivas.",
+            tags: ["methodology", "documentation", "aggregation"],
+            color: "violet",
+            icon: "FileText",
+            date: "2026-06-22",
+            pinned: false,
+            links: [
+              { label_key: "link.github", url: "https://github.com/quarcs-lab/bolivia112/blob/main/province_aggregation_report.md", type: "github" },
+            ],
+          },
+        ];
+
+        const COLOR_CONFIG = {
+          cyan:   { bg: "bg-cyan-950/50",   text: "text-cyan-400",   tagBg: "bg-cyan-950/30",   tagText: "text-cyan-300" },
+          amber:  { bg: "bg-amber-950/50",  text: "text-amber-400",  tagBg: "bg-amber-950/30",  tagText: "text-amber-300" },
+          violet: { bg: "bg-violet-950/50", text: "text-violet-400", tagBg: "bg-violet-950/30", tagText: "text-violet-300" },
+        };
+
+        const ICON_MAP = { BookOpen, Database, Globe, MapIcon, FileText };
+
+        const PEOPLE = {
+          editors: [
+            {
+              name: "Carlos Mendez",
+              title: "Associate Professor",
+              affiliation: "Nagoya University, Japan",
+              avatar: "https://carlos-mendez.org/authors/admin/avatar_hu789af5602b0564dea21bcf1e67237882_114840_270x270_fill_q75_lanczos_center.jpg",
+              website: "https://carlos-mendez.org",
+            },
+          ],
+          contributors: [
+            {
+              name: "Erick Gonzales",
+              title: "Economic Affairs Officer",
+              affiliation: "United Nations, Switzerland",
+              avatar: "https://quarcs.netlify.app/images/team/erick-gonzales.jpg",
+              website: "https://erickgonzalesrocha.wordpress.com/",
+            },
+            {
+              name: "Pedro Leoni",
+              title: "Research Assistant",
+              affiliation: "Cochabamba, Bolivia",
+              avatar: "https://avatars.githubusercontent.com/u/97562420?v=4",
+              website: "https://github.com/pedroleonip",
+            },
+            {
+              name: "Lykke Andersen",
+              title: "Executive Director of SDSN",
+              affiliation: "Bolivia",
+              avatar: "https://quarcs.netlify.app/images/team/lykke-andersen.png",
+              website: "https://www.inesad.edu.bo/en/lykke-e-andersen/",
+            },
+            {
+              name: "Hendrix Peralta",
+              title: "Data Scientist",
+              affiliation: "Tokyo, Japan",
+              avatar: "https://hendrixperalta.github.io/resources/close_up.png",
+              website: "https://hendrixperalta.github.io/",
+            },
+          ],
+        };
+
+        // --- Navigation Component ---
+        const Navigation = ({ toggleLang }) => {
+          const lang = useLanguage();
+          const [isOpen, setIsOpen] = useState(false);
+          const [scrolled, setScrolled] = useState(false);
+
+          const navLinks = [
+            { name: t(lang, 'nav.dashboards'), href: '#apps', id: 'apps' },
+            { name: t(lang, 'nav.examples'), href: '#examples', id: 'examples' },
+            { name: t(lang, 'nav.resources'), href: '#resources', id: 'resources' },
+            { name: t(lang, 'nav.people'), href: '#people', id: 'people' },
+            { name: t(lang, 'nav.community'), href: '#community', id: 'community' },
+            { name: t(lang, 'nav.events'), href: '#events', id: 'events' },
+            { name: t(lang, 'nav.citation'), href: '#citation', id: 'citation' },
+          ];
+
+          const activeSection = useActiveSection(navLinks.map((l) => l.id));
+
+          useEffect(() => {
+            const handleScroll = () => {
+              setScrolled(window.scrollY > 20);
+            };
+            window.addEventListener('scroll', handleScroll);
+            return () => window.removeEventListener('scroll', handleScroll);
+          }, []);
+
+          return (
+            <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-slate-950/80 backdrop-blur-xl shadow-lg shadow-slate-950/50 border-b border-white/5 py-2' : 'bg-transparent py-4'}`}>
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex items-center h-12 relative">
+                  {/* Left: Logo */}
+                  <div className="flex-shrink-0 flex items-center">
+                    <span className="font-bold text-2xl tracking-tighter">
+                      <span className="gradient-text">bolivia112</span>
+                    </span>
+                  </div>
+
+                  {/* Center: Desktop Nav Links */}
+                  <div className="hidden md:flex items-center space-x-6 absolute left-1/2 -translate-x-1/2">
+                    {navLinks.map((link) => (
+                      <a
+                        key={link.name}
+                        href={link.href}
+                        className={`nav-link-underline text-sm font-medium transition-colors ${
+                          activeSection === link.id
+                            ? 'text-cyan-400 active'
+                            : scrolled ? 'text-slate-300 hover:text-cyan-400' : 'text-gray-100 hover:text-white'
+                        }`}
+                      >
+                        {link.name}
+                      </a>
+                    ))}
+                  </div>
+
+                  {/* Right: Language Toggle */}
+                  <div className="hidden md:flex items-center ml-auto">
+                    <button
+                      onClick={toggleLang}
+                      className="flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-bold bg-white/10 border border-cyan-500/30 hover:bg-white/15 hover:border-cyan-400/50 transition-all"
+                      title={lang === 'en' ? 'Cambiar a Español' : 'Switch to English'}
+                    >
+                      <Globe size={15} className="text-cyan-400" />
+                      <span className={lang === 'en' ? 'text-cyan-400' : 'text-slate-500'}>English</span>
+                      <span className="text-slate-600">|</span>
+                      <span className={lang === 'es' ? 'text-cyan-400' : 'text-slate-500'}>Español</span>
+                    </button>
+                  </div>
+
+                  {/* Mobile Menu Button */}
+                  <div className="md:hidden flex items-center ml-auto">
+                    <button
+                      onClick={() => setIsOpen(!isOpen)}
+                      className="p-2 rounded-md text-white"
+                    >
+                      {isOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mobile Menu */}
+              {isOpen && (
+                <div className="md:hidden bg-slate-900 shadow-xl absolute w-full top-full left-0 border-t border-slate-700">
+                  <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                    {navLinks.map((link) => (
+                      <a
+                        key={link.name}
+                        href={link.href}
+                        onClick={() => setIsOpen(false)}
+                        className="block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:text-cyan-400 hover:bg-slate-800"
+                      >
+                        {link.name}
+                      </a>
+                    ))}
+                    <button
+                      onClick={toggleLang}
+                      className="flex items-center space-x-2 w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:text-cyan-400 hover:bg-slate-800"
+                    >
+                      <Globe size={16} />
+                      <span>{lang === 'en' ? 'Español' : 'English'}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </nav>
+          );
+        };
+
+        // --- Hero Component ---
+        const Hero = () => {
+          const lang = useLanguage();
+          const typingText = useTypingEffect([
+            t(lang, 'hero.typing.1'),
+            t(lang, 'hero.typing.2'),
+            t(lang, 'hero.typing.3'),
+          ]);
+
+          return (
+            <div className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
+              {/* Background Image with Overlay */}
+              <div className="absolute inset-0 z-0">
+                <img
+                  src="https://github.com/quarcs-lab/bolivia112/blob/main/images/cover2.jpg?raw=true"
+                  alt="Bolivia Landscape"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-slate-950/75 mix-blend-multiply"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent"></div>
+              </div>
+
+              {/* Ambient Gradient Orbs */}
+              <div className="absolute inset-0 z-[1] overflow-hidden pointer-events-none" aria-hidden="true">
+                <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-cyan-500/15 rounded-full blur-[128px] float-slow"></div>
+                <div className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-[100px] float-slower"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-violet-500/8 rounded-full blur-[120px]"></div>
+              </div>
+
+              <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+                <div className="animate-fade-in-up">
+                  <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tighter mb-4 sm:mb-6">
+                    <span className="gradient-text">bolivia112</span>
+                  </h1>
+                  <p className="text-xl md:text-2xl text-slate-200 max-w-3xl mx-auto font-light leading-relaxed mb-3">
+                    {t(lang, 'hero.subtitle')} <span className="font-semibold text-white">{t(lang, 'hero.subtitle.bold')}</span>.
+                  </p>
+                  <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto font-light mb-10 h-8">
+                    {t(lang, 'hero.builtFor')}{' '}
+                    <span className="gradient-text font-semibold">{typingText}</span>
+                    <span className="typing-cursor text-cyan-400">|</span>
+                  </p>
+                  <div className="flex flex-col sm:flex-row justify-center gap-4">
+                    <a
+                      href="#apps"
+                      className="px-5 sm:px-8 py-2.5 sm:py-3 rounded-lg bg-cyan-500 hover:bg-cyan-600 text-white font-bold text-base sm:text-lg transition-all hover:-translate-y-1 shadow-lg shadow-cyan-500/30 flex items-center justify-center gap-2"
+                    >
+                      <Globe size={20} />
+                      {t(lang, 'hero.cta.dashboards')}
+                    </a>
+                    <a
+                      href="#construct-dataset"
+                      className="px-5 sm:px-8 py-2.5 sm:py-3 rounded-lg bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 font-bold text-base sm:text-lg transition-all hover:-translate-y-1 shadow-lg border border-white/20 flex items-center justify-center gap-2"
+                    >
+                      <Terminal size={20} />
+                      {t(lang, 'hero.cta.coding')}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        };
+
+        const accentMap = {
+          emerald: { iconBg: 'bg-emerald-900/30', iconText: 'text-emerald-400', border: 'border-emerald-500/30', shadow: 'hover:shadow-emerald-500/10', titleHover: 'group-hover:text-emerald-400' },
+          violet:  { iconBg: 'bg-violet-900/30',  iconText: 'text-violet-400',  border: 'border-violet-500/30',  shadow: 'hover:shadow-violet-500/10',  titleHover: 'group-hover:text-violet-400'  },
+          amber:   { iconBg: 'bg-amber-900/30',   iconText: 'text-amber-400',   border: 'border-amber-500/30',   shadow: 'hover:shadow-amber-500/10',   titleHover: 'group-hover:text-amber-400'   },
+          cyan:    { iconBg: 'bg-cyan-900/30',    iconText: 'text-cyan-400',    border: 'border-cyan-500/30',    shadow: 'hover:shadow-cyan-500/10',    titleHover: 'group-hover:text-cyan-400'    },
+        };
+        const FeatureCard = ({ icon: Icon, title, description, accent = 'cyan' }) => {
+          const a = accentMap[accent] || accentMap.cyan;
+          return (
+            <div className={`bg-white/5 backdrop-blur-md p-8 rounded-2xl shadow-sm border ${a.border} hover:shadow-xl ${a.shadow} transition-all duration-300 group`}>
+              <div className={`w-14 h-14 ${a.iconBg} rounded-xl flex items-center justify-center mb-6`}>
+                <Icon className={`${a.iconText} w-8 h-8`} />
+              </div>
+              <h3 className={`text-xl font-bold text-white mb-3 ${a.titleHover} transition-colors`}>{title}</h3>
+              <p className="text-slate-400 leading-relaxed">{description}</p>
+            </div>
+          );
+        };
+
+        const highlightPython = (code) => {
+          const esc = (s) => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+          const tokens = [];
+          const src = code;
+          let i = 0;
+          while (i < src.length) {
+            // Comments
+            if (src[i] === '#') {
+              let end = src.indexOf('\n', i);
+              if (end === -1) end = src.length;
+              tokens.push('<span style="color:#64748b;font-style:italic">' + esc(src.slice(i, end)) + '</span>');
+              i = end;
+              continue;
+            }
+            // Strings (f-strings, triple-quoted, single/double)
+            if ((src[i] === 'f' && (src[i+1] === '"' || src[i+1] === "'")) ||
+                src[i] === '"' || src[i] === "'") {
+              let start = i;
+              let prefix = '';
+              if (src[i] === 'f') { prefix = 'f'; i++; }
+              const q = src.slice(i, i+3) === '"""' || src.slice(i, i+3) === "'''" ? src.slice(i, i+3) : src[i];
+              i += q.length;
+              while (i < src.length) {
+                if (src[i] === '\\') { i += 2; continue; }
+                if (src.slice(i, i + q.length) === q) { i += q.length; break; }
+                i++;
+              }
+              tokens.push('<span style="color:#34d399">' + esc(src.slice(start, i)) + '</span>');
+              continue;
+            }
+            // Numbers
+            if (/[0-9]/.test(src[i]) && (i === 0 || /[\s(,=\[{+\-*/:]/.test(src[i-1]))) {
+              let start = i;
+              while (i < src.length && /[0-9._eE]/.test(src[i])) i++;
+              tokens.push('<span style="color:#fbbf24">' + esc(src.slice(start, i)) + '</span>');
+              continue;
+            }
+            // Words (keywords, builtins, identifiers)
+            if (/[a-zA-Z_]/.test(src[i])) {
+              let start = i;
+              while (i < src.length && /[a-zA-Z0-9_]/.test(src[i])) i++;
+              const word = src.slice(start, i);
+              const keywords = ['import','from','as','def','class','return','if','elif','else','for','while','in','not','and','or','is','with','try','except','finally','raise','pass','break','continue','lambda','yield','True','False','None','del','global','nonlocal','assert'];
+              const builtins = ['print','display','len','int','str','float','list','dict','set','tuple','range','type','isinstance','open','super','map','filter','zip','enumerate','sorted','reversed','abs','round','min','max','sum','any','all','input','format','bool','bytes','hex','id','iter','next','object','repr','getattr','setattr','hasattr','callable','staticmethod','classmethod','property'];
+              if (keywords.includes(word)) {
+                tokens.push('<span style="color:#818cf8;font-weight:600">' + esc(word) + '</span>');
+              } else if (builtins.includes(word)) {
+                tokens.push('<span style="color:#22d3ee">' + esc(word) + '</span>');
+              } else {
+                tokens.push('<span style="color:#cbd5e1">' + esc(word) + '</span>');
+              }
+              continue;
+            }
+            // Operators and punctuation
+            if (/[=+\-*/<>!%&|^~@]/.test(src[i])) {
+              tokens.push('<span style="color:#94a3b8">' + esc(src[i]) + '</span>');
+              i++;
+              continue;
+            }
+            // Everything else (whitespace, parens, brackets, etc.)
+            tokens.push(esc(src[i]));
+            i++;
+          }
+          return tokens.join('');
+        };
+
+        const CodeBlock = ({ code, language = 'python', title }) => {
+          const lang = useLanguage();
+          const [copied, setCopied] = useState(false);
+
+          const handleCopy = () => {
+            navigator.clipboard.writeText(code);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+          };
+
+          const escHtml = (s) => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+          const highlighted = useMemo(() => language === 'python' ? highlightPython(code) : escHtml(code), [code, language]);
+
+          return (
+            <div className="my-8 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-md shadow-2xl border border-white/10">
+              <div className="flex justify-between items-center px-4 py-2 bg-white/5 border-b border-white/10">
+                <div className="flex items-center gap-2">
+                   <div className="flex gap-1.5">
+                     <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
+                     <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                     <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
+                   </div>
+                   <span className="ml-3 text-xs text-slate-400 font-mono">{title}</span>
+                </div>
+                <button
+                  onClick={handleCopy}
+                  className="text-slate-400 hover:text-white transition-colors flex items-center gap-1 text-xs uppercase font-bold tracking-wider"
+                >
+                  {copied ? <Check size={14} className="text-cyan-400" /> : <Copy size={14} />}
+                  {copied ? t(lang, 'copied') : t(lang, 'copy')}
+                </button>
+              </div>
+              <div className="p-4 overflow-x-auto">
+                <pre className="text-xs sm:text-sm font-mono text-slate-300 leading-relaxed">
+                  <code dangerouslySetInnerHTML={{ __html: highlighted }} />
+                </pre>
+              </div>
+            </div>
+          );
+        };
+
+        // --- Filterable Content Components ---
+
+        const FilterBar = ({ activeType, activeTags, availableTags, onTypeChange, onTagToggle, searchQuery, onSearchChange }) => {
+          const lang = useLanguage();
+          const types = [
+            { key: "all", label: t(lang, 'res.filter.all') },
+            { key: "notebook", label: t(lang, 'res.filter.notebooks') },
+            { key: "app", label: t(lang, 'res.filter.apps') },
+            { key: "dataset", label: t(lang, 'res.filter.datasets') },
+          ];
+
+          return (
+            <div className="mb-10">
+              <div className="relative mb-4">
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => onSearchChange(e.target.value)}
+                  placeholder={t(lang, 'res.searchPlaceholder')}
+                  className="w-full pl-10 pr-4 py-3 sm:py-2.5 bg-slate-800 text-white rounded-lg border border-slate-700 focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/30 focus:outline-none placeholder-slate-500 text-sm transition-colors"
+                />
+              </div>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {types.map((tp) => (
+                  <button
+                    key={tp.key}
+                    onClick={() => onTypeChange(tp.key)}
+                    className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                      activeType === tp.key
+                        ? "bg-cyan-600 text-white shadow-sm"
+                        : "bg-slate-800 text-slate-300 border border-slate-700 hover:border-cyan-500/50 hover:text-cyan-400"
+                    }`}
+                  >
+                    {tp.label}
+                  </button>
+                ))}
+              </div>
+              {availableTags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {availableTags.map((tag) => (
+                    <button
+                      key={tag}
+                      onClick={() => onTagToggle(tag)}
+                      className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                        activeTags.has(tag)
+                          ? "bg-cyan-600 text-white"
+                          : "bg-slate-800 text-slate-400 hover:bg-slate-700"
+                      }`}
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                  {activeTags.size > 0 && (
+                    <button
+                      onClick={() => onTagToggle(null)}
+                      className="px-3 py-1 rounded-full text-xs font-medium text-red-400 hover:bg-red-900/20 transition-all"
+                    >
+                      {t(lang, 'res.clearTags')}
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        };
+
+        const HOVER_GLOW = {
+          cyan:   "hover:border-cyan-500/40 hover:shadow-lg hover:shadow-cyan-500/10",
+          amber:  "hover:border-amber-500/40 hover:shadow-lg hover:shadow-amber-500/10",
+          violet: "hover:border-violet-500/40 hover:shadow-lg hover:shadow-violet-500/10",
+        };
+
+        const ContentCard = ({ item }) => {
+          const lang = useLanguage();
+          const colors = COLOR_CONFIG[item.color] || COLOR_CONFIG.cyan;
+          const hoverGlow = HOVER_GLOW[item.color] || HOVER_GLOW.cyan;
+          const IconComponent = ICON_MAP[item.icon] || Database;
+          const title = lang === 'es' && item.title_es ? item.title_es : item.title;
+          const description = lang === 'es' && item.description_es ? item.description_es : item.description;
+
+          return (
+            <div className={`bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 transition-all duration-300 flex flex-col relative ${hoverGlow}`}>
+              {item.pinned && (
+                <div className="absolute top-3 right-3 text-cyan-400/60" title={t(lang, 'res.pinned')}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                    <path d="M16 2L14.5 3.5l1 1-5.5 5.5-4-1L4.5 10.5 9 15l-5 5h2l4-4 4.5 4.5 1.5-1.5-1-4 5.5-5.5 1 1L23 8z"/>
+                  </svg>
+                </div>
+              )}
+              <div className="flex items-start gap-3 mb-3">
+                <div className={`p-2 rounded-lg flex-shrink-0 ${colors.bg} ${colors.text}`}>
+                  <IconComponent size={20} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-white leading-tight">{title}</h4>
+                  <span className="text-xs font-medium text-slate-500 uppercase tracking-wide">{t(lang, `type.${item.type}`)}</span>
+                </div>
+              </div>
+
+              <p className="text-sm text-slate-400 mb-4 flex-grow">{description}</p>
+
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                {item.tags.map((tag) => (
+                  <span key={tag} className={`text-xs px-2 py-0.5 rounded-full ${colors.tagBg} ${colors.tagText}`}>
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              {item.rows && (
+                <p className="text-xs text-slate-400 font-mono mb-3">
+                  {item.rows} {t(lang, 'res.rows')}{item.columns ? ` · ${item.columns} ${t(lang, 'res.cols')}` : ""}
+                </p>
+              )}
+
+              <div className="flex flex-wrap gap-3 mt-auto">
+                {item.links.map((link, i) => (
+                  link.type === "colab" ? (
+                    <a key={i} href={link.url} target="_blank" rel="noreferrer">
+                      <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" className="h-5" />
+                    </a>
+                  ) : (
+                    <a
+                      key={i}
+                      href={link.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-sm font-semibold hover:underline inline-flex items-center gap-1 text-slate-400 hover:text-cyan-400"
+                    >
+                      {t(lang, link.label_key)} <ExternalLink size={12} />
+                    </a>
+                  )
+                ))}
+              </div>
+            </div>
+          );
+        };
+
+        const ContentGrid = ({ items }) => {
+          const lang = useLanguage();
+          if (items.length === 0) {
+            return (
+              <div className="text-center py-16 text-slate-500">
+                <p className="text-lg mb-2">{t(lang, 'res.empty')}</p>
+              </div>
+            );
+          }
+          return (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {items.map((item, i) => (
+                <AnimateIn key={item.id} delay={i * 80}>
+                  <ContentCard item={item} />
+                </AnimateIn>
+              ))}
+            </div>
+          );
+        };
+
+        const MAX_VISIBLE_CARDS = 9;
+
+        const ResourcesSection = () => {
+          const lang = useLanguage();
+          const [activeType, setActiveType] = useState("all");
+          const [activeTags, setActiveTags] = useState(new Set());
+          const [showAll, setShowAll] = useState(false);
+          const [searchQuery, setSearchQuery] = useState("");
+
+          const handleTagToggle = (tag) => {
+            if (tag === null) {
+              setActiveTags(new Set());
+              setShowAll(false);
+              return;
+            }
+            setActiveTags((prev) => {
+              const next = new Set(prev);
+              if (next.has(tag)) next.delete(tag);
+              else next.add(tag);
+              return next;
+            });
+            setShowAll(false);
+          };
+
+          const filteredItems = CONTENT_REGISTRY.filter((item) => {
+            const typeMatch = activeType === "all" || item.type === activeType;
+            const tagMatch = activeTags.size === 0 || [...activeTags].every((tag) => item.tags.includes(tag));
+            if (!typeMatch || !tagMatch) return false;
+            if (searchQuery === "") return true;
+            const q = searchQuery.toLowerCase();
+            return item.title.toLowerCase().includes(q)
+              || (item.title_es && item.title_es.toLowerCase().includes(q))
+              || item.description.toLowerCase().includes(q)
+              || (item.description_es && item.description_es.toLowerCase().includes(q))
+              || item.tags.some(tag => tag.toLowerCase().includes(q));
+          });
+
+          // Sort: pinned first, then by date descending
+          const sortedItems = [...filteredItems].sort((a, b) => {
+            if (a.pinned !== b.pinned) return b.pinned - a.pinned;
+            return new Date(b.date) - new Date(a.date);
+          });
+
+          const displayItems = showAll ? sortedItems : sortedItems.slice(0, MAX_VISIBLE_CARDS);
+          const hasMore = sortedItems.length > MAX_VISIBLE_CARDS;
+
+          const availableTags = [...new Set(
+            CONTENT_REGISTRY
+              .filter((item) => activeType === "all" || item.type === activeType)
+              .flatMap((item) => item.tags)
+          )].sort();
+
+          return (
+            <section id="resources" className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+              <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-teal-500/8 rounded-full blur-[120px] pointer-events-none" aria-hidden="true"></div>
+              <AnimateIn>
+                <div className="text-center mb-12 relative z-10">
+                  <span className="text-cyan-400 font-bold tracking-wide uppercase text-sm">{t(lang, 'res.eyebrow')}</span>
+                  <h2 className="text-3xl md:text-4xl font-extrabold mt-2 mb-4">
+                    <span className="gradient-text">{t(lang, 'res.heading')}</span>
+                  </h2>
+                  <p className="max-w-3xl mx-auto text-lg text-slate-400">
+                    {t(lang, 'res.description')}
+                  </p>
+                </div>
+              </AnimateIn>
+
+              <FilterBar
+                activeType={activeType}
+                activeTags={activeTags}
+                availableTags={availableTags}
+                onTypeChange={(tp) => { setActiveType(tp); setActiveTags(new Set()); setShowAll(false); }}
+                onTagToggle={handleTagToggle}
+                searchQuery={searchQuery}
+                onSearchChange={(q) => { setSearchQuery(q); setShowAll(false); }}
+              />
+
+              <ContentGrid items={displayItems} />
+
+              {hasMore && (
+                <div className="text-center mt-8">
+                  <button
+                    onClick={() => setShowAll((prev) => !prev)}
+                    className="px-6 py-2.5 rounded-full text-sm font-semibold transition-all border border-white/10 text-slate-300 hover:border-cyan-500/40 hover:text-cyan-400 hover:shadow-lg hover:shadow-cyan-500/10"
+                  >
+                    {showAll ? t(lang, 'res.showLess') : t(lang, 'res.viewAll').replace('{count}', sortedItems.length)}
+                  </button>
+                </div>
+              )}
+
+            </section>
+          );
+        };
+
+        // --- People Section ---
+        const PersonCard = ({ person }) => {
+          const lang = useLanguage();
+          const initials = person.name.split(" ").map((n) => n[0]).join("");
+          return (
+            <div className="flex flex-col items-center max-w-xs">
+              {person.avatar ? (
+                <img
+                  src={person.avatar}
+                  alt={person.name}
+                  className="contributor-avatar w-24 h-24 rounded-full mb-4 object-cover shadow-sm border-2 border-white/20"
+                />
+              ) : (
+                <div className="contributor-avatar w-24 h-24 rounded-full mb-4 bg-white/10 flex items-center justify-center text-slate-400 text-2xl font-bold border-2 border-white/20">
+                  {initials}
+                </div>
+              )}
+              <h3 className="text-xl font-bold text-white">{person.name}</h3>
+              {person.title && <p className="text-slate-400 text-sm">{person.title}</p>}
+              {person.affiliation && <p className="text-slate-500 text-sm mt-1">{person.affiliation}</p>}
+              {person.website && (
+                <a
+                  href={person.website}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center mt-4 px-5 py-2 border border-white/20 text-cyan-400 text-sm font-semibold rounded-lg hover:bg-white/10 hover:border-cyan-500/40 transition-all"
+                >
+                  {t(lang, 'people.visitWebsite')} <ExternalLink size={12} className="ml-2" />
+                </a>
+              )}
+            </div>
+          );
+        };
+
+        const PeopleSection = () => {
+          const lang = useLanguage();
+          return (
+          <section id="people" className="py-20 bg-slate-900 border-t border-slate-800">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              <AnimateIn>
+                <h2 className="text-3xl font-extrabold mb-14"><span className="gradient-text">{t(lang, 'people.heading')}</span></h2>
+              </AnimateIn>
+
+              {/* Project Coordinators */}
+              <div className="mb-14">
+                <AnimateIn>
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="h-px bg-slate-600 flex-1"></div>
+                    <h3 className="text-lg font-bold text-cyan-400 whitespace-nowrap">{t(lang, 'people.coordinators')}</h3>
+                    <div className="h-px bg-slate-600 flex-1"></div>
+                  </div>
+                </AnimateIn>
+                <div className="flex justify-center">
+                  {PEOPLE.editors.map((p, i) => (
+                    <AnimateIn key={p.name} delay={i * 100}>
+                      <PersonCard person={p} />
+                    </AnimateIn>
+                  ))}
+                </div>
+              </div>
+
+              {/* Contributors */}
+              <div>
+                <AnimateIn>
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="h-px bg-slate-600 flex-1"></div>
+                    <h3 className="text-lg font-bold text-cyan-400 whitespace-nowrap">{t(lang, 'people.contributors')}</h3>
+                    <div className="h-px bg-slate-600 flex-1"></div>
+                  </div>
+                </AnimateIn>
+                <div className="flex flex-wrap justify-center gap-6 sm:gap-8 md:gap-12">
+                  {PEOPLE.contributors.map((p, i) => (
+                    <AnimateIn key={p.name} delay={i * 100}>
+                      <PersonCard person={p} />
+                    </AnimateIn>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+          );
+        };
+
+        // --- Community Section ---
+        const CommunitySection = () => {
+          const lang = useLanguage();
+          return (
+          <section id="community" className="py-20 border-t border-slate-800 relative overflow-hidden">
+            <div className="absolute top-1/2 left-1/3 w-[400px] h-[400px] bg-cyan-500/8 rounded-full blur-[120px] pointer-events-none" aria-hidden="true"></div>
+            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+              <AnimateIn>
+                <h2 className="text-3xl font-extrabold mb-6"><span className="gradient-text">{t(lang, 'community.heading')}</span></h2>
+              </AnimateIn>
+              <p className="text-slate-400 leading-relaxed mb-8">
+                {t(lang, 'community.intro')}
+              </p>
+
+              <ul className="text-left max-w-lg mx-auto space-y-3 text-slate-400 mb-10">
+                <li className="flex items-start gap-3">
+                  <i className="fa-solid fa-circle-question text-cyan-500 mt-1"></i>
+                  <span>{t(lang, 'community.bullet.1')}</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <i className="fa-solid fa-lightbulb text-cyan-500 mt-1"></i>
+                  <span>{t(lang, 'community.bullet.2')}</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <i className="fa-solid fa-code text-cyan-500 mt-1"></i>
+                  <span>{t(lang, 'community.bullet.3')}</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <i className="fa-solid fa-comments text-cyan-500 mt-1"></i>
+                  <span>{t(lang, 'community.bullet.4')}</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <i className="fa-solid fa-hand-holding-heart text-cyan-500 mt-1"></i>
+                  <span>{t(lang, 'community.bullet.5')}</span>
+                </li>
+              </ul>
+
+              <a
+                href="https://github.com/quarcs-lab/bolivia112/discussions"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center px-8 py-3.5 border border-transparent text-base font-semibold rounded-lg shadow-sm text-white bg-cyan-500 hover:bg-cyan-600 transition-all hover:shadow-lg hover:-translate-y-0.5"
+              >
+                <i className="fa-brands fa-github mr-2"></i> {t(lang, 'community.cta')}
+              </a>
+            </div>
+          </section>
+          );
+        };
+
+        // --- Events Section ---
+        const EventsSection = () => {
+          const lang = useLanguage();
+          return (
+          <section id="events" className="py-20 bg-slate-900 border-t border-slate-800">
+            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              <AnimateIn>
+                <h2 className="text-3xl font-extrabold mb-6"><span className="gradient-text">{t(lang, 'events.heading')}</span></h2>
+              </AnimateIn>
+              <p className="text-slate-400 leading-relaxed mb-8">
+                {t(lang, 'events.intro')}
+              </p>
+
+              <ul className="text-left max-w-lg mx-auto space-y-3 text-slate-400 mb-10">
+                <li className="flex items-start gap-3">
+                  <i className="fa-solid fa-chalkboard-user text-cyan-500 mt-1"></i>
+                  <span>{t(lang, 'events.bullet.1')}</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <i className="fa-solid fa-laptop-code text-cyan-500 mt-1"></i>
+                  <span>{t(lang, 'events.bullet.2')}</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <i className="fa-solid fa-users text-cyan-500 mt-1"></i>
+                  <span>{t(lang, 'events.bullet.3')}</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <i className="fa-solid fa-bell text-cyan-500 mt-1"></i>
+                  <span>{t(lang, 'events.bullet.4')}</span>
+                </li>
+              </ul>
+
+              <a
+                href="https://luma.com/cmg"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center px-8 py-3.5 border border-transparent text-base font-semibold rounded-lg shadow-sm text-white bg-cyan-500 hover:bg-cyan-600 transition-all hover:shadow-lg hover:-translate-y-0.5"
+              >
+                <i className="fa-solid fa-calendar-check mr-2"></i> {t(lang, 'events.cta')}
+              </a>
+            </div>
+          </section>
+          );
+        };
+
+        // --- Main App Component ---
+
+        const App = () => {
+          const [lang, setLang] = useState(() => localStorage.getItem('b112_lang') || 'en');
+          const toggleLang = () => {
+            const next = lang === 'en' ? 'es' : 'en';
+            setLang(next);
+            localStorage.setItem('b112_lang', next);
+          };
+
+          return (
+            <LanguageContext.Provider value={lang}>
+            <div className="bg-slate-950 min-h-screen font-sans selection:bg-cyan-900/50 selection:text-cyan-100">
+              <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:bg-cyan-500 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold">
+                Skip to content
+              </a>
+              <Navigation toggleLang={toggleLang} />
+              <main id="main-content">
+              <Hero />
+
+              {/* Introduction Section */}
+              <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+                <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-indigo-500/8 rounded-full blur-[128px] pointer-events-none" aria-hidden="true"></div>
+                <AnimateIn>
+                  <div className="text-center mb-16 relative z-10">
+                    <span className="text-cyan-400 font-bold tracking-wide uppercase text-sm">{t(lang, 'mission.eyebrow')}</span>
+                    <h2 className="text-3xl md:text-4xl font-extrabold mt-2 mb-4">
+                      <span className="gradient-text">{t(lang, 'mission.heading')}</span>
+                    </h2>
+                    <p className="max-w-3xl mx-auto text-lg text-slate-400">
+                      {t(lang, 'mission.description')}
+                    </p>
+                  </div>
+                </AnimateIn>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+                  <AnimateIn delay={0}>
+                    <FeatureCard
+                      icon={Globe}
+                      title={t(lang, 'mission.card1.title')}
+                      description={t(lang, 'mission.card1.desc')}
+                      accent="emerald"
+                    />
+                  </AnimateIn>
+                  <AnimateIn delay={100}>
+                    <FeatureCard
+                      icon={BarChart2}
+                      title={t(lang, 'mission.card2.title')}
+                      description={t(lang, 'mission.card2.desc')}
+                      accent="violet"
+                    />
+                  </AnimateIn>
+                  <AnimateIn delay={200}>
+                    <FeatureCard
+                      icon={MapIcon}
+                      title={t(lang, 'mission.card3.title')}
+                      description={t(lang, 'mission.card3.desc')}
+                      accent="amber"
+                    />
+                  </AnimateIn>
+                </div>
+              </section>
+
+              {/* Apps Section */}
+              <section id="apps" className="bg-slate-900 py-20 border-y border-slate-800">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                  <div className="flex flex-col lg:flex-row items-center gap-12">
+                    <AnimateIn className="lg:w-1/2">
+                      <span className="text-cyan-400 font-bold tracking-wide uppercase text-sm">{t(lang, 'dash.eyebrow')}</span>
+                      <h2 className="text-3xl font-extrabold mt-2 mb-6">
+                        <span className="gradient-text">{t(lang, 'dash.heading')}</span>
+                      </h2>
+                      <p className="text-slate-400 mb-6 text-lg">
+                        {t(lang, 'dash.description')}
+                      </p>
+                      <ul className="space-y-4 mb-8">
+                        {[
+                          t(lang, 'dash.bullet.1'),
+                          t(lang, 'dash.bullet.2'),
+                          t(lang, 'dash.bullet.3'),
+                          t(lang, 'dash.bullet.4')
+                        ].map((item, i) => (
+                          <li key={i} className="flex items-center gap-3 text-slate-300">
+                            <div className="w-6 h-6 rounded-full bg-cyan-900/30 flex items-center justify-center text-cyan-400">
+                              <Check size={14} strokeWidth={3} />
+                            </div>
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                      <a
+                        href="https://carlos-mendez.projects.earthengine.app/view/geoexplorer1v100bolivia"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 text-white bg-cyan-500 hover:bg-cyan-600 px-6 py-3 rounded-lg font-semibold transition-all"
+                      >
+                        {t(lang, 'dash.launch')} <ExternalLink size={18} />
+                      </a>
+                    </AnimateIn>
+                    <AnimateIn delay={200} className="w-full lg:w-1/2 relative group">
+                      <div className="absolute inset-0 bg-cyan-500 rounded-2xl rotate-3 opacity-20 group-hover:rotate-6 transition-transform duration-500"></div>
+                      <div className="relative bg-white/5 backdrop-blur-md rounded-2xl overflow-hidden shadow-lg border border-white/10">
+                        <ImageCarousel
+                          images={[
+                            'images/app01-carousel/app01_01.jpeg',
+                            'images/app01-carousel/app01_02.jpeg',
+                            'images/app01-carousel/app01_03.jpeg',
+                            'images/app01-carousel/app01_04.jpeg',
+                            'images/app01-carousel/app01_05.jpeg',
+                          ]}
+                        />
+                      </div>
+                    </AnimateIn>
+                  </div>
+                </div>
+              </section>
+
+              {/* Code Examples Section */}
+              <section id="examples" className="bg-slate-900 text-white py-20">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                  {/* Section Header */}
+                  <AnimateIn>
+                    <div className="text-center mb-16">
+                      <span className="text-cyan-400 font-bold tracking-wide uppercase text-sm">{t(lang, 'ex.sectionEyebrow')}</span>
+                      <h2 className="text-3xl md:text-4xl font-extrabold mt-2 mb-4">
+                        <span className="gradient-text">{t(lang, 'ex.sectionHeading')}</span>
+                      </h2>
+                      <p className="max-w-3xl mx-auto text-lg text-slate-400">
+                        {t(lang, 'ex.sectionDescription')}
+                      </p>
+                    </div>
+                  </AnimateIn>
+
+                  {/* ── Part 1: Dataset Architecture & Identifiers ── */}
+                  <AnimateIn className="mb-16">
+                    <h3 className="text-xl font-bold text-white flex items-center gap-3 mb-6">
+                      <span className="w-9 h-9 rounded-full bg-gradient-to-br from-cyan-500/20 to-indigo-500/20 border border-cyan-500/30 flex items-center justify-center text-sm font-bold text-cyan-400">1</span>
+                      {t(lang, 'ex.part1')}
+                    </h3>
+                    <div className="bg-white/[0.03] backdrop-blur-md rounded-2xl shadow-lg border border-white/10 overflow-hidden">
+                      <div className="px-6 py-5 border-b border-white/10 bg-gradient-to-r from-cyan-500/10 via-indigo-500/5 to-transparent flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-cyan-500/15 flex items-center justify-center">
+                          <Database size={16} className="text-cyan-400" />
+                        </div>
+                        <div>
+                          <h4 className="text-base font-bold text-white">{t(lang, 'table.title')}</h4>
+                          <p className="text-sm text-slate-400 mt-0.5">{t(lang, 'table.subtitle')} <code className="text-cyan-400 bg-cyan-400/10 px-1.5 py-0.5 rounded text-xs">prov_id</code>.</p>
+                        </div>
+                      </div>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm text-left">
+                          <thead>
+                            <tr className="bg-gradient-to-r from-slate-800/80 to-slate-800/40 text-slate-300 font-semibold uppercase text-xs tracking-wider">
+                              <th className="px-3 py-3 md:px-6 md:py-4">{t(lang, 'table.col.category')}</th>
+                              <th className="px-3 py-3 md:px-6 md:py-4">{t(lang, 'table.col.filePath')}</th>
+                              <th className="px-3 py-3 md:px-6 md:py-4">{t(lang, 'table.col.description')}</th>
+                              <th className="px-3 py-3 md:px-6 md:py-4">{t(lang, 'table.col.joinKey')}</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-700/50">
+                            <tr className="hover:bg-cyan-500/[0.04] transition-colors">
+                              <td className="px-3 py-3 md:px-6 md:py-4 font-medium text-white">
+                                <span className="inline-flex items-center gap-2">
+                                  <span className="w-2 h-2 rounded-full bg-teal-400"></span>
+                                  {t(lang, 'table.cat.regionNames')}
+                                </span>
+                              </td>
+                              <td className="px-3 py-3 md:px-6 md:py-4 font-mono text-xs"><a href="https://github.com/quarcs-lab/bolivia112/blob/main/regionNames/regionNames.csv" target="_blank" rel="noreferrer" className="text-cyan-400 hover:text-cyan-300 hover:underline transition-colors">/regionNames/regionNames.csv</a></td>
+                              <td className="px-3 py-3 md:px-6 md:py-4 text-slate-400"><a href="https://github.com/quarcs-lab/bolivia112/blob/main/regionNames/README.md" target="_blank" rel="noreferrer" className="hover:text-cyan-400 hover:underline transition-colors">{t(lang, 'table.desc.regionNames')}</a></td>
+                              <td className="px-3 py-3 md:px-6 md:py-4"><code className="font-mono text-cyan-400 bg-cyan-400/10 px-2 py-0.5 rounded text-xs font-bold">prov_id</code></td>
+                            </tr>
+                            <tr className="hover:bg-cyan-500/[0.04] transition-colors bg-white/[0.015]">
+                              <td className="px-3 py-3 md:px-6 md:py-4 font-medium text-white">
+                                <span className="inline-flex items-center gap-2">
+                                  <span className="w-2 h-2 rounded-full bg-indigo-400"></span>
+                                  {t(lang, 'table.cat.sdgIndices')}
+                                </span>
+                              </td>
+                              <td className="px-3 py-3 md:px-6 md:py-4 font-mono text-xs"><a href="https://github.com/quarcs-lab/bolivia112/blob/main/sdg/sdg.csv" target="_blank" rel="noreferrer" className="text-cyan-400 hover:text-cyan-300 hover:underline transition-colors">/sdg/sdg.csv</a></td>
+                              <td className="px-3 py-3 md:px-6 md:py-4 text-slate-400"><a href="https://github.com/quarcs-lab/bolivia112/blob/main/sdg/README.md" target="_blank" rel="noreferrer" className="hover:text-cyan-400 hover:underline transition-colors">{t(lang, 'table.desc.sdgIndices')}</a></td>
+                              <td className="px-3 py-3 md:px-6 md:py-4"><code className="font-mono text-cyan-400 bg-cyan-400/10 px-2 py-0.5 rounded text-xs font-bold">prov_id</code></td>
+                            </tr>
+                            <tr className="hover:bg-cyan-500/[0.04] transition-colors">
+                              <td className="px-3 py-3 md:px-6 md:py-4 font-medium text-white">
+                                <span className="inline-flex items-center gap-2">
+                                  <span className="w-2 h-2 rounded-full bg-violet-400"></span>
+                                  {t(lang, 'table.cat.sdgVariables')}
+                                </span>
+                              </td>
+                              <td className="px-3 py-3 md:px-6 md:py-4 font-mono text-xs"><a href="https://github.com/quarcs-lab/bolivia112/blob/main/sdgVariables/sdgVariables.csv" target="_blank" rel="noreferrer" className="text-cyan-400 hover:text-cyan-300 hover:underline transition-colors">/sdgVariables/sdgVariables.csv</a></td>
+                              <td className="px-3 py-3 md:px-6 md:py-4 text-slate-400"><a href="https://github.com/quarcs-lab/bolivia112/blob/main/sdgVariables/README.md" target="_blank" rel="noreferrer" className="hover:text-cyan-400 hover:underline transition-colors">{t(lang, 'table.desc.sdgVariables')}</a></td>
+                              <td className="px-3 py-3 md:px-6 md:py-4"><code className="font-mono text-cyan-400 bg-cyan-400/10 px-2 py-0.5 rounded text-xs font-bold">prov_id</code></td>
+                            </tr>
+                            <tr className="hover:bg-cyan-500/[0.04] transition-colors bg-white/[0.015]">
+                              <td className="px-3 py-3 md:px-6 md:py-4 font-medium text-white">
+                                <span className="inline-flex items-center gap-2">
+                                  <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                                  {t(lang, 'table.cat.ntl')}
+                                </span>
+                              </td>
+                              <td className="px-3 py-3 md:px-6 md:py-4 font-mono text-xs"><a href="https://github.com/quarcs-lab/bolivia112/blob/main/ntl/ln_NTLpc.csv" target="_blank" rel="noreferrer" className="text-cyan-400 hover:text-cyan-300 hover:underline transition-colors">/ntl/ln_NTLpc.csv</a></td>
+                              <td className="px-3 py-3 md:px-6 md:py-4 text-slate-400"><a href="https://github.com/quarcs-lab/bolivia112/blob/main/ntl/README.md" target="_blank" rel="noreferrer" className="hover:text-cyan-400 hover:underline transition-colors">{t(lang, 'table.desc.ntl')}</a></td>
+                              <td className="px-3 py-3 md:px-6 md:py-4"><code className="font-mono text-cyan-400 bg-cyan-400/10 px-2 py-0.5 rounded text-xs font-bold">prov_id</code></td>
+                            </tr>
+                            <tr className="hover:bg-cyan-500/[0.04] transition-colors">
+                              <td className="px-3 py-3 md:px-6 md:py-4 font-medium text-white">
+                                <span className="inline-flex items-center gap-2">
+                                  <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                                  {t(lang, 'table.cat.population')}
+                                </span>
+                              </td>
+                              <td className="px-3 py-3 md:px-6 md:py-4 font-mono text-xs"><a href="https://github.com/quarcs-lab/bolivia112/blob/main/pop/pop.csv" target="_blank" rel="noreferrer" className="text-cyan-400 hover:text-cyan-300 hover:underline transition-colors">/pop/pop.csv</a></td>
+                              <td className="px-3 py-3 md:px-6 md:py-4 text-slate-400"><a href="https://github.com/quarcs-lab/bolivia112/blob/main/pop/README.md" target="_blank" rel="noreferrer" className="hover:text-cyan-400 hover:underline transition-colors">{t(lang, 'table.desc.population')}</a></td>
+                              <td className="px-3 py-3 md:px-6 md:py-4"><code className="font-mono text-cyan-400 bg-cyan-400/10 px-2 py-0.5 rounded text-xs font-bold">prov_id</code></td>
+                            </tr>
+                            <tr className="hover:bg-cyan-500/[0.04] transition-colors bg-white/[0.015]">
+                              <td className="px-3 py-3 md:px-6 md:py-4 font-medium text-white">
+                                <span className="inline-flex items-center gap-2">
+                                  <span className="w-2 h-2 rounded-full bg-rose-400"></span>
+                                  {t(lang, 'table.cat.satelliteEmb')}
+                                </span>
+                              </td>
+                              <td className="px-3 py-3 md:px-6 md:py-4 font-mono text-xs"><a href="https://github.com/quarcs-lab/bolivia112/blob/main/satelliteEmbeddings/satelliteEmbeddings2017.csv" target="_blank" rel="noreferrer" className="text-cyan-400 hover:text-cyan-300 hover:underline transition-colors">/satelliteEmbeddings/satelliteEmbeddings2017.csv</a></td>
+                              <td className="px-3 py-3 md:px-6 md:py-4 text-slate-400"><a href="https://github.com/quarcs-lab/bolivia112/blob/main/satelliteEmbeddings/README.md" target="_blank" rel="noreferrer" className="hover:text-cyan-400 hover:underline transition-colors">{t(lang, 'table.desc.satelliteEmb')}</a></td>
+                              <td className="px-3 py-3 md:px-6 md:py-4"><code className="font-mono text-cyan-400 bg-cyan-400/10 px-2 py-0.5 rounded text-xs font-bold">prov_id</code></td>
+                            </tr>
+                            <tr className="hover:bg-cyan-500/[0.04] transition-colors">
+                              <td className="px-3 py-3 md:px-6 md:py-4 font-medium text-white">
+                                <span className="inline-flex items-center gap-2">
+                                  <span className="w-2 h-2 rounded-full bg-sky-400"></span>
+                                  {t(lang, 'table.cat.boundaries')}
+                                </span>
+                              </td>
+                              <td className="px-3 py-3 md:px-6 md:py-4 font-mono text-xs"><a href="https://github.com/quarcs-lab/bolivia112/blob/main/maps/bolivia112provincesOpt.geojson" target="_blank" rel="noreferrer" className="text-cyan-400 hover:text-cyan-300 hover:underline transition-colors">/maps/bolivia112provincesOpt.geojson</a></td>
+                              <td className="px-3 py-3 md:px-6 md:py-4 text-slate-400">{t(lang, 'table.desc.boundaries')}</td>
+                              <td className="px-3 py-3 md:px-6 md:py-4"><code className="font-mono text-cyan-400 bg-cyan-400/10 px-2 py-0.5 rounded text-xs font-bold">prov_id</code></td>
+                            </tr>
+                            <tr className="hover:bg-cyan-500/[0.04] transition-colors bg-white/[0.015]">
+                              <td className="px-3 py-3 md:px-6 md:py-4 font-medium text-white">
+                                <span className="inline-flex items-center gap-2">
+                                  <span className="w-2 h-2 rounded-full bg-lime-400"></span>
+                                  {t(lang, 'table.cat.gdp')}
+                                </span>
+                              </td>
+                              <td className="px-3 py-3 md:px-6 md:py-4 font-mono text-xs"><a href="https://github.com/quarcs-lab/bolivia112/blob/main/gdp/gdp_perCapita_1990_2024.csv" target="_blank" rel="noreferrer" className="text-cyan-400 hover:text-cyan-300 hover:underline transition-colors">/gdp/gdp_perCapita_1990_2024.csv</a></td>
+                              <td className="px-3 py-3 md:px-6 md:py-4 text-slate-400"><a href="https://github.com/quarcs-lab/bolivia112/blob/main/gdp/README.md" target="_blank" rel="noreferrer" className="hover:text-cyan-400 hover:underline transition-colors">{t(lang, 'table.desc.gdp')}</a></td>
+                              <td className="px-3 py-3 md:px-6 md:py-4"><code className="font-mono text-cyan-400 bg-cyan-400/10 px-2 py-0.5 rounded text-xs font-bold">prov_id</code></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div className="bg-amber-950/30 px-3 py-3 md:px-6 md:py-4 border-t border-amber-900/30 flex gap-3">
+                        <div className="text-amber-400 flex-shrink-0 mt-0.5">
+                          <Layers size={20} />
+                        </div>
+                        <p className="text-sm text-amber-200/80">
+                          <strong>{t(lang, 'table.importantNote')}</strong> {t(lang, 'table.note')} <code className="text-amber-300 bg-amber-400/10 px-1.5 py-0.5 rounded text-xs">prov_id</code>. {t(lang, 'table.note.1')} <code className="bg-white/5 px-1.5 py-0.5 rounded text-xs">mun_id</code> {t(lang, 'table.note.2')} <code className="bg-white/5 px-1.5 py-0.5 rounded text-xs">prov_id</code> {t(lang, 'table.note.3')} <code className="bg-white/5 px-1.5 py-0.5 rounded text-xs">int</code> {t(lang, 'table.note.4')} <code className="bg-white/5 px-1.5 py-0.5 rounded text-xs">string</code> {t(lang, 'table.note.5')}
+                        </p>
+                      </div>
+                    </div>
+                  </AnimateIn>
+
+                  {/* ── Part 2: Construct Your Own Dataset ── */}
+                  <AnimateIn>
+                    <h3 id="construct-dataset" className="text-xl font-bold text-white flex items-center gap-3 mb-6">
+                      <span className="w-9 h-9 rounded-full bg-gradient-to-br from-cyan-500/20 to-indigo-500/20 border border-cyan-500/30 flex items-center justify-center text-sm font-bold text-cyan-400">2</span>
+                      {t(lang, 'ex.part2')}
+                    </h3>
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10">
+                      <div>
+                        <p className="text-slate-400 max-w-2xl">
+                          {t(lang, 'ex.description')}
+                        </p>
+                      </div>
+                      <a
+                        href="https://colab.research.google.com/notebooks/empty.ipynb"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-4 md:mt-0 flex-shrink-0"
+                      >
+                        <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" />
+                      </a>
+                    </div>
+                  </AnimateIn>
+
+                  <div className="space-y-12">
+
+                    {/* Example 1 */}
+                    <AnimateIn>
+                      <h4 className="text-lg font-bold text-white flex items-center gap-2 mb-2">
+                        <span className="w-7 h-7 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-xs text-cyan-400">a</span>
+                        {t(lang, 'ex.1.title')}
+                      </h4>
+                      <p className="text-slate-400 mb-4 ml-9">{t(lang, 'ex.1.desc')}</p>
+                      <CodeBlock
+                        title="example_01_merge_attributes.py"
+                        code={`import pandas as pd
+import plotly.express as px
+
+# 1. SETUP: Define Source URLs
+REPO_URL = "https://raw.githubusercontent.com/quarcs-lab/bolivia112/main"
+
+url_names = f"{REPO_URL}/regionNames/regionNames.csv"
+url_sdg   = f"{REPO_URL}/sdg/sdg.csv"
+url_ntl   = f"{REPO_URL}/ntl/ln_NTLpc.csv"
+url_emb   = f"{REPO_URL}/satelliteEmbeddings/satelliteEmbeddings2017.csv"
+
+# 2. LOAD: Read CSVs
+print("Loading datasets...")
+df_names      = pd.read_csv(url_names)
+df_sdg        = pd.read_csv(url_sdg)
+df_ntl        = pd.read_csv(url_ntl)
+df_embeddings = pd.read_csv(url_emb)
+
+# 3. MERGE: Combine Dataframes
+df = pd.merge(df_names, df_sdg, on='prov_id', how='inner')
+df = pd.merge(df, df_ntl, on='prov_id', how='inner')
+df = pd.merge(df, df_embeddings, on='prov_id', how='inner')
+
+# 4. VERIFY
+print(f"Merge Complete. Final Rows: {len(df)}")
+display(df[['prov', 'dep', 'imds', 'ln_NTLpc2019', 'A00']].head())
+
+# 5. SCATTERPLOT: Development vs NTL
+fig = px.scatter(
+    df, x='ln_NTLpc2019', y='imds',
+    hover_name='mun', color='dep',
+    trendline='ols', trendline_scope='overall',
+    labels={'ln_NTLpc2019': 'Log Night-time Lights (2019)',
+            'imds': 'Sustainable Development Index'},
+    title='Sustainable Development vs Night-time Lights'
+)
+
+fig.show()`}
+                      />
+                    </AnimateIn>
+
+                    {/* Example 2 */}
+                    <AnimateIn>
+                      <h4 className="text-lg font-bold text-white flex items-center gap-2 mb-2">
+                        <span className="w-7 h-7 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-xs text-cyan-400">b</span>
+                        {t(lang, 'ex.2.title')}
+                      </h4>
+                      <p className="text-slate-400 mb-4 ml-9">{t(lang, 'ex.2.desc')}</p>
+                      <CodeBlock
+                        title="example_02_spatial_merge.py"
+                        code={`import geopandas as gpd
+import matplotlib.pyplot as plt
+
+# 1. LOAD SPATIAL DATA
+geojson_url = f"{REPO_URL}/maps/bolivia112provincesOpt.geojson"
+print("Loading GeoJSON map...")
+gdf_boundaries = gpd.read_file(geojson_url)
+
+# 2. SPATIAL DATA PREPARATION
+# Force 'prov_id' to integer to match the pandas dataframe
+gdf_boundaries['prov_id'] = gdf_boundaries['prov_id'].astype(int)
+
+# 3. ATTRIBUTE JOIN
+gdf_bolivia = gdf_boundaries.merge(df, on='prov_id', how='inner')
+
+# 4. VISUALIZATION (Choropleth Map)
+fig, ax = plt.subplots(1, 1, figsize=(12, 10))
+
+gdf_bolivia.plot(
+    column='index_sdg1',    # Variable to map
+    cmap='viridis',         # Color palette
+    linewidth=0.1, edgecolor='white',
+    legend=True,
+    legend_kwds={'label': "SDG 1 Index (No Poverty)", 'orientation': "horizontal"},
+    ax=ax
+)
+
+ax.set_title("Bolivia: SDG 1 Index by Province (112 provinces)", fontsize=15)
+ax.set_axis_off()
+plt.show()`}
+                      />
+                    </AnimateIn>
+
+                  </div>
+                </div>
+              </section>
+
+              {/* Resources Section (Filterable) */}
+              <ResourcesSection />
+
+              {/* People, Community & Events */}
+              <PeopleSection />
+              <CommunitySection />
+              <EventsSection />
+
+              {/* Citation & Sources */}
+              <section id="citation" className="py-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+                <div className="absolute top-1/3 right-0 w-[350px] h-[350px] bg-violet-500/8 rounded-full blur-[120px] pointer-events-none" aria-hidden="true"></div>
+
+                <AnimateIn>
+                <div className="mb-12 relative z-10">
+                  <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                    <FileText className="text-cyan-400" /> <span className="gradient-text">{t(lang, 'cite.heading')}</span>
+                  </h2>
+                  {(() => {
+                    const [apaCopied, setApaCopied] = useState(false);
+                    const apaText = 'Mendez, C., Gonzales, E., Leoni, P., Andersen, L., Peralta, H. (2026). bolivia112: A Province-Level Data Science Repository to Study Regional Development in Bolivia. GitHub. https://github.com/quarcs-lab/bolivia112';
+                    const handleApaCopy = () => {
+                      navigator.clipboard.writeText(apaText);
+                      setApaCopied(true);
+                      setTimeout(() => setApaCopied(false), 2000);
+                    };
+                    return (
+                      <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 shadow-sm mb-6">
+                        <div className="flex justify-between items-center mb-2">
+                          <h4 className="font-bold text-slate-200 text-sm uppercase tracking-wide">{t(lang, 'cite.apa')}</h4>
+                          <button
+                            onClick={handleApaCopy}
+                            className="text-slate-400 hover:text-white transition-colors flex items-center gap-1 text-xs uppercase font-bold tracking-wider"
+                          >
+                            {apaCopied ? <Check size={14} className="text-cyan-400" /> : <Copy size={14} />}
+                            {apaCopied ? t(lang, 'copied') : t(lang, 'copy')}
+                          </button>
+                        </div>
+                        <p className="text-slate-400 italic">{apaText}</p>
+                      </div>
+                    );
+                  })()}
+
+                  <CodeBlock
+                     title="BibTeX"
+                     language="latex"
+                     code={`@misc{bolivia112_2026,
+  author = {Mendez, Carlos and Gonzales, Erick and Leoni, Pedro and Andersen, Lykke and Peralta, Hendrix},
+  title = {{bolivia112}: A Province-Level Data Science Repository to Study Regional Development in Bolivia},
+  year = {2026},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\\url{https://github.com/quarcs-lab/bolivia112}}
+}`}
+                  />
+                </div>
+                </AnimateIn>
+
+              </section>
+
+              </main>
+              {/* Footer */}
+              <footer className="bg-slate-950 border-t border-white/5 py-12">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                  <div className="text-center md:text-left">
+                    <span className="font-bold text-xl gradient-text">bolivia112</span>
+                    <p className="text-sm text-slate-500 mt-2">{t(lang, 'footer.tagline')}</p>
+                  </div>
+                  <div className="flex gap-6">
+                     <a href="https://github.com/quarcs-lab/bolivia112" className="text-slate-500 hover:text-white transition-colors">
+                       <Github size={24} />
+                     </a>
+                  </div>
+                </div>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 text-center">
+                    <p className="text-sm text-slate-500">
+                       {t(lang, 'footer.prompt1')}{' '}
+                       <a href="https://github.com/quarcs-lab/bolivia112/issues" className="text-cyan-400 hover:underline">{t(lang, 'footer.issue')}</a>{' '}
+                       {t(lang, 'footer.prompt2')}{' '}
+                       <a href="https://github.com/quarcs-lab/bolivia112/discussions" className="text-cyan-400 hover:underline">{t(lang, 'footer.discussion')}</a>{' '}
+                       {t(lang, 'footer.prompt3')}
+                    </p>
+                </div>
+              </footer>
+
+            </div>
+            </LanguageContext.Provider>
+          );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

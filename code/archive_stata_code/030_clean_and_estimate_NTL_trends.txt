@@ -1,0 +1,619 @@
+-----------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/carlosmendez/Documents/GitHub/project2021o/c00-transform_data/030_clean_and_estimate_NTL_trends.txt
+  log type:  text
+ opened on:  26 Apr 2022, 12:55:35
+
+. 
+. ** 3. Install modules
+. *ssc install estout, replace all
+. *ssc install outreg2, replace all
+. *ssc install reghdfe, replace all * INFO: http://scorreia.com/software/reghdfe/
+. *net install gr0009_1, from (http://www.stata-journal.com/software/sj10-1) replace all
+. *net install tsg_schemes, from("https://raw.githubusercontent.com/asjadnaqvi/Stata-schemes/main/schemes/") replace al
+> l
+. *set scheme white_tableau, permanently
+. *set scheme gg_tableau, permanently
+. 
+. ** 4. Import data
+. import delimited "../data/rawData/NTL/61556172109a8645cf7aca33_results.csv", case(preserve) clear
+(17 vars, 339 obs)
+
+. 
+. describe
+
+Contains data
+ Observations:           339                  
+    Variables:            17                  
+-----------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-----------------------------------------------------------------------------------------------------------------------
+asdf_id         int     %8.0g                 
+viirs_ntl_ann~2 float   %9.0g                 viirs_ntl_annual_v20_avg_masked.2019.sum
+v3              str19   %19s                  viirs_ntl_annual_v20_avg_masked.2014.sum
+v4              str18   %18s                  viirs_ntl_annual_v20_avg_masked.2012.sum
+v5              str18   %18s                  viirs_ntl_annual_v20_avg_masked.2016.sum
+v6              str19   %19s                  viirs_ntl_annual_v20_avg_masked.2015.sum
+v7              str18   %18s                  viirs_ntl_annual_v20_avg_masked.2013.sum
+v8              float   %9.0g                 viirs_ntl_annual_v20_avg_masked.2017.sum
+v9              str18   %18s                  viirs_ntl_annual_v20_avg_masked.2020.sum
+v10             float   %9.0g                 viirs_ntl_annual_v20_avg_masked.2018.sum
+Level           str4    %9s                   
+gqid            int     %8.0g                 
+id              int     %8.0g                 
+shapeGroup      str3    %9s                   
+shapeID         str26   %26s                  
+shapeName       str32   %32s                  
+shapeType       str4    %9s                   
+-----------------------------------------------------------------------------------------------------------------------
+Sorted by: 
+     Note: Dataset has changed since last saved.
+
+. summarize
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     asdf_id |        339         169     98.0051          0        338
+viirs_ntl_~2 |        339    1139.217     5017.03          0   61675.64
+          v3 |          0
+          v4 |          0
+          v5 |          0
+-------------+---------------------------------------------------------
+          v6 |          0
+          v7 |          0
+          v8 |        339    1089.219     4942.94          0   62087.52
+          v9 |          0
+         v10 |        339    1105.937    5001.728          0   64137.62
+-------------+---------------------------------------------------------
+       Level |          0
+        gqid |        339         169     98.0051          0        338
+          id |        339         169     98.0051          0        338
+  shapeGroup |          0
+     shapeID |          0
+-------------+---------------------------------------------------------
+   shapeName |          0
+   shapeType |          0
+
+. 
+. ** Rename variables
+. rename viirs_ntl_annual_v20_avg_masked2 ntl2019
+
+. rename v3 ntl2014
+
+. rename v4 ntl2012
+
+. rename v5 ntl2016
+
+. rename v6 ntl2015
+
+. rename v7 ntl2013
+
+. rename v8 ntl2017
+
+. rename v9 ntl2020
+
+. rename v10 ntl2018
+
+. 
+. ** Order variables
+. order ntl2012, after(asdf_id)
+
+. order ntl2013, after(ntl2012)
+
+. order ntl2014, after(ntl2013)
+
+. order ntl2015, after(ntl2014)
+
+. order ntl2016, after(ntl2015)
+
+. order ntl2017, after(ntl2016)
+
+. order ntl2018, after(ntl2017)
+
+. order ntl2019, after(ntl2018)
+
+. order ntl2020, after(ntl2019)
+
+. order shapeName, after(asdf_id)
+
+. 
+. ** Keep relevant variables
+. keep asdf_id shapeName ntl2012-ntl2020
+
+. 
+. describe
+
+Contains data
+ Observations:           339                  
+    Variables:            11                  
+-----------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-----------------------------------------------------------------------------------------------------------------------
+asdf_id         int     %8.0g                 
+shapeName       str32   %32s                  
+ntl2012         str18   %18s                  viirs_ntl_annual_v20_avg_masked.2012.sum
+ntl2013         str18   %18s                  viirs_ntl_annual_v20_avg_masked.2013.sum
+ntl2014         str19   %19s                  viirs_ntl_annual_v20_avg_masked.2014.sum
+ntl2015         str19   %19s                  viirs_ntl_annual_v20_avg_masked.2015.sum
+ntl2016         str18   %18s                  viirs_ntl_annual_v20_avg_masked.2016.sum
+ntl2017         float   %9.0g                 viirs_ntl_annual_v20_avg_masked.2017.sum
+ntl2018         float   %9.0g                 viirs_ntl_annual_v20_avg_masked.2018.sum
+ntl2019         float   %9.0g                 viirs_ntl_annual_v20_avg_masked.2019.sum
+ntl2020         str18   %18s                  viirs_ntl_annual_v20_avg_masked.2020.sum
+-----------------------------------------------------------------------------------------------------------------------
+Sorted by: 
+     Note: Dataset has changed since last saved.
+
+. sum
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     asdf_id |        339         169     98.0051          0        338
+   shapeName |          0
+     ntl2012 |          0
+     ntl2013 |          0
+     ntl2014 |          0
+-------------+---------------------------------------------------------
+     ntl2015 |          0
+     ntl2016 |          0
+     ntl2017 |        339    1089.219     4942.94          0   62087.52
+     ntl2018 |        339    1105.937    5001.728          0   64137.62
+     ntl2019 |        339    1139.217     5017.03          0   61675.64
+-------------+---------------------------------------------------------
+     ntl2020 |          0
+
+. 
+. 
+. ** Remove NAs in string variables
+. ds ntl*, has(type string)  
+ntl2012  ntl2013  ntl2014  ntl2015  ntl2016  ntl2020
+
+. foreach v in `r(varlist)' {
+  2.       replace `v' = "" if `v' == "NA"
+  3. }
+(3 real changes made)
+(3 real changes made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+
+. 
+. ** Convert string variables to numeric
+. destring , replace
+asdf_id already numeric; no replace
+shapeName: contains nonnumeric characters; no replace
+ntl2012: all characters numeric; replaced as double
+(3 missing values generated)
+ntl2013: all characters numeric; replaced as double
+(3 missing values generated)
+ntl2014: all characters numeric; replaced as double
+(1 missing value generated)
+ntl2015: all characters numeric; replaced as double
+(1 missing value generated)
+ntl2016: all characters numeric; replaced as double
+(1 missing value generated)
+ntl2017 already numeric; no replace
+ntl2018 already numeric; no replace
+ntl2019 already numeric; no replace
+ntl2020: all characters numeric; replaced as double
+(1 missing value generated)
+
+. describe
+
+Contains data
+ Observations:           339                  
+    Variables:            11                  
+-----------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-----------------------------------------------------------------------------------------------------------------------
+asdf_id         int     %8.0g                 
+shapeName       str32   %32s                  
+ntl2012         double  %10.0g                viirs_ntl_annual_v20_avg_masked.2012.sum
+ntl2013         double  %10.0g                viirs_ntl_annual_v20_avg_masked.2013.sum
+ntl2014         double  %10.0g                viirs_ntl_annual_v20_avg_masked.2014.sum
+ntl2015         double  %10.0g                viirs_ntl_annual_v20_avg_masked.2015.sum
+ntl2016         double  %10.0g                viirs_ntl_annual_v20_avg_masked.2016.sum
+ntl2017         float   %9.0g                 viirs_ntl_annual_v20_avg_masked.2017.sum
+ntl2018         float   %9.0g                 viirs_ntl_annual_v20_avg_masked.2018.sum
+ntl2019         float   %9.0g                 viirs_ntl_annual_v20_avg_masked.2019.sum
+ntl2020         double  %10.0g                viirs_ntl_annual_v20_avg_masked.2020.sum
+-----------------------------------------------------------------------------------------------------------------------
+Sorted by: 
+     Note: Dataset has changed since last saved.
+
+. sum
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     asdf_id |        339         169     98.0051          0        338
+   shapeName |          0
+     ntl2012 |        336    664.6391    3199.796          0   39670.73
+     ntl2013 |        336    755.1924    3591.551          0   45361.24
+     ntl2014 |        338    821.4758    3923.239          0   48710.88
+-------------+---------------------------------------------------------
+     ntl2015 |        338    950.6112    4695.335          0   58417.61
+     ntl2016 |        338     1029.11    4879.027          0   61954.85
+     ntl2017 |        339    1089.219     4942.94          0   62087.52
+     ntl2018 |        339    1105.937    5001.728          0   64137.62
+     ntl2019 |        339    1139.217     5017.03          0   61675.64
+-------------+---------------------------------------------------------
+     ntl2020 |        338    1134.368    4905.841          0   59850.96
+
+. 
+. ** Replace 0 values as missing
+. foreach v of varlist ntl* {
+  2. replace `v' = . if `v' == 0
+  3. }
+(12 real changes made, 12 to missing)
+(10 real changes made, 10 to missing)
+(6 real changes made, 6 to missing)
+(6 real changes made, 6 to missing)
+(6 real changes made, 6 to missing)
+(6 real changes made, 6 to missing)
+(5 real changes made, 5 to missing)
+(2 real changes made, 2 to missing)
+(4 real changes made, 4 to missing)
+
+. 
+. sum
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     asdf_id |        339         169     98.0051          0        338
+   shapeName |          0
+     ntl2012 |        324    689.2554     3256.08   .3229341   39670.73
+     ntl2013 |        326    778.3578    3643.906   .2686344   45361.24
+     ntl2014 |        332    836.3217    3957.064   .4125506   48710.88
+-------------+---------------------------------------------------------
+     ntl2015 |        332    967.7909    4735.939   .2680675   58417.61
+     ntl2016 |        332    1047.709    4921.063   .8018156   61954.85
+     ntl2017 |        333    1108.844    4985.216   .5162149   62087.52
+     ntl2018 |        334    1122.493    5037.289   2.239865   64137.62
+     ntl2019 |        337    1145.978    5031.167   .1356391   61675.64
+-------------+---------------------------------------------------------
+     ntl2020 |        334    1147.954    4933.632   2.454677   59850.96
+
+. 
+. ** Reshape data from wide to long
+. reshape long ntl, i(asdf_id shapeName) j(year)
+(j = 2012 2013 2014 2015 2016 2017 2018 2019 2020)
+
+Data                               Wide   ->   Long
+-----------------------------------------------------------------------------
+Number of observations              339   ->   3,051       
+Number of variables                  11   ->   4           
+j variable (9 values)                     ->   year
+xij variables:
+            ntl2012 ntl2013 ... ntl2020   ->   ntl
+-----------------------------------------------------------------------------
+
+. 
+. 
+. ** Linear interpolation of missing values
+. xtset asdf_id year
+
+Panel variable: asdf_id (strongly balanced)
+ Time variable: year, 2012 to 2020
+         Delta: 1 unit
+
+. gen ln_1000000ntl = ln(1000000*ntl) // multiply by 1 million to avoid negative numbers
+(67 missing values generated)
+
+. 
+. ipolate ln_1000000ntl year, gen(ln_1000000ntl_ip) epolate by (asdf_id)
+(26 missing values generated)
+
+. sum
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     asdf_id |      3,051         169    97.87649          0        338
+   shapeName |          0
+        year |      3,051        2016    2.582412       2012       2020
+         ntl |      2,984    984.4628    4549.933   .1356391   64137.62
+ln_1000000~l |      2,984    18.41873    1.972705   11.81775    24.8843
+-------------+---------------------------------------------------------
+ln_1000000~p |      3,025      18.341    2.098248   3.281857    24.8843
+
+. 
+. ** Predict the missing values
+. xtreg ln_1000000ntl_ip year, fe
+
+Fixed-effects (within) regression               Number of obs     =      3,025
+Group variable: asdf_id                         Number of groups  =        337
+
+R-squared:                                      Obs per group:
+     Within  = 0.4305                                         min =          1
+     Between = 0.0302                                         avg =        9.0
+     Overall = 0.0313                                         max =          9
+
+                                                F(1,2687)         =    2030.77
+corr(u_i, Xb) = -0.0013                         Prob > F          =     0.0000
+
+------------------------------------------------------------------------------
+ln_1000000~p | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+        year |   .1447835   .0032128    45.06   0.000     .1384837    .1510834
+       _cons |  -273.5428   6.477093   -42.23   0.000    -286.2434   -260.8422
+-------------+----------------------------------------------------------------
+     sigma_u |  2.0512546
+     sigma_e |  .45617794
+         rho |  .95287355   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+F test that all u_i=0: F(336, 2687) = 176.45                 Prob > F = 0.0000
+
+. predict ln_1000000ntl_ip_pr
+(option xb assumed; fitted values)
+
+. label variable ln_1000000ntl_ip_pr "Predicted ln_1000000ntl_ip on year"
+
+. sum
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     asdf_id |      3,051         169    97.87649          0        338
+   shapeName |          0
+        year |      3,051        2016    2.582412       2012       2020
+         ntl |      2,984    984.4628    4549.933   .1356391   64137.62
+ln_1000000~l |      2,984    18.41873    1.972705   11.81775    24.8843
+-------------+---------------------------------------------------------
+ln_1000000~p |      3,025      18.341    2.098248   3.281857    24.8843
+ln_1000000~r |      3,051    18.34086    .3738909   17.76172   18.91999
+
+. 
+. ** Replace the remaining missing values with the prediction
+. gen ln_1000000ntl_ip2 = ln_1000000ntl_ip
+(26 missing values generated)
+
+. replace ln_1000000ntl_ip2 = ln_1000000ntl_ip_pr if ln_1000000ntl_ip == .
+(26 real changes made)
+
+. sum
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     asdf_id |      3,051         169    97.87649          0        338
+   shapeName |          0
+        year |      3,051        2016    2.582412       2012       2020
+         ntl |      2,984    984.4628    4549.933   .1356391   64137.62
+ln_1000000~l |      2,984    18.41873    1.972705   11.81775    24.8843
+-------------+---------------------------------------------------------
+ln_1000000~p |      3,025      18.341    2.098248   3.281857    24.8843
+ln_1000000~r |      3,051    18.34086    .3738909   17.76172   18.91999
+ln_1000000~2 |      3,051    18.34086    2.089567   3.281857    24.8843
+
+. 
+. ** Compute long-run trends: HP filter with parameters 6.25, 100, 400
+. pfilter ln_1000000ntl_ip2, method(hp) trend(tr6_ln_y)   smooth(6.25)
+
+. pfilter ln_1000000ntl_ip2, method(hp) trend(tr100_ln_y) smooth(100)
+
+. pfilter ln_1000000ntl_ip2, method(hp) trend(tr400_ln_y) smooth(400)
+
+. 
+. ** Re-express NTL in its original scale
+. gen tr6_ntl = (exp(tr6_ln_y))/1000000
+
+. gen tr100_ntl = (exp(tr100_ln_y))/1000000
+
+. gen tr400_ntl = (exp(tr400_ln_y))/1000000
+
+. 
+. ** Label variables
+. label variable shapeName "Municipality name"
+
+. label variable ntl "NTL (Sum of nighttime lights)"
+
+. notes ntl: viirs_ntl_annual_v20_avg_masked_sum  >>> Annual VIIRS nighttime lights product Version 2. Average value wi
+> th background pixels masked.  >>>Download link: geo.aiddata.org/query/#!/status/61556172109a8645cf7aca33 
+
+. label variable ln_1000000ntl "Log (1million * NTL)"
+
+. label variable ln_1000000ntl_ip "Interpolation of Log (1million * NTL) on year"
+
+. label variable ln_1000000ntl_ip_pr "Prediction of  iterpolated Log (1million * NTL) on year"
+
+. label variable ln_1000000ntl_ip2 "Interpolation of Log (1million * NTL) on year"
+
+. notes ln_1000000ntl_ip2: There were missing values even after interpolation. Predicted values were used to fill in th
+> ese missing values
+
+. label variable tr6_ntl "Trend of NTL (HP 6.25)"
+
+. notes tr6_ntl: The trend is based on the HP filter with a smoothing parameter of 6.25
+
+. label variable tr100_ntl "Trend of NTL (HP 100)"
+
+. notes tr100_ntl: The trend is based on the HP filter with a smoothing parameter of 100
+
+. label variable tr400_ntl "Trend of NTL (HP 400)"
+
+. notes tr400_ntl: The trend is based on the HP filter with a smoothing parameter of 400
+
+. 
+. 
+. ** Verify similarity with the original series
+. reg ntl tr6_ntl, robust
+
+Linear regression                               Number of obs     =      2,984
+                                                F(1, 2982)        =   19364.08
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.9978
+                                                Root MSE          =     214.75
+
+------------------------------------------------------------------------------
+             |               Robust
+         ntl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     tr6_ntl |   1.002885    .007207   139.15   0.000     .9887534    1.017016
+       _cons |   1.615674   4.299306     0.38   0.707    -6.814232    10.04558
+------------------------------------------------------------------------------
+
+. reg ntl tr100_ntl, robust
+
+Linear regression                               Number of obs     =      2,984
+                                                F(1, 2982)        =    4672.69
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.9930
+                                                Root MSE          =     381.95
+
+------------------------------------------------------------------------------
+             |               Robust
+         ntl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   tr100_ntl |   1.001614   .0146527    68.36   0.000     .9728837    1.030344
+       _cons |   3.671019   8.745494     0.42   0.675    -13.47679    20.81883
+------------------------------------------------------------------------------
+
+. reg ntl tr400_ntl, robust
+
+Linear regression                               Number of obs     =      2,984
+                                                F(1, 2982)        =    3971.75
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.9919
+                                                Root MSE          =     409.94
+
+------------------------------------------------------------------------------
+             |               Robust
+         ntl | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   tr400_ntl |   1.000888   .0158816    63.02   0.000     .9697482    1.032028
+       _cons |   4.298406   9.492945     0.45   0.651    -14.31498    22.91179
+------------------------------------------------------------------------------
+
+. 
+. tw (sc ntl tr6_ntl) (lfit ntl tr6_ntl), name(fig1, replace)
+
+. tw (sc ntl tr100_ntl) (lfit ntl tr100_ntl), name(fig2, replace)
+
+. tw (sc ntl tr400_ntl) (lfit ntl tr400_ntl), name(fig3, replace)
+
+. 
+. tsline tr6_ntl ntl if asdf_id == 91, name(fig4, replace)
+
+. tsline tr6_ntl ntl if asdf_id == 93, name(fig5, replace)
+
+. tsline tr6_ntl ntl if asdf_id == 109, name(fig6, replace)
+
+. tsline tr6_ntl ntl if asdf_id == 217, name(fig7, replace)
+
+. tsline tr6_ntl ntl if asdf_id == 218, name(fig8, replace)
+
+. tsline tr6_ntl ntl if asdf_id == 225, name(fig9, replace)
+
+. tsline tr6_ntl ntl if asdf_id == 228, name(fig10, replace)
+
+. tsline tr6_ntl ntl if asdf_id == 218, name(fig11, replace)
+
+. tsline tr6_ntl ntl if asdf_id == 160, name(ElAlto, replace)
+
+. 
+. 
+. ** Drop unnecesary variables
+. drop ln_1000000ntl ln_1000000ntl_ip ln_1000000ntl_ip_pr ln_1000000ntl_ip2 tr6_ln_y tr100_ln_y tr400_ln_y
+
+. 
+. describe
+
+Contains data
+ Observations:         3,051                  
+    Variables:             7                  
+-----------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-----------------------------------------------------------------------------------------------------------------------
+asdf_id         int     %8.0g                 
+shapeName       str32   %32s                  Municipality name
+year            int     %10.0g                
+ntl             double  %10.0g              * NTL (Sum of nighttime lights)
+tr6_ntl         float   %9.0g               * Trend of NTL (HP 6.25)
+tr100_ntl       float   %9.0g               * Trend of NTL (HP 100)
+tr400_ntl       float   %9.0g               * Trend of NTL (HP 400)
+                                            * indicated variables have notes
+-----------------------------------------------------------------------------------------------------------------------
+Sorted by: asdf_id  year
+     Note: Dataset has changed since last saved.
+
+. sum
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     asdf_id |      3,051         169    97.87649          0        338
+   shapeName |          0
+        year |      3,051        2016    2.582412       2012       2020
+         ntl |      2,984    984.4628    4549.933   .1356391   64137.62
+     tr6_ntl |      3,051    959.2469    4483.889   .0000266   62760.92
+-------------+---------------------------------------------------------
+   tr100_ntl |      3,051    958.4536    4478.726   .0000266   67086.64
+   tr400_ntl |      3,051    958.5357    4479.558   .0000266   67801.87
+
+. 
+. ** Save long-form panel dataset
+. save             "../data/NTL_trends.dta", replace
+file ../data/NTL_trends.dta saved
+
+. export delimited "../data/NTL_trends.csv", replace
+file ../data/NTL_trends.csv saved
+
+. 
+. ** Save wide-form panel dataset
+. reshape wide ntl tr6_ntl tr100_ntl tr400_ntl, i(asdf_id shapeName)  j(year)  
+(j = 2012 2013 2014 2015 2016 2017 2018 2019 2020)
+
+Data                               Long   ->   Wide
+-----------------------------------------------------------------------------
+Number of observations            3,051   ->   339         
+Number of variables                   7   ->   38          
+j variable (9 values)              year   ->   (dropped)
+xij variables:
+                                    ntl   ->   ntl2012 ntl2013 ... ntl2020
+                                tr6_ntl   ->   tr6_ntl2012 tr6_ntl2013 ... tr6_ntl2020
+                              tr100_ntl   ->   tr100_ntl2012 tr100_ntl2013 ... tr100_ntl2020
+                              tr400_ntl   ->   tr400_ntl2012 tr400_ntl2013 ... tr400_ntl2020
+-----------------------------------------------------------------------------
+
+. order _all, alphabetic
+
+. order shapeName, after(asdf_id)
+
+. drop shapeID
+variable shapeID not found
+r(111);
+
+end of do-file
+
+r(111);
+
+. do /var/folders/tq/t98kb27n6djgrh085g476yhc0000gn/T/StataRun1650945371951.do
+
+. cls
+
+. **=====================================================
+. ** Program Name: Clean data and estimate population trends
+. ** Author: Carlos Mendez
+. ** Date: 2022-04-04
+. ** --------------------------------------------------------------------------------------------
+. ** Inputs/Ouputs:
+. * Data files used:  ../data/rawData/Pop/622081a016cfcc2a7a4e3ab2_results.csv
+. 
+. * Data files created as intermediate product:
+. 
+. * Data files created as final product: ../data/POP_trends.dta
+. 
+. **=====================================================
+. 
+. ** 0. Change working directory
+. cd "/Users/carlosmendez/Documents/GitHub/project2021o/c00-transform_data"
+/Users/carlosmendez/Documents/GitHub/project2021o/c00-transform_data
+
+. 
+. ** 1. Setup
+. clear all
+
+. macro drop _all
+
+. capture log close
